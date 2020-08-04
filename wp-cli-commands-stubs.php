@@ -608,9 +608,6 @@ namespace {
      */
     class Checksum_Core_Command extends \Checksum_Base_Command
     {
-        private function get_download_offer($locale)
-        {
-        }
         /**
          * Verifies WordPress files against WordPress.org's checksums.
          *
@@ -619,9 +616,9 @@ namespace {
          *
          * For security, avoids loading WordPress when verifying checksums.
          *
-         * If you experience issues verifying from this command, ensure you are 
-         * passing the relevant `--locale` and `--version` arguments according to 
-         * the values from the `Dashboard->Updates` menu in the admin area of the 
+         * If you experience issues verifying from this command, ensure you are
+         * passing the relevant `--locale` and `--version` arguments according to
+         * the values from the `Dashboard->Updates` menu in the admin area of the
          * site.
          *
          * ## OPTIONS
@@ -945,6 +942,11 @@ namespace {
      */
     class Config_Command extends \WP_CLI_Command
     {
+        /**
+         * Retrieve the initiale locale from the WordPress version file.
+         *
+         * @return string Initial locale if present, or an empty string if not.
+         */
         private static function get_initial_locale()
         {
         }
@@ -1309,7 +1311,7 @@ namespace {
         private static function get_wp_config_diff($list, $previous_list, $type, $exclude_list = array())
         {
         }
-        private static function _read($url)
+        private static function read_($url)
         {
         }
         /**
@@ -1439,7 +1441,7 @@ namespace {
          *
          * @subcommand check-update
          */
-        function check_update($_, $assoc_args)
+        public function check_update($_, $assoc_args)
         {
         }
         /**
@@ -1480,7 +1482,7 @@ namespace {
         public function download($args, $assoc_args)
         {
         }
-        private static function _read($url)
+        private static function read($url)
         {
         }
         private function get_download_offer($locale)
@@ -1510,7 +1512,7 @@ namespace {
          *
          * @subcommand is-installed
          */
-        public function is_installed($_, $assoc_args)
+        public function is_installed($args, $assoc_args)
         {
         }
         /**
@@ -1522,8 +1524,8 @@ namespace {
          *
          * Note: if you've installed WordPress in a subdirectory, then you'll need
          * to `wp option update siteurl` after `wp core install`. For instance, if
-         * WordPress is installed in the `/wp` directory and your domain is wp.dev,
-         * then you'll need to run `wp option update siteurl http://wp.dev/wp` for
+         * WordPress is installed in the `/wp` directory and your domain is example.com,
+         * then you'll need to run `wp option update siteurl http://example.com/wp` for
          * your WordPress installation to function properly.
          *
          * Note: When using custom user tables (e.g. `CUSTOM_USER_TABLE`), the admin
@@ -1661,13 +1663,13 @@ namespace {
         public function multisite_install($args, $assoc_args)
         {
         }
-        private static function _set_multisite_defaults($assoc_args)
+        private static function set_multisite_defaults($assoc_args)
         {
         }
-        private function _install($assoc_args)
+        private function do_install($assoc_args)
         {
         }
-        private function _multisite_convert($assoc_args)
+        private function multisite_convert_($assoc_args)
         {
         }
         // copied from populate_network()
@@ -1707,7 +1709,7 @@ namespace {
          *
          * @when before_wp_load
          */
-        public function version($args = array(), $assoc_args = array())
+        public function version($args = [], $assoc_args = [])
         {
         }
         /**
@@ -1837,7 +1839,7 @@ namespace {
          *
          * @subcommand update-db
          */
-        function update_db($_, $assoc_args)
+        public function update_db($args, $assoc_args)
         {
         }
         /**
@@ -1865,9 +1867,9 @@ namespace {
         }
     }
 }
-namespace WP_CLI {
+namespace WP_CLI\Core {
     /**
-     * A Core Upgrader class that caches the download, and uses cached if available
+     * A Core Upgrader class that caches the download, and uses cached if available.
      *
      * @package wp-cli
      */
@@ -1878,11 +1880,12 @@ namespace WP_CLI {
          *
          * @access public
          *
-         * @param string $package The URI of the package. If this is the full path to an
-         *                        existing local file, it will be returned untouched.
+         * @param string $package          The URI of the package. If this is the full path to an
+         *                                 existing local file, it will be returned untouched.
+         * @param bool   $check_signatures Whether to validate file signatures. Default true.
          * @return string|WP_Error The full path to the downloaded package file, or a WP_Error object.
          */
-        public function download_package($package)
+        public function download_package($package, $check_signatures = true)
         {
         }
         /**
@@ -1906,7 +1909,7 @@ namespace WP_CLI {
          * }
          * @return null|false|WP_Error False or WP_Error on failure, null on success.
          */
-        public function upgrade($current, $args = array())
+        public function upgrade($current, $args = [])
         {
         }
         /**
@@ -1921,9 +1924,10 @@ namespace WP_CLI {
      *
      * @package wp-cli
      */
-    class NonDestructiveCoreUpgrader extends \WP_CLI\CoreUpgrader
+    class NonDestructiveCoreUpgrader extends \WP_CLI\Core\CoreUpgrader
     {
-        function unpack_package($package, $delete_package = false)
+        // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found -- Provide default value.
+        public function unpack_package($package, $delete_package = false)
         {
         }
     }
@@ -2661,7 +2665,7 @@ namespace {
          *     --
          *     -- Host: localhost    Database: wpdev
          *     -- ------------------------------------------------------
-         *     -- Server version	5.7.19
+         *     -- Server version    5.7.19
          *     ...
          *
          * @alias dump
@@ -2763,28 +2767,43 @@ namespace {
          * Display the database name and size for `DB_NAME` specified in wp-config.php.
          * The size defaults to a human-readable number.
          *
+         * Available size formats include:
+         * * b (bytes)
+         * * kb (kilobytes)
+         * * mb (megabytes)
+         * * gb (gigabytes)
+         * * tb (terabytes)
+         * * B   (ISO Byte setting, with no conversion)
+         * * KB  (ISO Kilobyte setting, with 1 KB  = 1,000 B)
+         * * KiB (ISO Kibibyte setting, with 1 KiB = 1,024 B)
+         * * MB  (ISO Megabyte setting, with 1 MB  = 1,000 KB)
+         * * MiB (ISO Mebibyte setting, with 1 MiB = 1,024 KiB)
+         * * GB  (ISO Gigabyte setting, with 1 GB  = 1,000 MB)
+         * * GiB (ISO Gibibyte setting, with 1 GiB = 1,024 MiB)
+         * * TB  (ISO Terabyte setting, with 1 TB  = 1,000 GB)
+         * * TiB (ISO Tebibyte setting, with 1 TiB = 1,024 GiB)
+         *
          * ## OPTIONS
          *
-         * [--size_format]
+         * [--size_format=<format>]
          * : Display the database size only, as a bare number.
          * ---
-         * default: b
          * options:
-         *  - b (bytes)
-         *  - kb (kilobytes)
-         *  - mb (megabytes)
-         *  - gb (gigabytes)
-         *  - tb (terabytes)
-         *  - B   (ISO Byte setting, with no conversion)
-         *  - KB  (ISO Kilobyte setting, with 1 KB  = 1,000 B)
-         *  - KiB (ISO Kibibyte setting, with 1 KiB = 1,024 B)
-         *  - MB  (ISO Megabyte setting, with 1 MB  = 1,000 KB)
-         *  - MiB (ISO Mebibyte setting, with 1 MiB = 1,024 KiB)
-         *  - GB  (ISO Gigabyte setting, with 1 GB  = 1,000 MB)
-         *  - GiB (ISO Gibibyte setting, with 1 GiB = 1,024 MiB)
-         *  - TB  (ISO Terabyte setting, with 1 TB  = 1,000 GB)
-         *  - TiB (ISO Tebibyte setting, with 1 TiB = 1,024 GiB)
-         *  ---
+         *   - b
+         *   - kb
+         *   - mb
+         *   - gb
+         *   - tb
+         *   - B
+         *   - KB
+         *   - KiB
+         *   - MB
+         *   - MiB
+         *   - GB
+         *   - GiB
+         *   - TB
+         *   - TiB
+         * ---
          *
          * [--tables]
          * : Display each table name and size instead of the database size.
@@ -2792,14 +2811,14 @@ namespace {
          * [--human-readable]
          * : Display database sizes in human readable formats.
          *
-         * [--format]
-         * : table, csv, json
+         * [--format=<format>]
+         * : Render output in a particular format.
          * ---
-         * default: table
          * options:
          *   - table
          *   - csv
          *   - json
+         *   - yaml
          * ---
          *
          * [--scope=<scope>]
@@ -3289,7 +3308,7 @@ namespace WP_CLI\Embeds {
          * @param \SimpleXMLElement $node Optional. XML node to append the result to recursively.
          * @return string|false XML string on success, false on error.
          */
-        protected function _oembed_create_xml($data, $node = null)
+        protected function oembed_create_xml($data, $node = null)
         {
         }
     }
@@ -3498,7 +3517,7 @@ namespace WP_CLI {
         /**
          * @var array $obj_fields Default fields to display for each object.
          */
-        protected $obj_fields = null;
+        protected $obj_fields;
         /**
          * Create a given database object.
          * Exits with status.
@@ -3544,27 +3563,27 @@ namespace WP_CLI {
         /**
          * Format callback response to consistent format.
          *
-         * @param WP_Error|true $r Response from CRUD callback.
-         * @param string $success_msg
+         * @param WP_Error|true $response Response from CRUD callback.
+         * @param string        $success_msg
          * @return array
          */
-        protected function wp_error_to_resp($r, $success_msg)
+        protected function wp_error_to_resp($response, $success_msg)
         {
         }
         /**
          * Display success or warning based on response; return proper exit code.
          *
-         * @param array $r Formatted from a CRUD callback.
+         * @param array $response Formatted from a CRUD callback.
          * @return int $status
          */
-        protected function success_or_failure($r)
+        protected function success_or_failure($response)
         {
         }
         /**
          * Get Formatter object based on supplied parameters.
          *
          * @param array $assoc_args Parameters passed to command. Determines formatting.
-         * @return \WP_CLI\Formatter
+         * @return Formatter
          */
         protected function get_formatter(&$assoc_args)
         {
@@ -3609,7 +3628,7 @@ namespace {
     {
         protected $obj_type = 'comment';
         protected $obj_id_key = 'comment_ID';
-        protected $obj_fields = array('comment_ID', 'comment_post_ID', 'comment_date', 'comment_approved', 'comment_author', 'comment_author_email');
+        protected $obj_fields = ['comment_ID', 'comment_post_ID', 'comment_date', 'comment_approved', 'comment_author', 'comment_author_email'];
         public function __construct()
         {
         }
@@ -3809,7 +3828,7 @@ namespace {
          *
          * @subcommand list
          */
-        public function list_($_, $assoc_args)
+        public function list_($args, $assoc_args)
         {
         }
         /**
@@ -4092,6 +4111,10 @@ namespace WP_CLI {
          *  - asc
          *  - desc
          * ---
+         *
+         * [--unserialize]
+         * : Unserialize meta_value output.
+         *
          * @subcommand list
          */
         public function list_($args, $assoc_args)
@@ -4484,7 +4507,7 @@ namespace {
     class Menu_Command extends \WP_CLI_Command
     {
         protected $obj_type = 'nav_menu';
-        protected $obj_fields = array('term_id', 'name', 'slug', 'locations', 'count');
+        protected $obj_fields = ['term_id', 'name', 'slug', 'locations', 'count'];
         /**
          * Creates a new menu.
          *
@@ -4517,7 +4540,7 @@ namespace {
          *     $ wp menu delete "My Menu"
          *     Success: 1 menu deleted.
          */
-        public function delete($args, $_)
+        public function delete($args, $assoc_args)
         {
         }
         /**
@@ -4571,7 +4594,7 @@ namespace {
          *
          * @subcommand list
          */
-        public function list_($_, $assoc_args)
+        public function list_($args, $assoc_args)
         {
         }
         protected function get_formatter(&$assoc_args)
@@ -4597,7 +4620,7 @@ namespace {
      */
     class Menu_Item_Command extends \WP_CLI_Command
     {
-        protected $obj_fields = array('db_id', 'type', 'title', 'link', 'position');
+        protected $obj_fields = ['db_id', 'type', 'title', 'link', 'position'];
         /**
          * Gets a list of items associated with a menu.
          *
@@ -4861,7 +4884,7 @@ namespace {
          *
          * @subcommand delete
          */
-        public function delete($args, $_)
+        public function delete($args, $assoc_args)
         {
         }
         /**
@@ -4935,7 +4958,7 @@ namespace {
          *
          * @subcommand list
          */
-        public function list_($_, $assoc_args)
+        public function list_($args, $assoc_args)
         {
         }
         /**
@@ -4956,7 +4979,7 @@ namespace {
          *
          * @subcommand assign
          */
-        public function assign($args, $_)
+        public function assign($args, $assoc_args)
         {
         }
         /**
@@ -4977,7 +5000,7 @@ namespace {
          *
          * @subcommand remove
          */
-        public function remove($args, $_)
+        public function remove($args, $assoc_args)
         {
         }
     }
@@ -5292,7 +5315,7 @@ namespace {
          *
          * ## OPTIONS
          *
-         * <key>
+         * <key>...
          * : Key for the option.
          *
          * ## EXAMPLES
@@ -5300,6 +5323,12 @@ namespace {
          *     # Delete an option.
          *     $ wp option delete my_option
          *     Success: Deleted 'my_option' option.
+         *
+         *     # Delete multiple options.
+         *     $ wp option delete option_one option_two option_three
+         *     Success: Deleted 'option_one' option.
+         *     Success: Deleted 'option_two' option.
+         *     Warning: Could not delete 'option_three' option. Does it exist?
          */
         public function delete($args)
         {
@@ -5389,7 +5418,7 @@ namespace {
     class Post_Command extends \WP_CLI\CommandWithDBObject
     {
         protected $obj_type = 'post';
-        protected $obj_fields = array('ID', 'post_title', 'post_name', 'post_date', 'post_status');
+        protected $obj_fields = ['ID', 'post_title', 'post_name', 'post_date', 'post_status'];
         public function __construct()
         {
         }
@@ -5638,9 +5667,10 @@ namespace {
          *     # Launch system editor to edit post
          *     $ wp post edit 123
          */
-        public function edit($args, $_)
+        public function edit($args, $assoc_args)
         {
         }
+        // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- Whitelisting to provide backward compatibility to classes possibly extending this class.
         protected function _edit($content, $title)
         {
         }
@@ -5819,7 +5849,7 @@ namespace {
          *
          * @subcommand list
          */
-        public function list_($_, $assoc_args)
+        public function list_($args, $assoc_args)
         {
         }
         /**
@@ -6109,7 +6139,7 @@ namespace WP_CLI {
         /**
          * @var array $obj_fields Default fields to display for each object.
          */
-        protected $obj_fields = array("term_id", "name", "slug", "taxonomy");
+        protected $obj_fields = ['term_id', 'name', 'slug', 'taxonomy'];
         /**
          * List all terms associated with an object.
          *
@@ -6340,6 +6370,15 @@ namespace {
     {
         private $fields = array('name', 'label', 'description', 'hierarchical', 'public', 'capability_type');
         /**
+         * Gets the post counts for each supplied post type.
+         *
+         * @param array $post_types Post types to fetch counts for.
+         * @return array Associative array of post counts keyed by post type.
+         */
+        protected function get_counts($post_types)
+        {
+        }
+        /**
          * Lists registered post types.
          *
          * ## OPTIONS
@@ -6367,7 +6406,7 @@ namespace {
          *
          * ## AVAILABLE FIELDS
          *
-         * These fields will be displayed by default for each term:
+         * These fields will be displayed by default for each post type:
          *
          * * name
          * * label
@@ -6376,7 +6415,9 @@ namespace {
          * * public
          * * capability_type
          *
-         * There are no optionally available fields.
+         * These fields are optionally available:
+         *
+         * * count
          *
          * ## EXAMPLES
          *
@@ -6430,6 +6471,24 @@ namespace {
          *   - yaml
          * ---
          *
+         * ## AVAILABLE FIELDS
+         *
+         * These fields will be displayed by default for the specified post type:
+         *
+         * * name
+         * * label
+         * * description
+         * * hierarchical
+         * * public
+         * * capability_type
+         * * labels
+         * * cap
+         * * supports
+         *
+         * These fields are optionally available:
+         *
+         * * count
+         *
          * ## EXAMPLES
          *
          *     # Get details about the 'page' post type.
@@ -6474,25 +6533,31 @@ namespace {
         /**
          * Delete comments.
          */
-        private function _empty_comments()
+        private function empty_comments()
         {
         }
         /**
          * Delete all posts.
          */
-        private function _empty_posts()
+        private function empty_posts()
         {
         }
         /**
          * Delete terms, taxonomies, and tax relationships.
          */
-        private function _empty_taxonomies()
+        private function empty_taxonomies()
         {
         }
         /**
          * Insert default terms.
          */
-        private function _insert_default_terms()
+        private function insert_default_terms()
+        {
+        }
+        /**
+         * Reset option values to default.
+         */
+        private function reset_options()
         {
         }
         /**
@@ -6533,7 +6598,7 @@ namespace {
          *
          * @subcommand empty
          */
-        public function _empty($args, $assoc_args)
+        public function empty_($args, $assoc_args)
         {
         }
         /**
@@ -6559,7 +6624,7 @@ namespace {
          *     Are you sure you want to delete the http://www.example.com/example site? [y/n] y
          *     Success: The site at 'http://www.example.com/example' was deleted.
          */
-        function delete($args, $assoc_args)
+        public function delete($args, $assoc_args)
         {
         }
         /**
@@ -6590,7 +6655,7 @@ namespace {
          *     $ wp site create --slug=example
          *     Success: Site 3 created: http://www.example.com/example/
          */
-        public function create($_, $assoc_args)
+        public function create($args, $assoc_args)
         {
         }
         /**
@@ -6599,7 +6664,7 @@ namespace {
          * @param int     $network_id
          * @return bool|array False if no network found with given id, array otherwise
          */
-        private function _get_network($network_id)
+        private function get_network($network_id)
         {
         }
         /**
@@ -6666,7 +6731,7 @@ namespace {
          *
          * @subcommand list
          */
-        public function list_($_, $assoc_args)
+        public function list_($args, $assoc_args)
         {
         }
         /**
@@ -7218,6 +7283,15 @@ namespace {
         {
         }
         /**
+         * Gets the term counts for each supplied taxonomy.
+         *
+         * @param array $taxonomies Taxonomies to fetch counts for.
+         * @return array Associative array of term counts keyed by taxonomy.
+         */
+        protected function get_counts($taxonomies)
+        {
+        }
+        /**
          * Lists registered taxonomies.
          *
          * ## OPTIONS
@@ -7250,10 +7324,14 @@ namespace {
          * * name
          * * label
          * * description
-         * * public
+         * * object_type
+         * * show_tagcloud
          * * hierarchical
+         * * public
          *
-         * There are no optionally available fields.
+         * These fields are optionally available:
+         *
+         * * count
          *
          * ## EXAMPLES
          *
@@ -7305,6 +7383,24 @@ namespace {
          *   - json
          *   - yaml
          * ---
+         *
+         * ## AVAILABLE FIELDS
+         *
+         * These fields will be displayed by default for the specified taxonomy:
+         *
+         * * name
+         * * label
+         * * description
+         * * object_type
+         * * show_tagcloud
+         * * hierarchical
+         * * public
+         * * labels
+         * * cap
+         *
+         * These fields are optionally available:
+         *
+         * * count
          *
          * ## EXAMPLES
          *
@@ -7365,7 +7461,7 @@ namespace {
      */
     class Term_Command extends \WP_CLI_Command
     {
-        private $fields = array('term_id', 'term_taxonomy_id', 'name', 'slug', 'description', 'parent', 'count');
+        private $fields = ['term_id', 'term_taxonomy_id', 'name', 'slug', 'description', 'parent', 'count'];
         /**
          * Lists terms in a taxonomy.
          *
@@ -7688,6 +7784,40 @@ namespace {
         public function recount($args)
         {
         }
+        /**
+         * Migrate a term of a taxonomy to another taxonomy.
+         *
+         * ## OPTIONS
+         *
+         * <term>
+         * : Slug or ID of the term to migrate.
+         *
+         * [--by=<field>]
+         * : Explicitly handle the term value as a slug or id.
+         * ---
+         * default: id
+         * options:
+         *   - slug
+         *   - id
+         * ---
+         *
+         * [--from=<taxonomy>]
+         * : Taxonomy slug of the term to migrate.
+         *
+         * [--to=<taxonomy>]
+         * : Taxonomy slug to migrate to.
+         *
+         * ## EXAMPLES
+         *
+         *     # Migrate a category's term (video) to tag taxonomy.
+         *     $ wp term migrate 9190 --from=category --to=post_tag
+         *     Term '9190' migrated!
+         *     Old instance of term '9190' removed from its original taxonomy.
+         *     Success: Migrated the term '9190' from taxonomy 'category' to taxonomy 'post_tag' for 1 posts
+         */
+        public function migrate($args, $assoc_args)
+        {
+        }
         private function maybe_make_child()
         {
         }
@@ -7830,8 +7960,8 @@ namespace {
     class User_Command extends \WP_CLI\CommandWithDBObject
     {
         protected $obj_type = 'user';
-        protected $obj_fields = array('ID', 'user_login', 'display_name', 'user_email', 'user_registered', 'roles');
-        private $cap_fields = array('name');
+        protected $obj_fields = ['ID', 'user_login', 'display_name', 'user_email', 'user_registered', 'roles'];
+        private $cap_fields = ['name'];
         public function __construct()
         {
         }
@@ -8382,7 +8512,7 @@ namespace {
          * @param string $user_id
          * @param string $password
          */
-        private static function wp_new_user_notification($user_id, $password)
+        public static function wp_new_user_notification($user_id, $password)
         {
         }
         /**
@@ -8531,6 +8661,9 @@ namespace {
          *  - asc
          *  - desc
          * ---
+         *
+         * [--unserialize]
+         * : Unserialize meta_value output.
          *
          * ## EXAMPLES
          *
@@ -8768,7 +8901,7 @@ namespace {
      */
     class User_Session_Command extends \WP_CLI_Command
     {
-        private $fields = array('token', 'login_time', 'expiration_time', 'ip', 'ua');
+        private $fields = ['token', 'login_time', 'expiration_time', 'ip', 'ua'];
         public function __construct()
         {
         }
@@ -8890,16 +9023,16 @@ namespace {
 namespace WP_CLI\Entity {
     class NonExistentKeyException extends \OutOfBoundsException
     {
-        /* @var \WP_CLI\Entity\RecursiveDataStructureTraverser */
+        /** @var RecursiveDataStructureTraverser */
         protected $traverser;
         /**
-         * @param \WP_CLI\Entity\RecursiveDataStructureTraverser $traverser
+         * @param RecursiveDataStructureTraverser $traverser
          */
         public function set_traverser($traverser)
         {
         }
         /**
-         * @return \WP_CLI\Entity\RecursiveDataStructureTraverser
+         * @return RecursiveDataStructureTraverser
          */
         public function get_traverser()
         {
@@ -9013,7 +9146,7 @@ namespace WP_CLI\Entity {
         /**
          * Create the key on the current data.
          *
-         * @throws \UnexpectedValueException
+         * @throws UnexpectedValueException
          */
         protected function create_key()
         {
@@ -9050,10 +9183,10 @@ namespace WP_CLI\Fetchers {
         /**
          * @var string $msg Error message to use when invalid data is provided
          */
-        protected $msg = "Could not find the comment with ID %d.";
+        protected $msg = 'Could not find the comment with ID %d.';
         /**
          * Get a comment object by ID
-         * 
+         *
          * @param int $arg
          * @return object|false
          */
@@ -9069,10 +9202,10 @@ namespace WP_CLI\Fetchers {
         /**
          * @var string $msg Error message to use when invalid data is provided
          */
-        protected $msg = "Could not find the post with ID %d.";
+        protected $msg = 'Could not find the post with ID %d.';
         /**
          * Get a post object by ID
-         * 
+         *
          * @param int $arg
          * @return WP_Post|false
          */
@@ -9088,10 +9221,10 @@ namespace WP_CLI\Fetchers {
         /**
          * @var string $msg Error message to use when invalid data is provided
          */
-        protected $msg = "Could not find the site with ID %d.";
+        protected $msg = 'Could not find the site with ID %d.';
         /**
          * Get a site object by ID
-         * 
+         *
          * @param int $site_id
          * @return object|false
          */
@@ -9104,7 +9237,7 @@ namespace WP_CLI\Fetchers {
          * @param int     $site_id
          * @return bool|array False if no site found with given id, array otherwise
          */
-        private function _get_site($site_id)
+        private function get_site($site_id)
         {
         }
     }
@@ -9119,7 +9252,7 @@ namespace WP_CLI\Fetchers {
         protected $msg = "Invalid user ID, email or login: '%s'";
         /**
          * Get a user object by one of its identifying attributes
-         * 
+         *
          * @param mixed $id_email_or_login
          * @return WP_User|false
          */
@@ -9157,7 +9290,7 @@ namespace {
         public function __invoke($args, $assoc_args)
         {
         }
-        private static function _eval($file, $args)
+        private static function execute_eval($file, $args)
         {
         }
     }
@@ -9213,7 +9346,7 @@ namespace {
          *
          * @var array
          */
-        public $export_args = array();
+        public $export_args = [];
         private $stdout;
         private $max_file_size;
         private $wxr_path;
@@ -9361,7 +9494,7 @@ namespace {
     abstract class WP_Export_Base_Writer
     {
         protected $formatter;
-        function __construct($formatter)
+        public function __construct($formatter)
         {
         }
         public function export()
@@ -9487,7 +9620,7 @@ namespace {
     class WP_Export_Query
     {
         const QUERY_CHUNK = 100;
-        private static $defaults = array('post_ids' => \null, 'post_type' => \null, 'status' => \null, 'author' => \null, 'start_date' => \null, 'end_date' => \null, 'start_id' => \null, 'max_num_posts' => \NULL, 'category' => \null);
+        private static $defaults = array('post_ids' => \null, 'post_type' => \null, 'status' => \null, 'author' => \null, 'start_date' => \null, 'end_date' => \null, 'start_id' => \null, 'max_num_posts' => \null, 'category' => \null);
         private $post_ids;
         private $filters;
         private $xml_gen;
@@ -9607,11 +9740,10 @@ namespace {
         private $filename_template;
         private $before_posts_xml;
         private $after_posts_xml;
-        private $result = '';
         private $f;
         private $next_file_number = 0;
         private $current_file_size = 0;
-        function __construct($formatter, $writer_args = array())
+        public function __construct($formatter, $writer_args = [])
         {
         }
         public function export()
@@ -9635,7 +9767,7 @@ namespace {
     }
     class WP_Export_Stdout_Writer extends \WP_Export_Base_Writer
     {
-        function __construct($formatter, $writer_args)
+        public function __construct($formatter, $writer_args)
         {
         }
         public function export()
@@ -9648,6 +9780,7 @@ namespace {
     class WP_Export_Term_Exception extends \RuntimeException
     {
     }
+    //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- WordPress constant.
     /**
      * Responsible for formatting the data in WP_Export_Query to WXR
      */
@@ -9705,7 +9838,7 @@ namespace {
     class WP_Export_XML_Over_HTTP extends \WP_Export_Base_Writer
     {
         private $file_name;
-        function __construct($formatter, $file_name)
+        public function __construct($formatter, $file_name)
         {
         }
         public function export()
@@ -9726,10 +9859,10 @@ namespace {
     }
     class WP_Map_Iterator extends \IteratorIterator
     {
-        function __construct($iterator, $callback)
+        public function __construct($iterator, $callback)
         {
         }
-        function current()
+        public function current()
         {
         }
     }
@@ -9815,6 +9948,7 @@ namespace WP_CLI {
         protected function update_many($args, $assoc_args)
         {
         }
+        // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- Whitelisting to provide backward compatibility to classes possibly extending this class.
         protected function _list($_, $assoc_args)
         {
         }
@@ -9831,14 +9965,12 @@ namespace WP_CLI {
         /**
          * Get the available update info
          *
-         * @param string $slug The plugin/theme slug
-         *
-         * @return array|null
+         * @return mixed
          */
-        protected function get_update_info($slug)
+        protected function get_update_info()
         {
         }
-        private $map = array('short' => array('inactive' => 'I', 'active' => 'A', 'active-network' => 'N', 'must-use' => 'M', 'parent' => 'P', 'dropin' => 'D'), 'long' => array('inactive' => 'Inactive', 'active' => 'Active', 'active-network' => 'Network Active', 'must-use' => 'Must Use', 'parent' => 'Parent', 'dropin' => 'Drop-In'));
+        private $map = ['short' => ['inactive' => 'I', 'active' => 'A', 'active-network' => 'N', 'must-use' => 'M', 'parent' => 'P', 'dropin' => 'D'], 'long' => ['inactive' => 'Inactive', 'active' => 'Active', 'active-network' => 'Network Active', 'must-use' => 'Must Use', 'parent' => 'Parent', 'dropin' => 'Drop-In']];
         protected function format_status($status, $format)
         {
         }
@@ -9861,6 +9993,7 @@ namespace WP_CLI {
          * @param  array $args       A arguments array containing the search term in the first element.
          * @param  array $assoc_args Data passed in from command.
          */
+        // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- Whitelisting to provide backward compatibility to classes possibly extending this class.
         protected function _search($args, $assoc_args)
         {
         }
@@ -9872,6 +10005,16 @@ namespace WP_CLI {
          * and "https://api.wordpress.org/plugins/update-check/1.1/" in `wp_update_plugins()` which seem to occur intermittently.
          */
         public static function error_handler($errno, $errstr, $errfile, $errline, $errcontext = null)
+        {
+        }
+        /**
+         * Retrieves PHP_URL_HOST component from URL.
+         *
+         * @param int $component The component to retrieve.
+         *
+         * @return string
+         */
+        private function parse_url_host_component($url, $component)
         {
         }
     }
@@ -10391,7 +10534,7 @@ namespace {
          *
          *     $ wp plugin uninstall hello
          *     Uninstalled and deleted 'hello' plugin.
-         *     Success: Installed 1 of 1 plugins.
+         *     Success: Uninstalled 1 of 1 plugins.
          */
         public function uninstall($args, $assoc_args = array())
         {
@@ -10565,7 +10708,7 @@ namespace {
         private function get_details($file)
         {
         }
-        private function _delete($plugin)
+        private function delete_plugin($plugin)
         {
         }
         /**
@@ -10620,10 +10763,10 @@ namespace {
      *     # Get status of theme
      *     $ wp theme status twentysixteen
      *     Theme twentysixteen details:
-     *     		Name: Twenty Sixteen
-     *     		Status: Active
-     *     		Version: 1.2
-     *     		Author: the WordPress team
+     *          Name: Twenty Sixteen
+     *          Status: Active
+     *          Version: 1.2
+     *          Author: the WordPress team
      *
      * @package wp-cli
      */
@@ -10632,7 +10775,7 @@ namespace {
         protected $item_type = 'theme';
         protected $upgrade_refresh = 'wp_update_themes';
         protected $upgrade_transient = 'update_themes';
-        protected $obj_fields = array('name', 'status', 'update', 'version');
+        protected $obj_fields = ['name', 'status', 'update', 'version'];
         public function __construct()
         {
         }
@@ -10651,10 +10794,10 @@ namespace {
          *
          *     $ wp theme status twentysixteen
          *     Theme twentysixteen details:
-         *     		Name: Twenty Sixteen
-         *     		Status: Inactive
-         *     		Version: 1.2
-         *     		Author: the WordPress team
+         *          Name: Twenty Sixteen
+         *          Status: Inactive
+         *          Version: 1.2
+         *          Author: the WordPress team
          */
         public function status($args)
         {
@@ -10669,6 +10812,12 @@ namespace {
          *
          * <search>
          * : The string to search for.
+         *
+         * [--page=<page>]
+         * : Optional page to display.
+         * ---
+         * default: 1
+         * ---
          *
          * [--per-page=<per-page>]
          * : Optional number of results to display. Defaults to 10.
@@ -11059,8 +11208,14 @@ namespace {
          *
          * ## OPTIONS
          *
-         * <theme>...
+         * [<theme>...]
          * : One or more themes to delete.
+         *
+         * [--all]
+         * : If set, all themes will be deleted except active theme.
+         *
+         * [--force]
+         * : To delete active theme use this.
          *
          * ## EXAMPLES
          *
@@ -11070,7 +11225,7 @@ namespace {
          *
          * @alias uninstall
          */
-        public function delete($args)
+        public function delete($args, $assoc_args)
         {
         }
         /**
@@ -11145,6 +11300,17 @@ namespace {
         private static function get_template_path($template)
         {
         }
+        /**
+         * Check if current version of the theme is higher than the one available at WP.org.
+         *
+         * @param string $slug Theme slug.
+         * @param string $version Theme current version.
+         *
+         * @return bool|string
+         */
+        protected function is_theme_version_valid($slug, $version)
+        {
+        }
     }
     /**
      * Sets, gets, and removes theme mods.
@@ -11165,7 +11331,7 @@ namespace {
      */
     class Theme_Mod_Command extends \WP_CLI_Command
     {
-        private $fields = array('key', 'value');
+        private $fields = ['key', 'value'];
         /**
          * Gets one or more theme mods.
          *
@@ -12254,11 +12420,124 @@ namespace WP_CLI {
         /**
          * Caches the download, and uses cached if available.
          *
-         * @param string $package The URI of the package. If this is the full path to an
-         *                        existing local file, it will be returned untouched.
+         * @param string $package          The URI of the package. If this is the full path to an
+         *                                 existing local file, it will be returned untouched.
+         * @param bool   $check_signatures Whether to validate file signatures. Default false.
          * @return string|\WP_Error The full path to the downloaded package file, or a WP_Error object.
          */
-        public function download_package($package)
+        public function download_package($package, $check_signatures = false)
+        {
+        }
+    }
+}
+namespace WP_CLI\MaintenanceMode {
+    /**
+     * Activates, deactivates or checks the status of the maintenance mode of a site.
+     *
+     * ## EXAMPLES
+     *
+     *     # Activate Maintenance mode.
+     *     $ wp maintenance-mode activate
+     *     Enabling Maintenance mode...
+     *     Success: Activated Maintenance mode.
+     *
+     *     # Deactivate Maintenance mode.
+     *     $ wp maintenance-mode deactivate
+     *     Disabling Maintenance mode...
+     *     Success: Deactivated Maintenance mode.
+     *
+     *     # Display Maintenance mode status.
+     *     $ wp maintenance-mode status
+     *     Maintenance mode is active.
+     *
+     *     # Get Maintenance mode status for scripting purpose.
+     *     $ wp maintenance-mode is-active
+     *     $ echo $?
+     *     1
+     *
+     * @when    after_wp_load
+     * @package wp-cli
+     */
+    class MaintenanceModeCommand extends \WP_CLI_Command
+    {
+        /**
+         * Instance of WP_Upgrader.
+         *
+         * @var WP_Upgrader
+         */
+        private $upgrader;
+        /**
+         * Instantiate a MaintenanceModeCommand object.
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Activates maintenance mode.
+         *
+         * [--force]
+         * : Force maintenance mode activation operation.
+         *
+         * ## EXAMPLES
+         *
+         *     $ wp maintenance-mode activate
+         *     Enabling Maintenance mode...
+         *     Success: Activated Maintenance mode.
+         */
+        public function activate($_, $assoc_args)
+        {
+        }
+        /**
+         * Deactivates maintenance mode.
+         *
+         * ## EXAMPLES
+         *
+         *     $ wp maintenance-mode deactivate
+         *     Disabling Maintenance mode...
+         *     Success: Deactivated Maintenance mode.
+         */
+        public function deactivate()
+        {
+        }
+        /**
+         * Displays maintenance mode status.
+         *
+         * ## EXAMPLES
+         *
+         *     $ wp maintenance-mode status
+         *     Maintenance mode is active.
+         */
+        public function status()
+        {
+        }
+        /**
+         * Detects maintenance mode status.
+         *
+         * ## EXAMPLES
+         *
+         *     $ wp maintenance-mode is-active
+         *     $ echo $?
+         *     1
+         *
+         * @subcommand is-active
+         */
+        public function is_active()
+        {
+        }
+        /**
+         * Returns status of maintenance mode.
+         *
+         * @return bool
+         */
+        private function get_maintenance_mode_status()
+        {
+        }
+        /**
+         * Initializes WP_Filesystem.
+         *
+         * @return WP_Filesystem_Base
+         */
+        protected function init_wp_filesystem()
         {
         }
     }
@@ -12360,7 +12639,7 @@ namespace {
          *     3/3 Regenerated "large" thumbnail for "Sunburst Over River" (ID 756).
          *     Success: Regenerated 3 of 3 images.
          */
-        function regenerate($args, $assoc_args = array())
+        public function regenerate($args, $assoc_args = array())
         {
         }
         /**
@@ -12431,7 +12710,7 @@ namespace {
          *     $ wp media import http://s.wordpress.org/style/images/wp-header-logo.png --porcelain | xargs -I {} wp post list --post__in={} --field=url --post_type=attachment
          *     http://wordpress-develop.dev/wp-header-logo/
          */
-        function import($args, $assoc_args = array())
+        public function import($args, $assoc_args = array())
         {
         }
         /**
@@ -12527,6 +12806,39 @@ namespace {
         private function update_attachment_metadata_for_image_size($id, $new_metadata, $image_size)
         {
         }
+        /**
+         * Get images from the installation.
+         *
+         * @param array $args                  The query arguments to use. Optional.
+         * @param array $additional_mime_types The additional mime types to search for. Optional.
+         *
+         * @return WP_Query The query result.
+         */
+        private function get_images($args = array(), $additional_mime_types = array())
+        {
+        }
+        /**
+         * Get the metadata for the passed intermediate image size.
+         *
+         * @param string $size The image size to get the metadata for.
+         *
+         * @return array The image size metadata.
+         */
+        private function get_intermediate_size_metadata($size)
+        {
+        }
+        /**
+         * Get all the registered image sizes along with their dimensions.
+         *
+         * @global array $_wp_additional_image_sizes The additional image sizes to parse.
+         *
+         * @link https://wordpress.stackexchange.com/a/251602 Original solution.
+         *
+         * @return array $image_sizes The image sizes
+         */
+        private function get_registered_image_sizes()
+        {
+        }
     }
     /**
      * Lists, installs, and removes WP-CLI packages.
@@ -12584,6 +12896,17 @@ namespace {
         const PACKAGE_INDEX_URL = 'https://wp-cli.org/package-index/';
         const SSL_CERTIFICATE = '/rmccue/requests/library/Requests/Transport/cacert.pem';
         private $pool = \false;
+        /**
+         * Default author data used while creating default WP-CLI packages composer.json.
+         *
+         * @var array
+         */
+        private $author_data = ['name' => 'WP-CLI', 'email' => 'noreply@wpcli.org'];
+        /**
+         * Default repository data used while creating default WP-CLI packages composer.json.
+         * @var array
+         */
+        private $composer_type_package = ['type' => 'composer', 'url' => self::PACKAGE_INDEX_URL];
         /**
          * Browses WP-CLI packages available for installation.
          *
@@ -12771,7 +13094,7 @@ namespace {
          *     $ cd $(wp package path) && pwd
          *     /home/vagrant/.wp-cli/packages
          */
-        function path($args)
+        public function path($args)
         {
         }
         /**
@@ -12935,7 +13258,7 @@ namespace {
          *
          * @return PackageInterface|null
          */
-        private function find_latest_package(\Composer\Package\PackageInterface $package, \Composer\Composer $composer, $phpVersion, $minorOnly = \false)
+        private function find_latest_package(\Composer\Package\PackageInterface $package, \Composer\Composer $composer, $php_version, $minor_only = \false)
         {
         }
         private function get_pool(\Composer\Composer $composer)
@@ -13107,7 +13430,7 @@ namespace {
     /**
      * Lists or flushes the site's rewrite rules, updates the permalink structure.
      *
-     * See the WordPress [Rewrite API](https://codex.wordpress.org/Rewrite_API) and 
+     * See the WordPress [Rewrite API](https://codex.wordpress.org/Rewrite_API) and
      * [WP Rewrite](https://codex.wordpress.org/Class_Reference/WP_Rewrite) class reference.
      *
      * ## EXAMPLES
@@ -13165,7 +13488,7 @@ namespace {
          * Sets the post permalink structure to the specified pattern.
          *
          * To regenerate a .htaccess file with WP-CLI, you'll need to add
-         * the mod_rewrite module to your [WP-CLI config](http://wp-cli.org/config/).
+         * the mod_rewrite module to your [WP-CLI config](https://make.wordpress.org/cli/handbook/config/#config-files).
          * For example:
          *
          * ```
@@ -13243,7 +13566,7 @@ namespace {
          * apache_get_modules and also sets the $is_apache global variable.
          *
          * This is so that flush_rewrite_rules will actually write out the
-         * .htaccess file for apache wordpress installations. There is a check
+         * .htaccess file for apache WordPress installations. There is a check
          * to see:
          *
          * 1. if the $is_apache variable is set.
@@ -13295,7 +13618,12 @@ namespace {
      */
     class Capabilities_Command extends \WP_CLI_Command
     {
-        private $fields = array('name');
+        /**
+         * List of available fields.
+         *
+         * @var array
+         */
+        private $fields = ['name'];
         /**
          * Lists capabilities for a given role.
          *
@@ -13316,7 +13644,7 @@ namespace {
          *   - count
          *   - yaml
          * ---
-         * 
+         *
          * [--show-grant]
          * : Display all capabilities defined for a role including grant.
          * ---
@@ -13348,7 +13676,7 @@ namespace {
          *
          * <cap>...
          * : One or more capabilities to add.
-         * 
+         *
          * [--grant]
          * : Adds the capability as an explicit boolean value, instead of implicitly defaulting to `true`.
          * ---
@@ -13387,9 +13715,22 @@ namespace {
         public function remove($args)
         {
         }
+        /**
+         * Retrieve a specific role from the system.
+         *
+         * @param string $role Role to retrieve.
+         * @return WP_Role Requested role.
+         * @throws \WP_CLI\ExitException If the role could not be found.
+         */
         private static function get_role($role)
         {
         }
+        /**
+         * Assert that the roles are persisted to the database.
+         *
+         * @throws \WP_CLI\ExitException If the roles are not persisted to the
+         *                               database.
+         */
         private static function persistence_check()
         {
         }
@@ -13430,7 +13771,18 @@ namespace {
      */
     class Role_Command extends \WP_CLI_Command
     {
-        private $fields = array('name', 'role');
+        /**
+         * List of available fields.
+         *
+         * @var array
+         */
+        private $fields = ['name', 'role'];
+        /**
+         * Default roles as provided by WordPress Core.
+         *
+         * @var array
+         */
+        private $roles = ['administrator', 'editor', 'author', 'contributor', 'subscriber'];
         /**
          * Lists all roles.
          *
@@ -13570,6 +13922,12 @@ namespace {
         public function reset($args, $assoc_args)
         {
         }
+        /**
+         * Assert that the roles are persisted to the database.
+         *
+         * @throws \WP_CLI\ExitException If the roles are not persisted to the
+         *                               database.
+         */
         private static function persistence_check()
         {
         }
@@ -13681,7 +14039,7 @@ namespace {
         public function taxonomy($args, $assoc_args)
         {
         }
-        private function _scaffold($slug, $assoc_args, $defaults, $subdir, $templates)
+        private function scaffold($slug, $assoc_args, $defaults, $subdir, $templates)
         {
         }
         /**
@@ -13787,8 +14145,10 @@ namespace {
          *     # Generate a theme with name "Sample Theme" and author "John Doe"
          *     $ wp scaffold _s sample-theme --theme_name="Sample Theme" --author="John Doe"
          *     Success: Created theme 'Sample Theme'.
+         *
+         * @alias _s
          */
-        public function _s($args, $assoc_args)
+        public function underscores($args, $assoc_args)
         {
         }
         /**
@@ -13833,7 +14193,7 @@ namespace {
          *
          * @subcommand child-theme
          */
-        function child_theme($args, $assoc_args)
+        public function child_theme($args, $assoc_args)
         {
         }
         private function get_output_path($assoc_args, $subdir)
@@ -13912,7 +14272,7 @@ namespace {
          *     Success: Created plugin files.
          *     Success: Created test files.
          */
-        function plugin($args, $assoc_args)
+        public function plugin($args, $assoc_args)
         {
         }
         /**
@@ -14273,7 +14633,7 @@ namespace {
          * ## EXAMPLES
          *
          *     # Search and replace but skip one column
-         *     $ wp search-replace 'http://example.dev' 'http://example.com' --skip-columns=guid
+         *     $ wp search-replace 'http://example.test' 'http://example.com' --skip-columns=guid
          *
          *     # Run search/replace operation but dont save in database
          *     $ wp search-replace 'foo' 'bar' wp_posts wp_postmeta wp_terms --dry-run
@@ -14282,7 +14642,7 @@ namespace {
          *     $ wp search-replace '\[foo id="([0-9]+)"' '[bar id="\1"' --regex --regex-flags='i'
          *
          *     # Turn your production multisite database into a local dev database
-         *     $ wp search-replace --url=example.com example.com example.dev 'wp_*options' wp_blogs
+         *     $ wp search-replace --url=example.com example.com example.test 'wp_*options' wp_blogs
          *
          *     # Search/replace to a SQL file without transforming the database
          *     $ wp search-replace foo bar --export=database.sql
@@ -14290,9 +14650,9 @@ namespace {
          *     # Bash script: Search/replace production to development url (multisite compatible)
          *     #!/bin/bash
          *     if $(wp --url=http://example.com core is-installed --network); then
-         *         wp search-replace --url=http://example.com 'http://example.com' 'http://example.dev' --recurse-objects --network --skip-columns=guid --skip-tables=wp_users
+         *         wp search-replace --url=http://example.com 'http://example.com' 'http://example.test' --recurse-objects --network --skip-columns=guid --skip-tables=wp_users
          *     else
-         *         wp search-replace 'http://example.com' 'http://example.dev' --recurse-objects --skip-columns=guid --skip-tables=wp_users
+         *         wp search-replace 'http://example.com' 'http://example.test' --recurse-objects --skip-columns=guid --skip-tables=wp_users
          *     fi
          */
         public function __invoke($args, $assoc_args)
@@ -14403,7 +14763,8 @@ namespace {
 namespace WP_CLI {
     class SearchReplacer
     {
-        private $from, $to;
+        private $from;
+        private $to;
         private $recurse_objects;
         private $regex;
         private $regex_flags;
@@ -14442,7 +14803,7 @@ namespace WP_CLI {
          * @param int          $recursion_level Current recursion depth within the original data.
          * @param array        $visited_data    Data that has been seen in previous recursion iterations.
          */
-        private function _run($data, $serialised, $recursion_level = 0, $visited_data = array())
+        private function run_recursively($data, $serialised, $recursion_level = 0, $visited_data = array())
         {
         }
         /**
@@ -14527,7 +14888,7 @@ namespace {
          *
          * @when before_wp_load
          */
-        function __invoke($_, $assoc_args)
+        public function __invoke($_, $assoc_args)
         {
         }
     }
@@ -14560,10 +14921,11 @@ namespace {
         }
     }
 }
-namespace WP_CLI {
+namespace WP_CLI\Shell {
     class REPL
     {
         private $prompt;
+        private $history_file;
         public function __construct($prompt)
         {
         }
@@ -14641,7 +15003,7 @@ namespace {
          *
          * @subcommand list
          */
-        public function _list($_, $assoc_args)
+        public function list_subcommand($_, $assoc_args)
         {
         }
         /**
@@ -14695,7 +15057,7 @@ namespace {
      */
     class Sidebar_Command extends \WP_CLI_Command
     {
-        private $fields = array('name', 'id', 'description');
+        private $fields = ['name', 'id', 'description'];
         /**
          * Lists registered sidebars.
          *
@@ -14776,7 +15138,7 @@ namespace {
      */
     class Widget_Command extends \WP_CLI_Command
     {
-        private $fields = array('name', 'id', 'position', 'options');
+        private $fields = ['name', 'id', 'position', 'options'];
         /**
          * Lists widgets associated with a sidebar.
          *

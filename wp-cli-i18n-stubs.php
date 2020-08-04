@@ -332,7 +332,7 @@ final class JsFunctionsScanner extends \Gettext\Utils\JsFunctionsScanner
      *
      * @var string|false|array
      */
-    private $extractComments = false;
+    private $extract_comments = false;
     /**
      * Enable extracting comments that start with a tag (if $tag is empty all the comments will be extracted).
      *
@@ -515,6 +515,10 @@ class MakePotCommand extends \WP_CLI_Command
      */
     protected $file_comment;
     /**
+     * @var string
+     */
+    protected $project_type = 'generic';
+    /**
      * These Regexes copied from http://php.net/manual/en/function.sprintf.php#93552
      * and adjusted for better precision and updated specs.
      */
@@ -596,16 +600,16 @@ class MakePotCommand extends \WP_CLI_Command
      * [--include=<paths>]
      * : Comma-separated list of files and paths that should be used for string extraction.
      * If provided, only these files and folders will be taken into account for string extraction.
-     * For example, `--include="src,my-file.php` will ignore anything besides `my-file.php` and files in the `src` directory.
-     * Simple glob patterns can be used, i.e. `--include=foo-*.php` includes any PHP file with the `foo-` prefix.
-     * Leading and trailing slashes are ignored, i.e. `/my/directory/` is the same as `my/directory`.
+     * For example, `--include="src,my-file.php` will ignore anything besides `my-file.php` and files in the `src`
+     * directory. Simple glob patterns can be used, i.e. `--include=foo-*.php` includes any PHP file with the `foo-`
+     * prefix. Leading and trailing slashes are ignored, i.e. `/my/directory/` is the same as `my/directory`.
      *
      * [--exclude=<paths>]
      * : Comma-separated list of files and paths that should be skipped for string extraction.
-     * For example, `--exclude=".github,myfile.php` would ignore any strings found within `myfile.php` or the `.github` folder.
-     * Simple glob patterns can be used, i.e. `--exclude=foo-*.php` excludes any PHP file with the `foo-` prefix.
-     * Leading and trailing slashes are ignored, i.e. `/my/directory/` is the same as `my/directory`.
-     * The following files and folders are always excluded: node_modules, .git, .svn, .CVS, .hg, vendor, *.min.js.
+     * For example, `--exclude=".github,myfile.php` would ignore any strings found within `myfile.php` or the `.github`
+     * folder. Simple glob patterns can be used, i.e. `--exclude=foo-*.php` excludes any PHP file with the `foo-`
+     * prefix. Leading and trailing slashes are ignored, i.e. `/my/directory/` is the same as `my/directory`. The
+     * following files and folders are always excluded: node_modules, .git, .svn, .CVS, .hg, vendor, *.min.js.
      *
      * [--headers=<headers>]
      * : Array in JSON format of custom headers which will be added to the POT file. Defaults to empty array.
@@ -614,23 +618,25 @@ class MakePotCommand extends \WP_CLI_Command
      * : Skips JavaScript string extraction. Useful when this is done in another build step, e.g. through Babel.
      *
      * [--skip-audit]
-     * : Skips string audit where it tries to find possible mistakes in translatable strings. Useful when running in an automated environment.
+     * : Skips string audit where it tries to find possible mistakes in translatable strings. Useful when running in an
+     * automated environment.
      *
      * [--file-comment=<file-comment>]
      * : String that should be added as a comment to the top of the resulting POT file.
      * By default, a copyright comment is added for WordPress plugins and themes in the following manner:
      *
-     * 		```
-     * 		Copyright (C) 2018 Example Plugin Author
-     * 		This file is distributed under the same license as the Example Plugin package.
-     * 		```
+     *      ```
+     *      Copyright (C) 2018 Example Plugin Author
+     *      This file is distributed under the same license as the Example Plugin package.
+     *      ```
      *
-     * 		If a plugin or theme specifies a license in their main plugin file or stylesheet, the comment looks like this:
+     *      If a plugin or theme specifies a license in their main plugin file or stylesheet, the comment looks like
+     *      this:
      *
-     * 		```
-     * 		Copyright (C) 2018 Example Plugin Author
-     * 		This file is distributed under the GPLv2.
-     * 		```
+     *      ```
+     *      Copyright (C) 2018 Example Plugin Author
+     *      This file is distributed under the GPLv2.
+     *      ```
      *
      * [--package-name=<name>]
      * : Name to use for package name in the resulting POT file's `Project-Id-Version` header.
@@ -642,7 +648,8 @@ class MakePotCommand extends \WP_CLI_Command
      *     $ wp i18n make-pot . languages/my-plugin.pot
      *
      *     # Create a POT file for the continents and cities list in WordPress core.
-     *     $ wp i18n make-pot . continents-and-cities.pot --include="wp-admin/includes/continents-cities.php" --ignore-domain
+     *     $ wp i18n make-pot . continents-and-cities.pot --include="wp-admin/includes/continents-cities.php"
+     *     --ignore-domain
      *
      * @when before_wp_load
      *
@@ -997,6 +1004,26 @@ class PotGenerator extends \Gettext\Generators\Po
      * {@parentDoc}.
      */
     public static function toString(\Gettext\Translations $translations, array $options = [])
+    {
+    }
+    /**
+     * Escapes and adds double quotes to a string.
+     *
+     * @param string $string Multiline string.
+     *
+     * @return string[]
+     */
+    private static function multilineQuote($string)
+    {
+    }
+    /**
+     * Add one or more lines depending whether the string is multiline or not.
+     *
+     * @param array  &$lines Array lines should be added to.
+     * @param string $name   Name of the line, e.g. msgstr or msgid_plural.
+     * @param string $value  The line to add.
+     */
+    private static function addLines(array &$lines, $name, $value)
     {
     }
 }
@@ -2357,6 +2384,10 @@ class Translation
  * @method static $this fromTwigString(string $string, array $options = [])
  * @method $this addFromTwigFile(string $filename, array $options = [])
  * @method $this addFromTwigString(string $string, array $options = [])
+ * @method static $this fromVueJsFile(string $filename, array $options = [])
+ * @method static $this fromVueJsString(string $filename, array $options = [])
+ * @method $this addFromVueJsFile(string $filename, array $options = [])
+ * @method $this addFromVueJsString(string $filename, array $options = [])
  * @method static $this fromXliffFile(string $filename, array $options = [])
  * @method static $this fromXliffString(string $string, array $options = [])
  * @method $this addFromXliffFile(string $filename, array $options = [])
