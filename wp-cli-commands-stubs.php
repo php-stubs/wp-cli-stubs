@@ -9663,18 +9663,6 @@ namespace {
         {
         }
     }
-    class WP_Export_Oxymel extends \Oxymel
-    {
-        public function optional($tag_name, $contents)
-        {
-        }
-        public function optional_cdata($tag_name, $contents)
-        {
-        }
-        public function cdata($text)
-        {
-        }
-    }
     /**
      * Represents a set of posts and other site data to be exported.
      *
