@@ -18516,6 +18516,299 @@ namespace {
         }
     }
 }
+namespace WP_CLI\Maintenance {
+    final class Contrib_List_Command
+    {
+        /**
+         * Packages excluded from contributor list generation.
+         *
+         * @var array
+         */
+        private $excluded_packages = ['wp-cli/wp-cli-tests', 'wp-cli/regenerate-readme', 'wp-cli/autoload-splitter', 'wp-cli/wp-config-transformer', 'wp-cli/php-cli-tools', 'wp-cli/spyc'];
+        /**
+         * Lists all contributors to this release.
+         *
+         * Run within the main WP-CLI project repository.
+         *
+         * ## OPTIONS
+         *
+         * [--format=<format>]
+         * : Render output in a specific format.
+         * ---
+         * default: markdown
+         * options:
+         *   - markdown
+         *   - html
+         * ---
+         *
+         * @when before_wp_load
+         */
+        public function __invoke($_, $assoc_args)
+        {
+        }
+    }
+    class GitHub
+    {
+        const API_ROOT = 'https://api.github.com/';
+        /**
+         * Gets the milestones for a given project.
+         *
+         * @param string $project
+         *
+         * @return array
+         */
+        public static function get_project_milestones($project, $args = [])
+        {
+        }
+        /**
+         * Gets a release for a given project by its tag name.
+         *
+         * @param string $project
+         * @param string $tag
+         * @param array  $args
+         *
+         * @return array|false
+         */
+        public static function get_release_by_tag($project, $tag, $args = [])
+        {
+        }
+        /**
+         * Gets the issues that are labeled with a given label.
+         *
+         * @param string $project
+         * @param string $label
+         * @param array  $args
+         *
+         * @return array|false
+         */
+        public static function get_issues_by_label($project, $label, $args = [])
+        {
+        }
+        /**
+         * Removes a label from an issue.
+         *
+         * @param string $project
+         * @param string $issue
+         * @param string $label
+         * @param array  $args
+         *
+         * @return array|false
+         */
+        public static function remove_label($project, $issue, $label, $args = [])
+        {
+        }
+        /**
+         * Adds a label to an issue.
+         *
+         * @param string $project
+         * @param string $issue
+         * @param string $label
+         * @param array  $args
+         *
+         * @return array|false
+         */
+        public static function add_label($project, $issue, $label, $args = [])
+        {
+        }
+        /**
+         * Delete a label from a repository.
+         *
+         * @param string $project
+         * @param string $label
+         * @param array  $args
+         *
+         * @return array|false
+         */
+        public static function delete_label($project, $label, $args = [])
+        {
+        }
+        /**
+         * Gets the pull requests assigned to a milestone of a given project.
+         *
+         * @param string  $project
+         * @param integer $milestone_id
+         *
+         * @return array
+         */
+        public static function get_project_milestone_pull_requests($project, $milestone_id)
+        {
+        }
+        /**
+         * Parses the contributors from pull request objects.
+         *
+         * @param array $pull_requests
+         *
+         * @return array
+         */
+        public static function parse_contributors_from_pull_requests($pull_requests)
+        {
+        }
+        /**
+         * Makes a request to the GitHub API.
+         *
+         * @param string $url
+         * @param array  $args
+         * @param array  $headers
+         *
+         * @return array|false
+         */
+        public static function request($url, $args = [], $headers = [])
+        {
+        }
+    }
+    final class Milestones_After_Command
+    {
+        /**
+         * Retrieves the milestones that were closed after a given milestone.
+         *
+         * ## OPTIONS
+         *
+         * <repo>
+         * : Name of the repository to fetch the milestones for.
+         *
+         * <milestone>
+         * : Milestone to serve as treshold.
+         *
+         * @when before_wp_load
+         */
+        public function __invoke($args, $assoc_args)
+        {
+        }
+    }
+    final class Milestones_Since_Command
+    {
+        /**
+         * Retrieves the milestones that were closed for a given repository after a
+         * specific date treshold.
+         *
+         * ## OPTIONS
+         *
+         * <repo>
+         * : Name of the repository to fetch the milestones for.
+         *
+         * <date>
+         * : Threshold date to filter by.
+         *
+         * @when before_wp_load
+         */
+        public function __invoke($args, $assoc_args)
+        {
+        }
+    }
+    final class Release_Date_Command
+    {
+        /**
+         * Retrieves the date a given release for a repository was published at.
+         *
+         * ## OPTIONS
+         *
+         * <repo>
+         * : Name of the repository to fetch the release notes for. If no user/org
+         * was provided, 'wp-cli' org is assumed.
+         *
+         * <release>
+         * : Name of the release to fetch the release notes for.
+         *
+         * @when before_wp_load
+         */
+        public function __invoke($args, $assoc_args)
+        {
+        }
+    }
+    final class Release_Notes_Command
+    {
+        /**
+         * Packages excluded from release notes generation.
+         *
+         * @var array
+         */
+        private $excluded_packages = ['wp-cli/wp-cli-tests', 'wp-cli/regenerate-readme', 'wp-cli/autoload-splitter', 'wp-cli/wp-config-transformer', 'wp-cli/php-cli-tools', 'wp-cli/spyc'];
+        /**
+         * Higher-level packages that represent the principal project building
+         * blocks.
+         *
+         * @var array
+         */
+        private $higher_level_packages = ['wp-cli/wp-cli-bundle', 'wp-cli/wp-cli', 'wp-cli/handbook', 'wp-cli/wp-cli.github.com'];
+        /**
+         * Gets the release notes for one or more milestones of a repository.
+         *
+         * ## OPTIONS
+         *
+         * [<repo>]
+         * : Name of the repository to fetch the release notes for. If no user/org
+         * was provided, 'wp-cli' org is assumed. If no repo is passed, release
+         * notes for the entire org state since the last bundle release are fetched.
+         *
+         * [<milestone>...]
+         * : Name of one or more milestones to fetch the release notes for. If none
+         * are passed, the current open one is assumed.
+         *
+         * [--source=<source>]
+         * : Choose source from where to copy content.
+         * ---
+         * default: release
+         * options:
+         *   - release
+         *   - pull-request
+         *
+         * [--format=<format>]
+         * : Render output in a specific format.
+         * ---
+         * default: markdown
+         * options:
+         *   - markdown
+         *   - html
+         * ---
+         *
+         * @when before_wp_load
+         */
+        public function __invoke($args, $assoc_args)
+        {
+        }
+        private function get_bundle_release_notes($source, $format)
+        {
+        }
+        private function get_repo_release_notes($repo, $milestone_names, $source, $format)
+        {
+        }
+        private function get_pull_request_reference($pull_request, $format)
+        {
+        }
+        private function format_title($title, $format)
+        {
+        }
+        private function repo_heading($repo, $format)
+        {
+        }
+    }
+    final class Replace_Label_Command
+    {
+        /**
+         * Replaces a label with a different one, and optionally deletes the old
+         * label.
+         *
+         * ## OPTIONS
+         *
+         * <repo>
+         * : Name of the repository you want to replace a label for.
+         *
+         * <old-label>
+         * : Old label to replace on all issues.
+         *
+         * <new-label>
+         * : New label to replace it with.
+         *
+         * [--delete]
+         * : Delete the old label after the operation is complete.
+         *
+         * @when before_wp_load
+         */
+        public function __invoke($args, $assoc_args)
+        {
+        }
+    }
+}
 namespace WP_CLI {
     /**
      * Class Autoloader.
@@ -24100,6 +24393,15 @@ namespace {
     {
     }
     function test_notify_msg(\cli\Notify $notify, $cycle = 1000000, $sleep = \null)
+    {
+    }
+    function add_file($phar, $path)
+    {
+    }
+    function set_file_contents($phar, $path, $content)
+    {
+    }
+    function get_composer_versions($current_version)
     {
     }
 }
