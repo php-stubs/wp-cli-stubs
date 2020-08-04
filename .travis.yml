@@ -30,6 +30,10 @@ script:
   - |
     bash -x ./generate.sh
   - |
+    php -l wp-cli-stubs.php
+  - |
+    php -l wp-cli-commands-stubs.php
+  - |
     git diff --exit-code
   - |
-    php -r 'require "vendor/php-stubs/wordpress-stubs/wordpress-stubs.php"; require "wp-cli-stubs.php";'
+    php -r 'require "vendor/php-stubs/wordpress-stubs/wordpress-stubs.php"; require "wp-cli-stubs.php";require "wp-cli-commands-stubs.php";'

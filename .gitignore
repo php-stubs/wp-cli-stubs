@@ -1,3 +1,4 @@
 /vendor/
 /composer.lock
-/php
+/source/vendor
+/source/composer.lock
