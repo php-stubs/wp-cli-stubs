@@ -5,5 +5,6 @@ return \StubsGenerator\Finder::create()
     ->notPath('ComposerIO.php')
     ->notPath('PackageManagerEventSubscriber.php')
     ->notPath('utils.php')
+    ->notPath('compat.php')
     ->sortByName()
 ;

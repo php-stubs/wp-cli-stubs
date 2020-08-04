@@ -11692,16 +11692,6 @@ namespace WP_CLI\I18n {
         {
         }
     }
-    final class BlockExtractor extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\ExtractorInterface
-    {
-        use \WP_CLI\I18n\IterableCodeExtractor;
-        /**
-         * @inheritdoc
-         */
-        public static function fromString($string, \Gettext\Translations $translations, array $options = [])
-        {
-        }
-    }
     /**
      * Jed file generator.
      *
