@@ -594,6 +594,36 @@ namespace WP_CLI\Bootstrap {
         }
     }
 }
+namespace WP_CLI\Compat\Min_PHP_5_6 {
+    trait FeedbackMethodTrait
+    {
+        /**
+         * @param string $string
+         * @param mixed  ...$args Optional text replacements.
+         *
+         */
+        public function feedback($string, ...$args)
+        {
+        }
+    }
+}
+namespace WP_CLI\Compat {
+    trait FeedbackMethodTrait
+    {
+        use \WP_CLI\Compat\Min_PHP_5_6\FeedbackMethodTrait;
+    }
+}
+namespace WP_CLI\Compat\Min_PHP_5_4 {
+    trait FeedbackMethodTrait
+    {
+        /**
+         * @param string $string
+         */
+        public function feedback($string)
+        {
+        }
+    }
+}
 namespace WP_CLI {
     class Completions
     {
