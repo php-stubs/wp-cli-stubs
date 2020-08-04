@@ -4467,107 +4467,731 @@ namespace WP_CLI\Dispatcher {
     {
     }
 }
-// Utilities that depend on WordPress code.
+// Utilities that do NOT depend on WordPress code.
 namespace WP_CLI\Utils {
-    function wp_not_installed()
+    function inside_phar()
     {
     }
-    // phpcs:disable WordPress.PHP.IniSet -- Intentional & correct usage.
-    function wp_debug_mode()
+    // Files that need to be read by external programs have to be extracted from the Phar archive.
+    function extract_from_phar($path)
     {
     }
-    // phpcs:enable
-    function replace_wp_die_handler()
+    function load_dependencies()
     {
     }
-    function wp_die_handler($message)
+    function get_vendor_paths()
     {
     }
-    /**
-     * Clean HTML error message so suitable for text display.
-     */
-    function wp_clean_error_message($message)
+    // Using require() directly inside a class grants access to private methods to the loaded code.
+    function load_file($path)
     {
     }
-    function wp_redirect_handler($url)
-    {
-    }
-    function maybe_require($since, $path)
-    {
-    }
-    function get_upgrader($class)
+    function load_command($name)
     {
     }
     /**
-     * Converts a plugin basename back into a friendly slug.
-     */
-    function get_plugin_name($basename)
-    {
-    }
-    function is_plugin_skipped($file)
-    {
-    }
-    function get_theme_name($path)
-    {
-    }
-    function is_theme_skipped($path)
-    {
-    }
-    /**
-     * Register the sidebar for unused widgets.
-     * Core does this in /wp-admin/widgets.php, which isn't helpful.
-     */
-    function wp_register_unused_sidebar()
-    {
-    }
-    /**
-     * Attempts to determine which object cache is being used.
+     * Like array_map(), except it returns a new iterator, instead of a modified array.
      *
-     * Note that the guesses made by this function are based on the WP_Object_Cache classes
-     * that define the 3rd party object cache extension. Changes to those classes could render
-     * problems with this function's ability to determine which object cache is being used.
+     * Example:
+     *
+     *     $arr = array('Football', 'Socker');
+     *
+     *     $it = iterator_map($arr, 'strtolower', function($val) {
+     *       return str_replace('foo', 'bar', $val);
+     *     });
+     *
+     *     foreach ( $it as $val ) {
+     *       var_dump($val);
+     *     }
+     *
+     * @param array|object $it Either a plain array or another iterator.
+     * @param callback     $fn The function to apply to an element.
+     * @return object An iterator that applies the given callback(s).
+     */
+    function iterator_map($it, $fn)
+    {
+    }
+    /**
+     * Search for file by walking up the directory tree until the first file is found or until $stop_check($dir) returns true.
+     *
+     * @param string|array $files      The files (or file) to search for.
+     * @param string|null  $dir        The directory to start searching from; defaults to CWD.
+     * @param callable     $stop_check Function which is passed the current dir each time a directory level is traversed.
+     * @return null|string Null if the file was not found.
+     */
+    function find_file_upward($files, $dir = null, $stop_check = null)
+    {
+    }
+    function is_path_absolute($path)
+    {
+    }
+    /**
+     * Composes positional arguments into a command string.
+     *
+     * @param array $args Positional arguments to compose.
+     * @return string
+     */
+    function args_to_str($args)
+    {
+    }
+    /**
+     * Composes associative arguments into a command string.
+     *
+     * @param array $assoc_args Associative arguments to compose.
+     * @return string
+     */
+    function assoc_args_to_str($assoc_args)
+    {
+    }
+    /**
+     * Given a template string and an arbitrary number of arguments,
+     * returns the final command, with the parameters escaped.
+     */
+    function esc_cmd($cmd)
+    {
+    }
+    /**
+     * Gets path to WordPress configuration.
      *
      * @return string
      */
-    function wp_get_cache_type()
+    function locate_wp_config()
+    {
+    }
+    function wp_version_compare($since, $operator)
     {
     }
     /**
-     * Clear WordPress internal object caches.
+     * Render a collection of items as an ASCII table, JSON, CSV, YAML, list of ids, or count.
      *
-     * In long-running scripts, the internal caches on `$wp_object_cache` and `$wpdb`
-     * can grow to consume gigabytes of memory. Periodically calling this utility
-     * can help with memory management.
+     * Given a collection of items with a consistent data structure:
+     *
+     * ```
+     * $items = array(
+     *     array(
+     *         'key'   => 'foo',
+     *         'value'  => 'bar',
+     *     )
+     * );
+     * ```
+     *
+     * Render `$items` as an ASCII table:
+     *
+     * ```
+     * WP_CLI\Utils\format_items( 'table', $items, array( 'key', 'value' ) );
+     *
+     * # +-----+-------+
+     * # | key | value |
+     * # +-----+-------+
+     * # | foo | bar   |
+     * # +-----+-------+
+     * ```
+     *
+     * Or render `$items` as YAML:
+     *
+     * ```
+     * WP_CLI\Utils\format_items( 'yaml', $items, array( 'key', 'value' ) );
+     *
+     * # ---
+     * # -
+     * #   key: foo
+     * #   value: bar
+     * ```
+     *
+     * @access public
+     * @category Output
+     *
+     * @param string       $format Format to use: 'table', 'json', 'csv', 'yaml', 'ids', 'count'.
+     * @param array        $items  An array of items to output.
+     * @param array|string $fields Named fields for each item of data. Can be array or comma-separated list.
+     * @return null
+     */
+    function format_items($format, $items, $fields)
+    {
+    }
+    /**
+     * Write data as CSV to a given file.
+     *
+     * @access public
+     *
+     * @param resource $fd      File descriptor.
+     * @param array    $rows    Array of rows to output.
+     * @param array    $headers List of CSV columns (optional).
+     */
+    function write_csv($fd, $rows, $headers = array())
+    {
+    }
+    /**
+     * Pick fields from an associative array or object.
+     *
+     * @param  array|object $item    Associative array or object to pick fields from.
+     * @param  array        $fields  List of fields to pick.
+     * @return array
+     */
+    function pick_fields($item, $fields)
+    {
+    }
+    /**
+     * Launch system's $EDITOR for the user to edit some text.
+     *
+     * @access public
+     * @category Input
+     *
+     * @param string $input Some form of text to edit (e.g. post content).
+     * @param string $title Title to display in the editor.
+     * @param string $ext   Extension to use with the temp file.
+     * @return string|bool  Edited text, if file is saved from editor; false, if no change to file.
+     */
+    function launch_editor_for_input($input, $title = 'WP-CLI', $ext = 'tmp')
+    {
+    }
+    /**
+     * @param string MySQL host string, as defined in wp-config.php.
+     *
+     * @return array
+     */
+    function mysql_host_to_cli_args($raw_host)
+    {
+    }
+    /**
+     * Run a MySQL command and optionally return the output.
+     *
+     * @since v2.5.0 Deprecated $descriptors argument.
+     *
+     * @param string $cmd           Command to run.
+     * @param array  $assoc_args    Associative array of arguments to use.
+     * @param mixed  $_             Deprecated. Former $descriptors argument.
+     * @param bool   $send_to_shell Optional. Whether to send STDOUT and STDERR
+     *                              immediately to the shell. Defaults to true.
+     *
+     * @return array {
+     *     Associative array containing STDOUT and STDERR output.
+     *
+     *     @type string $stdout    Output that was sent to STDOUT.
+     *     @type string $stderr    Output that was sent to STDERR.
+     *     @type int    $exit_code Exit code of the process.
+     * }
+     */
+    function run_mysql_command($cmd, $assoc_args, $_ = null, $send_to_shell = true)
+    {
+    }
+    /**
+     * Render PHP or other types of files using Mustache templates.
+     *
+     * IMPORTANT: Automatic HTML escaping is disabled!
+     */
+    function mustache_render($template_name, $data = array())
+    {
+    }
+    /**
+     * Create a progress bar to display percent completion of a given operation.
+     *
+     * Progress bar is written to STDOUT, and disabled when command is piped. Progress
+     * advances with `$progress->tick()`, and completes with `$progress->finish()`.
+     * Process bar also indicates elapsed time and expected total time.
+     *
+     * ```
+     * # `wp user generate` ticks progress bar each time a new user is created.
+     * #
+     * # $ wp user generate --count=500
+     * # Generating users  22 % [=======>                             ] 0:05 / 0:23
+     *
+     * $progress = \WP_CLI\Utils\make_progress_bar( 'Generating users', $count );
+     * for ( $i = 0; $i < $count; $i++ ) {
+     *     // uses wp_insert_user() to insert the user
+     *     $progress->tick();
+     * }
+     * $progress->finish();
+     * ```
+     *
+     * @access public
+     * @category Output
+     *
+     * @param string  $message  Text to display before the progress bar.
+     * @param integer $count    Total number of ticks to be performed.
+     * @param int     $interval Optional. The interval in milliseconds between updates. Default 100.
+     * @return cli\progress\Bar|WP_CLI\NoOp
+     */
+    function make_progress_bar($message, $count, $interval = 100)
+    {
+    }
+    /**
+     * Helper function to use wp_parse_url when available or fall back to PHP's
+     * parse_url if not.
+     *
+     * Additionally, this adds 'http://' to the URL if no scheme was found.
+     *
+     * @param string $url             The URL to parse.
+     * @param int    $component       Optional. The specific component to retrieve.
+     *                                Use one of the PHP predefined constants to
+     *                                specify which one. Defaults to -1 (= return
+     *                                all parts as an array).
+     * @param bool   $auto_add_scheme Optional. Automatically add an http:// scheme if
+     *                                none was found. Defaults to true.
+     * @return mixed False on parse failure; Array of URL components on success;
+     *               When a specific component has been requested: null if the
+     *               component doesn't exist in the given URL; a string or - in the
+     *               case of PHP_URL_PORT - integer when it does. See parse_url()'s
+     *               return values.
+     */
+    function parse_url($url, $component = -1, $auto_add_scheme = true)
+    {
+    }
+    /**
+     * Check if we're running in a Windows environment (cmd.exe).
+     *
+     * @return bool
+     */
+    function is_windows()
+    {
+    }
+    /**
+     * Replace magic constants in some PHP source code.
+     *
+     * Replaces the __FILE__ and __DIR__ magic constants with the values they are
+     * supposed to represent at runtime.
+     *
+     * @param string $source The PHP code to manipulate.
+     * @param string $path The path to use instead of the magic constants.
+     * @return string Adapted PHP code.
+     */
+    function replace_path_consts($source, $path)
+    {
+    }
+    /**
+     * Make a HTTP request to a remote URL.
+     *
+     * Wraps the Requests HTTP library to ensure every request includes a cert.
+     *
+     * ```
+     * # `wp core download` verifies the hash for a downloaded WordPress archive
+     *
+     * $md5_response = Utils\http_request( 'GET', $download_url . '.md5' );
+     * if ( 20 != substr( $md5_response->status_code, 0, 2 ) ) {
+     *      WP_CLI::error( "Couldn't access md5 hash for release (HTTP code {$response->status_code})" );
+     * }
+     * ```
+     *
+     * @access public
+     *
+     * @param string $method  HTTP method (GET, POST, DELETE, etc.).
+     * @param string $url     URL to make the HTTP request to.
+     * @param array  $headers Add specific headers to the request.
+     * @param array $options
+     * @return object
+     * @throws RuntimeException If the request failed.
+     * @throws WP_CLI\ExitException If the request failed and $halt_on_error is true.
+     */
+    function http_request($method, $url, $data = null, $headers = array(), $options = array())
+    {
+    }
+    /**
+     * Increments a version string using the "x.y.z-pre" format.
+     *
+     * Can increment the major, minor or patch number by one.
+     * If $new_version == "same" the version string is not changed.
+     * If $new_version is not a known keyword, it will be used as the new version string directly.
+     *
+     * @param string $current_version
+     * @param string $new_version
+     * @return string
+     */
+    function increment_version($current_version, $new_version)
+    {
+    }
+    /**
+     * Compare two version strings to get the named semantic version.
+     *
+     * @access public
+     *
+     * @param string $new_version
+     * @param string $original_version
+     * @return string $name 'major', 'minor', 'patch'
+     */
+    function get_named_sem_ver($new_version, $original_version)
+    {
+    }
+    /**
+     * Return the flag value or, if it's not set, the $default value.
+     *
+     * Because flags can be negated (e.g. --no-quiet to negate --quiet), this
+     * function provides a safer alternative to using
+     * `isset( $assoc_args['quiet'] )` or similar.
+     *
+     * @access public
+     * @category Input
+     *
+     * @param array  $assoc_args Arguments array.
+     * @param string $flag       Flag to get the value.
+     * @param mixed  $default    Default value for the flag. Default: NULL.
+     * @return mixed
+     */
+    function get_flag_value($assoc_args, $flag, $default = null)
+    {
+    }
+    /**
+     * Get the home directory.
      *
      * @access public
      * @category System
-     * @deprecated 1.5.0
+     *
+     * @return string
      */
-    function wp_clear_object_cache()
+    function get_home_dir()
     {
     }
     /**
-     * Get a set of tables in the database.
+     * Appends a trailing slash.
      *
-     * Interprets common command-line options into a resolved set of table names.
+     * @access public
+     * @category System
      *
-     * @param array $args Provided table names, or tables with wildcards.
-     * @param array $assoc_args Optional flags for groups of tables (e.g. --network)
-     * @return array $tables
+     * @param string $string What to add the trailing slash to.
+     * @return string String with trailing slash added.
      */
-    function wp_get_table_names($args, $assoc_args = array())
+    function trailingslashit($string)
     {
     }
     /**
-     * Failsafe use of the WordPress wp_strip_all_tags() function.
+     * Normalize a filesystem path.
      *
-     * Automatically falls back to strip_tags() function if the WP function is not
-     * available.
+     * On Windows systems, replaces backslashes with forward slashes
+     * and forces upper-case drive letters.
+     * Allows for two leading slashes for Windows network shares, but
+     * ensures that all other duplicate slashes are reduced to a single one.
+     * Ensures upper-case drive letters on Windows systems.
      *
-     * @param string $string String to strip the tags from.
-     * @return string String devoid of tags.
+     * @access public
+     * @category System
+     *
+     * @param string $path Path to normalize.
+     * @return string Normalized path.
      */
-    function strip_tags($string)
+    function normalize_path($path)
+    {
+    }
+    /**
+     * Convert Windows EOLs to *nix.
+     *
+     * @param string $str String to convert.
+     * @return string String with carriage return / newline pairs reduced to newlines.
+     */
+    function normalize_eols($str)
+    {
+    }
+    /**
+     * Get the system's temp directory. Warns user if it isn't writable.
+     *
+     * @access public
+     * @category System
+     *
+     * @return string
+     */
+    function get_temp_dir()
+    {
+    }
+    /**
+     * Parse a SSH url for its host, port, and path.
+     *
+     * Similar to parse_url(), but adds support for defined SSH aliases.
+     *
+     * ```
+     * host OR host/path/to/wordpress OR host:port/path/to/wordpress
+     * ```
+     *
+     * @access public
+     *
+     * @return mixed
+     */
+    function parse_ssh_url($url, $component = -1)
+    {
+    }
+    /**
+     * Report the results of the same operation against multiple resources.
+     *
+     * @access public
+     * @category Input
+     *
+     * @param string       $noun      Resource being affected (e.g. plugin).
+     * @param string       $verb      Type of action happening to the noun (e.g. activate).
+     * @param integer      $total     Total number of resource being affected.
+     * @param integer      $successes Number of successful operations.
+     * @param integer      $failures  Number of failures.
+     * @param null|integer $skips     Optional. Number of skipped operations. Default null (don't show skips).
+     */
+    function report_batch_operation_results($noun, $verb, $total, $successes, $failures, $skips = null)
+    {
+    }
+    /**
+     * Parse a string of command line arguments into an $argv-esqe variable.
+     *
+     * @access public
+     * @category Input
+     *
+     * @param string $arguments
+     * @return array
+     */
+    function parse_str_to_argv($arguments)
+    {
+    }
+    /**
+     * Locale-independent version of basename()
+     *
+     * @access public
+     *
+     * @param string $path
+     * @param string $suffix
+     * @return string
+     */
+    function basename($path, $suffix = '')
+    {
+    }
+    /**
+     * Checks whether the output of the current script is a TTY or a pipe / redirect
+     *
+     * Returns true if STDOUT output is being redirected to a pipe or a file; false is
+     * output is being sent directly to the terminal.
+     *
+     * If an env variable SHELL_PIPE exists, returned result depends on its
+     * value. Strings like 1, 0, yes, no, that validate to booleans are accepted.
+     *
+     * To enable ASCII formatting even when the shell is piped, use the
+     * ENV variable SHELL_PIPE=0.
+     *
+     * @access public
+     *
+     * @return bool
+     */
+    function isPiped()
+    {
+    }
+    /**
+     * Expand within paths to their matching paths.
+     *
+     * Has no effect on paths which do not use glob patterns.
+     *
+     * @param string|array $paths Single path as a string, or an array of paths.
+     * @param int          $flags Optional. Flags to pass to glob. Defaults to GLOB_BRACE.
+     * @return array Expanded paths.
+     */
+    function expand_globs($paths, $flags = 'default')
+    {
+    }
+    /**
+     * Simulate a `glob()` with the `GLOB_BRACE` flag set. For systems (eg Alpine Linux) built against a libc library (eg https://www.musl-libc.org/) that lacks it.
+     * Copied and adapted from Zend Framework's `Glob::fallbackGlob()` and Glob::nextBraceSub()`.
+     *
+     * Zend Framework (https://framework.zend.com/)
+     *
+     * @link      https://github.com/zendframework/zf2 for the canonical source repository
+     * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (https://www.zend.com)
+     * @license   https://framework.zend.com/license/new-bsd New BSD License
+     *
+     * @param string $pattern     Filename pattern.
+     * @param void   $dummy_flags Not used.
+     * @return array Array of paths.
+     */
+    function glob_brace($pattern, $dummy_flags = null)
+    {
+    }
+    /**
+     * Get the closest suggestion for a mis-typed target term amongst a list of
+     * options.
+     *
+     * Uses the Levenshtein algorithm to calculate the relative "distance" between
+     * terms.
+     *
+     * If the "distance" to the closest term is higher than the threshold, an empty
+     * string is returned.
+     *
+     * @param string $target    Target term to get a suggestion for.
+     * @param array  $options   Array with possible options.
+     * @param int    $threshold Threshold above which to return an empty string.
+     * @return string
+     */
+    function get_suggestion($target, array $options, $threshold = 2)
+    {
+    }
+    /**
+     * Get a Phar-safe version of a path.
+     *
+     * For paths inside a Phar, this strips the outer filesystem's location to
+     * reduce the path to what it needs to be within the Phar archive.
+     *
+     * Use the __FILE__ or __DIR__ constants as a starting point.
+     *
+     * @param string $path An absolute path that might be within a Phar.
+     * @return string A Phar-safe version of the path.
+     */
+    function phar_safe_path($path)
+    {
+    }
+    /**
+     * Maybe prefix command string with "/usr/bin/env".
+     * Removes (if there) if Windows, adds (if not there) if not.
+     *
+     * @param string $command
+     * @return string
+     */
+    function force_env_on_nix_systems($command)
+    {
+    }
+    /**
+     * Check that `proc_open()` and `proc_close()` haven't been disabled.
+     *
+     * @param string $context Optional. If set will appear in error message. Default null.
+     * @param bool   $return  Optional. If set will return false rather than error out. Default false.
+     * @return bool
+     */
+    function check_proc_available($context = null, $return = false)
+    {
+    }
+    /**
+     * Returns past tense of verb, with limited accuracy. Only regular verbs catered for, apart from "reset".
+     *
+     * @param string $verb Verb to return past tense of.
+     * @return string
+     */
+    function past_tense_verb($verb)
+    {
+    }
+    /**
+     * Get the path to the PHP binary used when executing WP-CLI.
+     *
+     * Environment values permit specific binaries to be indicated.
+     *
+     * @access public
+     * @category System
+     *
+     * @return string
+     */
+    function get_php_binary()
+    {
+    }
+    /**
+     * Windows compatible `proc_open()`.
+     * Works around bug in PHP, and also deals with *nix-like `ENV_VAR=blah cmd` environment variable prefixes.
+     *
+     * @access public
+     *
+     * @param string $cmd            Command to execute.
+     * @param array  $descriptorspec Indexed array of descriptor numbers and their values.
+     * @param array  &$pipes         Indexed array of file pointers that correspond to PHP's end of any pipes that are created.
+     * @param string $cwd            Initial working directory for the command.
+     * @param array  $env            Array of environment variables.
+     * @param array  $other_options  Array of additional options (Windows only).
+     * @return resource Command stripped of any environment variable settings.
+     */
+    function proc_open_compat($cmd, $descriptorspec, &$pipes, $cwd = null, $env = null, $other_options = null)
+    {
+    }
+    /**
+     * For use by `proc_open_compat()` only. Separated out for ease of testing. Windows only.
+     * Turns *nix-like `ENV_VAR=blah command` environment variable prefixes into stripped `cmd` with prefixed environment variables added to passed in environment array.
+     *
+     * @access private
+     *
+     * @param string $cmd Command to execute.
+     * @param array &$env Array of existing environment variables. Will be modified if any settings in command.
+     * @return string Command stripped of any environment variable settings.
+     */
+    function _proc_open_compat_win_env($cmd, &$env)
+    {
+    }
+    /**
+     * First half of escaping for LIKE special characters % and _ before preparing for MySQL.
+     *
+     * Use this only before wpdb::prepare() or esc_sql().  Reversing the order is very bad for security.
+     *
+     * Copied from core "wp-includes/wp-db.php". Avoids dependency on WP 4.4 wpdb.
+     *
+     * @access public
+     *
+     * @param string $text The raw text to be escaped. The input typed by the user should have no
+     *                     extra or deleted slashes.
+     * @return string Text in the form of a LIKE phrase. The output is not SQL safe. Call $wpdb::prepare()
+     *                or real_escape next.
+     */
+    function esc_like($text)
+    {
+    }
+    /**
+     * Escapes (backticks) MySQL identifiers (aka schema object names) - i.e. column names, table names, and database/index/alias/view etc names.
+     * See https://dev.mysql.com/doc/refman/5.5/en/identifiers.html
+     *
+     * @param  string|array $idents A single identifier or an array of identifiers.
+     * @return string|array An escaped string if given a string, or an array of escaped strings if given an array of strings.
+     */
+    function esc_sql_ident($idents)
+    {
+    }
+    /**
+     * Check whether a given string is a valid JSON representation.
+     *
+     * @param string $argument       String to evaluate.
+     * @param bool   $ignore_scalars Optional. Whether to ignore scalar values.
+     *                               Defaults to true.
+     * @return bool Whether the provided string is a valid JSON representation.
+     */
+    function is_json($argument, $ignore_scalars = true)
+    {
+    }
+    /**
+     * Parse known shell arrays included in the $assoc_args array.
+     *
+     * @param array $assoc_args      Associative array of arguments.
+     * @param array $array_arguments Array of argument keys that should receive an
+     *                               array through the shell.
+     * @return array
+     */
+    function parse_shell_arrays($assoc_args, $array_arguments)
+    {
+    }
+    /**
+     * Describe a callable as a string.
+     *
+     * @param callable $callable The callable to describe.
+     * @return string String description of the callable.
+     */
+    function describe_callable($callable)
+    {
+    }
+    /**
+     * Pluralizes a noun in a grammatically correct way.
+     *
+     * @param string   $noun  Noun to be pluralized. Needs to be in singular form.
+     * @param int|null $count Optional. Count of the nouns, to decide whether to
+     *                        pluralize. Will pluralize unconditionally if none
+     *                        provided.
+     * @return string Pluralized noun.
+     */
+    function pluralize($noun, $count = null)
+    {
+    }
+    /**
+     * Get the path to the mysql binary.
+     *
+     * @return string Path to the mysql binary, or an empty string if not found.
+     */
+    function get_mysql_binary_path()
+    {
+    }
+    /**
+     * Get the version of the MySQL database.
+     *
+     * @return string Version of the MySQL database, or an empty string if not
+     *                found.
+     */
+    function get_mysql_version()
+    {
+    }
+    /**
+     * Get the SQL modes of the MySQL session.
+     *
+     * @return string[] Array of SQL modes, or an empty array if they couldn't be
+     *                  read.
+     */
+    function get_sql_modes()
     {
     }
 }
