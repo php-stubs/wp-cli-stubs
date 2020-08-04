@@ -5,5 +5,6 @@ return \StubsGenerator\Finder::create()
     ->notPath('tests')
     ->notPath('CommandNamespace')
     ->in('source/vendor/gettext/gettext')
+    ->notPath('translator_functions.php')
     ->sortByName()
 ;
