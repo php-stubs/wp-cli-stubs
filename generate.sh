@@ -10,8 +10,6 @@ if [ ! -r ./source/vendor/wp-cli/wp-cli/php/wp-cli.php ]; then
     cd ./source
     echo "WP CLI downloading in progress..." 1>&2
     composer update
-    rm -v ./vendor/wp-cli/wp-cli/php/WP_CLI/ComposerIO.php
-    rm -v ./vendor/wp-cli/wp-cli/php/WP_CLI/PackageManagerEventSubscriber.php
     cd ../
 fi
 
