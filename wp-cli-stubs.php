@@ -9628,55 +9628,6 @@ namespace WP_CLI\Fetchers {
         }
     }
 }
-namespace WP_CLI\Entity\Tests {
-    class RecursiveDataStructureTraverserTest extends \PHPUnit_Framework_TestCase
-    {
-        /** @test */
-        public function it_can_get_a_top_level_array_value()
-        {
-        }
-        /** @test */
-        public function it_can_get_a_top_level_object_value()
-        {
-        }
-        /** @test */
-        public function it_can_get_a_nested_array_value()
-        {
-        }
-        /** @test */
-        public function it_can_get_a_nested_object_value()
-        {
-        }
-        /** @test */
-        public function it_can_set_a_nested_array_value()
-        {
-        }
-        /** @test */
-        public function it_can_set_a_nested_object_value()
-        {
-        }
-        /** @test */
-        public function it_can_update_an_integer_object_value()
-        {
-        }
-        /** @test */
-        public function it_can_delete_a_nested_array_value()
-        {
-        }
-        /** @test */
-        public function it_can_delete_a_nested_object_value()
-        {
-        }
-        /** @test */
-        public function it_can_insert_a_key_into_a_nested_array()
-        {
-        }
-        /** @test */
-        public function it_throws_an_exception_when_attempting_to_create_a_key_on_an_invalid_type()
-        {
-        }
-    }
-}
 namespace {
     class EvalFile_Command extends \WP_CLI_Command
     {
@@ -12663,67 +12614,6 @@ namespace WP_CLI\I18n {
         }
     }
 }
-namespace WP_CLI\I18n\Tests {
-    class IterableCodeExtractorTest extends \PHPUnit_Framework_TestCase
-    {
-        /** @var string A path files are located */
-        private static $base;
-        public function setUp()
-        {
-        }
-        public function test_can_include_files()
-        {
-        }
-        public function test_can_include_empty_array()
-        {
-        }
-        public function test_can_include_wildcard()
-        {
-        }
-        public function test_can_include_subdirectories()
-        {
-        }
-        public function test_can_include_only_php()
-        {
-        }
-        public function test_can_exclude_override_wildcard()
-        {
-        }
-        public function test_can_exclude_override_matching_directory()
-        {
-        }
-        public function test_can_not_exclude_partially_directory()
-        {
-        }
-        public function test_can_exclude_by_wildcard()
-        {
-        }
-        public function test_can_exclude_files()
-        {
-        }
-        public function test_can_override_exclude_by_include()
-        {
-        }
-        public function test_can_return_all_directory_files_sorted()
-        {
-        }
-        public function test_can_include_file_in_excluded_folder()
-        {
-        }
-        public function test_can_include_file_in_excluded_folder_with_leading_slash()
-        {
-        }
-        public function test_can_include_file_in_excluded_folder_by_wildcard()
-        {
-        }
-    }
-    class PotGeneratorTest extends \PHPUnit_Framework_TestCase
-    {
-        public function test_adds_correct_amount_of_plural_strings()
-        {
-        }
-    }
-}
 namespace {
     class Import_Command extends \WP_CLI_Command
     {
@@ -14114,832 +14004,6 @@ namespace {
         {
         }
     }
-}
-namespace Mustangostang {
-    /**
-     * Spyc -- A Simple PHP YAML Class
-     * @version 0.6.2
-     * @author Vlad Andersen <vlad.andersen@gmail.com>
-     * @author Chris Wanstrath <chris@ozmm.org>
-     * @link https://github.com/mustangostang/spyc/
-     * @copyright Copyright 2005-2006 Chris Wanstrath, 2006-2011 Vlad Andersen
-     * @license http://www.opensource.org/licenses/mit-license.php MIT License
-     * @package Spyc
-     */
-    /**
-     * The Simple PHP YAML Class.
-     *
-     * This class can be used to read a YAML file and convert its contents
-     * into a PHP array.  It currently supports a very limited subsection of
-     * the YAML spec.
-     *
-     * Usage:
-     * <code>
-     *   $Spyc  = new Spyc;
-     *   $array = $Spyc->load($file);
-     * </code>
-     * or:
-     * <code>
-     *   $array = Spyc::YAMLLoad($file);
-     * </code>
-     * or:
-     * <code>
-     *   $array = spyc_load_file($file);
-     * </code>
-     * @package Spyc
-     */
-    class Spyc
-    {
-        // SETTINGS
-        const REMPTY = "\0\0\0\0\0";
-        /**
-         * Setting this to true will force YAMLDump to enclose any string value in
-         * quotes.  False by default.
-         *
-         * @var bool
-         */
-        public $setting_dump_force_quotes = false;
-        /**
-         * Setting this to true will forse YAMLLoad to use syck_load function when
-         * possible. False by default.
-         * @var bool
-         */
-        public $setting_use_syck_is_possible = false;
-        /**#@+
-         * @access private
-         * @var mixed
-         */
-        private $_dumpIndent;
-        private $_dumpWordWrap;
-        private $_containsGroupAnchor = false;
-        private $_containsGroupAlias = false;
-        private $path;
-        private $result;
-        private $LiteralPlaceHolder = '___YAML_Literal_Block___';
-        private $SavedGroups = array();
-        private $indent;
-        /**
-         * Path modifier that should be applied after adding current element.
-         * @var array
-         */
-        private $delayedPath = array();
-        /**#@+
-         * @access public
-         * @var mixed
-         */
-        public $_nodeId;
-        /**
-         * Load a valid YAML string to Spyc.
-         * @param string $input
-         * @return array
-         */
-        public function load($input)
-        {
-        }
-        /**
-         * Load a valid YAML file to Spyc.
-         * @param string $file
-         * @return array
-         */
-        public function loadFile($file)
-        {
-        }
-        /**
-         * Load YAML into a PHP array statically
-         *
-         * The load method, when supplied with a YAML stream (string or file),
-         * will do its best to convert YAML in a file into a PHP array.  Pretty
-         * simple.
-         *  Usage:
-         *  <code>
-         *   $array = Spyc::YAMLLoad('lucky.yaml');
-         *   print_r($array);
-         *  </code>
-         * @access public
-         * @return array
-         * @param string $input Path of YAML file or string containing YAML
-         */
-        public static function YAMLLoad($input)
-        {
-        }
-        /**
-         * Load a string of YAML into a PHP array statically
-         *
-         * The load method, when supplied with a YAML string, will do its best
-         * to convert YAML in a string into a PHP array.  Pretty simple.
-         *
-         * Note: use this function if you don't want files from the file system
-         * loaded and processed as YAML.  This is of interest to people concerned
-         * about security whose input is from a string.
-         *
-         *  Usage:
-         *  <code>
-         *   $array = Spyc::YAMLLoadString("---\n0: hello world\n");
-         *   print_r($array);
-         *  </code>
-         * @access public
-         * @return array
-         * @param string $input String containing YAML
-         */
-        public static function YAMLLoadString($input)
-        {
-        }
-        /**
-         * Dump YAML from PHP array statically
-         *
-         * The dump method, when supplied with an array, will do its best
-         * to convert the array into friendly YAML.  Pretty simple.  Feel free to
-         * save the returned string as nothing.yaml and pass it around.
-         *
-         * Oh, and you can decide how big the indent is and what the wordwrap
-         * for folding is.  Pretty cool -- just pass in 'false' for either if
-         * you want to use the default.
-         *
-         * Indent's default is 2 spaces, wordwrap's default is 40 characters.  And
-         * you can turn off wordwrap by passing in 0.
-         *
-         * @access public
-         * @return string
-         * @param array|\stdClass $array PHP array
-         * @param int $indent Pass in false to use the default, which is 2
-         * @param int $wordwrap Pass in 0 for no wordwrap, false for default (40)
-         * @param bool $no_opening_dashes Do not start YAML file with "---\n"
-         */
-        public static function YAMLDump($array, $indent = false, $wordwrap = false, $no_opening_dashes = false)
-        {
-        }
-        /**
-         * Dump PHP array to YAML
-         *
-         * The dump method, when supplied with an array, will do its best
-         * to convert the array into friendly YAML.  Pretty simple.  Feel free to
-         * save the returned string as tasteful.yaml and pass it around.
-         *
-         * Oh, and you can decide how big the indent is and what the wordwrap
-         * for folding is.  Pretty cool -- just pass in 'false' for either if
-         * you want to use the default.
-         *
-         * Indent's default is 2 spaces, wordwrap's default is 40 characters.  And
-         * you can turn off wordwrap by passing in 0.
-         *
-         * @access public
-         * @return string
-         * @param array $array PHP array
-         * @param int $indent Pass in false to use the default, which is 2
-         * @param int $wordwrap Pass in 0 for no wordwrap, false for default (40)
-         */
-        public function dump($array, $indent = false, $wordwrap = false, $no_opening_dashes = false)
-        {
-        }
-        /**
-         * Attempts to convert a key / value array item to YAML
-         * @access private
-         * @return string
-         * @param $key The name of the key
-         * @param $value The value of the item
-         * @param $indent The indent of the current node
-         */
-        private function _yamlize($key, $value, $indent, $previous_key = -1, $first_key = 0, $source_array = null)
-        {
-        }
-        /**
-         * Attempts to convert an array to YAML
-         * @access private
-         * @return string
-         * @param $array The array you want to convert
-         * @param $indent The indent of the current level
-         */
-        private function _yamlizeArray($array, $indent)
-        {
-        }
-        /**
-         * Returns YAML from a key and a value
-         * @access private
-         * @return string
-         * @param $key The name of the key
-         * @param $value The value of the item
-         * @param $indent The indent of the current node
-         */
-        private function _dumpNode($key, $value, $indent, $previous_key = -1, $first_key = 0, $source_array = null)
-        {
-        }
-        /**
-         * Creates a literal block for dumping
-         * @access private
-         * @return string
-         * @param $value
-         * @param $indent int The value of the indent
-         */
-        private function _doLiteralBlock($value, $indent)
-        {
-        }
-        /**
-         * Folds a string of text, if necessary
-         * @access private
-         * @return string
-         * @param $value The string you wish to fold
-         */
-        private function _doFolding($value, $indent)
-        {
-        }
-        private function isTrueWord($value)
-        {
-        }
-        private function isFalseWord($value)
-        {
-        }
-        private function isNullWord($value)
-        {
-        }
-        private function isTranslationWord($value)
-        {
-        }
-        /**
-         * Coerce a string into a native type
-         * Reference: http://yaml.org/type/bool.html
-         * TODO: Use only words from the YAML spec.
-         * @access private
-         * @param $value The value to coerce
-         */
-        private function coerceValue(&$value)
-        {
-        }
-        /**
-         * Given a set of words, perform the appropriate translations on them to
-         * match the YAML 1.1 specification for type coercing.
-         * @param $words The words to translate
-         * @access private
-         */
-        private static function getTranslations(array $words)
-        {
-        }
-        // LOADING FUNCTIONS
-        private function _load($input)
-        {
-        }
-        private function _loadString($input)
-        {
-        }
-        private function loadWithSource($Source)
-        {
-        }
-        private function loadFromSource($input)
-        {
-        }
-        private function loadFromString($input)
-        {
-        }
-        /**
-         * Parses YAML code and returns an array for a node
-         * @access private
-         * @return array
-         * @param string $line A line from the YAML file
-         */
-        private function _parseLine($line)
-        {
-        }
-        /**
-         * Finds the type of the passed value, returns the value as the new type.
-         * @access private
-         * @param string $value
-         * @return mixed
-         */
-        private function _toType($value)
-        {
-        }
-        /**
-         * Used in inlines to check for more inlines or quoted strings
-         * @access private
-         * @return array
-         */
-        private function _inlineEscape($inline)
-        {
-        }
-        private function literalBlockContinues($line, $lineIndent)
-        {
-        }
-        private function referenceContentsByAlias($alias)
-        {
-        }
-        private function addArrayInline($array, $indent)
-        {
-        }
-        private function addArray($incoming_data, $incoming_indent)
-        {
-        }
-        private static function startsLiteralBlock($line)
-        {
-        }
-        private static function greedilyNeedNextLine($line)
-        {
-        }
-        private function addLiteralLine($literalBlock, $line, $literalBlockStyle, $indent = -1)
-        {
-        }
-        function revertLiteralPlaceHolder($lineArray, $literalBlock)
-        {
-        }
-        private static function stripIndent($line, $indent = -1)
-        {
-        }
-        private function getParentPathByIndent($indent)
-        {
-        }
-        private function clearBiggerPathValues($indent)
-        {
-        }
-        private static function isComment($line)
-        {
-        }
-        private static function isEmpty($line)
-        {
-        }
-        private function isArrayElement($line)
-        {
-        }
-        private function isHashElement($line)
-        {
-        }
-        private function isLiteral($line)
-        {
-        }
-        private static function unquote($value)
-        {
-        }
-        private function startsMappedSequence($line)
-        {
-        }
-        private function returnMappedSequence($line)
-        {
-        }
-        private function checkKeysInValue($value)
-        {
-        }
-        private function returnMappedValue($line)
-        {
-        }
-        private function startsMappedValue($line)
-        {
-        }
-        private function isPlainArray($line)
-        {
-        }
-        private function returnPlainArray($line)
-        {
-        }
-        private function returnKeyValuePair($line)
-        {
-        }
-        private function returnArrayElement($line)
-        {
-        }
-        private function nodeContainsGroup($line)
-        {
-        }
-        private function addGroup($line, $group)
-        {
-        }
-        private function stripGroup($line, $group)
-        {
-        }
-    }
-}
-namespace {
-    class DumpTest extends \PHPUnit_Framework_TestCase
-    {
-        private $files_to_test = array();
-        public function setUp()
-        {
-        }
-        public function testShortSyntax()
-        {
-        }
-        public function testDump()
-        {
-        }
-        public function testDumpWithQuotes()
-        {
-        }
-        public function testDumpArrays()
-        {
-        }
-        public function testNull()
-        {
-        }
-        public function testNext()
-        {
-        }
-        public function testDumpingMixedArrays()
-        {
-        }
-        public function testMixed()
-        {
-        }
-        public function testDumpNumerics()
-        {
-        }
-        public function testDumpAsterisks()
-        {
-        }
-        public function testDumpAmpersands()
-        {
-        }
-        public function testDumpExclamations()
-        {
-        }
-        public function testDumpExclamations2()
-        {
-        }
-        public function testDumpApostrophes()
-        {
-        }
-        public function testDumpNumericHashes()
-        {
-        }
-        public function testEmpty()
-        {
-        }
-        public function testHashesInKeys()
-        {
-        }
-        public function testParagraph()
-        {
-        }
-        public function testParagraphTwo()
-        {
-        }
-        public function testString()
-        {
-        }
-        public function testStringLong()
-        {
-        }
-        public function testStringDoubleQuote()
-        {
-        }
-        public function testLongStringDoubleQuote()
-        {
-        }
-        public function testStringStartingWithSpace()
-        {
-        }
-        public function testPerCentOne()
-        {
-        }
-        public function testPerCentAndSimpleQuote()
-        {
-        }
-        public function testPerCentAndDoubleQuote()
-        {
-        }
-    }
-    class IndentTest extends \PHPUnit_Framework_TestCase
-    {
-        protected $Y;
-        protected function setUp()
-        {
-        }
-        public function testIndent_1()
-        {
-        }
-        public function testIndent_2()
-        {
-        }
-        public function testIndent_3()
-        {
-        }
-        public function testIndent_4()
-        {
-        }
-        public function testIndent_5()
-        {
-        }
-        public function testIndent_6()
-        {
-        }
-        public function testIndent_space()
-        {
-        }
-        public function testListAndComment()
-        {
-        }
-        public function testAnchorAndAlias()
-        {
-        }
-    }
-    class LoadTest extends \PHPUnit_Framework_TestCase
-    {
-        public function testQuotes()
-        {
-        }
-    }
-    class ParseTest extends \PHPUnit_Framework_TestCase
-    {
-        protected $yaml;
-        protected function setUp()
-        {
-        }
-        public function testMergeHashKeys()
-        {
-        }
-        public function testDeathMasks()
-        {
-        }
-        public function testDevDb()
-        {
-        }
-        public function testNumericKey()
-        {
-        }
-        public function testMappingsString()
-        {
-        }
-        public function testMappingsInt()
-        {
-        }
-        public function testMappingsHex()
-        {
-        }
-        public function testMappingsBooleanTrue()
-        {
-        }
-        public function testMappingsBooleanFalse()
-        {
-        }
-        public function testMappingsZero()
-        {
-        }
-        public function testMappingsNull()
-        {
-        }
-        public function testMappingsNotNull()
-        {
-        }
-        public function testMappingsFloat()
-        {
-        }
-        public function testMappingsNegative()
-        {
-        }
-        public function testMappingsSmallFloat()
-        {
-        }
-        public function testNewline()
-        {
-        }
-        public function testQuotedNewline()
-        {
-        }
-        public function testSeq0()
-        {
-        }
-        public function testSeq1()
-        {
-        }
-        public function testSeq2()
-        {
-        }
-        public function testSeq3()
-        {
-        }
-        public function testSeqMap()
-        {
-        }
-        public function testMappedSequence()
-        {
-        }
-        public function testAnotherSequence()
-        {
-        }
-        public function testFoldedBlock()
-        {
-        }
-        public function testLiteralAsMapped()
-        {
-        }
-        public function testCrazy()
-        {
-        }
-        public function testColons()
-        {
-        }
-        public function testInline()
-        {
-        }
-        public function testNestedInline()
-        {
-        }
-        public function testNestedNestedInline()
-        {
-        }
-        public function testInlineMappings()
-        {
-        }
-        public function testNestedInlineMappings()
-        {
-        }
-        public function testReferences()
-        {
-        }
-        public function testReferences2()
-        {
-        }
-        public function testReferences3()
-        {
-        }
-        public function testEscapedQuotes()
-        {
-        }
-        public function testEscapedQuotes_2()
-        {
-        }
-        public function testEscapedQuotes_3()
-        {
-        }
-        public function testQuotes()
-        {
-        }
-        public function testQuoteSequence()
-        {
-        }
-        public function testShortSequence()
-        {
-        }
-        public function testQuotedNewlines()
-        {
-        }
-        public function testHash_1()
-        {
-        }
-        public function testHash_2()
-        {
-        }
-        public function testHash_3()
-        {
-        }
-        public function testEndloop()
-        {
-        }
-        public function testReallyLargeNumber()
-        {
-        }
-        public function testFloatWithZeros()
-        {
-        }
-        public function testFloatWithQuotes()
-        {
-        }
-        public function testFloatInverse()
-        {
-        }
-        public function testIntArray()
-        {
-        }
-        public function testArrayOnSeveralLines()
-        {
-        }
-        public function testArrayWithCommas()
-        {
-        }
-        public function testmoreLessKey()
-        {
-        }
-        public function testArrayOfZero()
-        {
-        }
-        public function testSophisticatedArrayOfZero()
-        {
-        }
-        public function testSwitches()
-        {
-        }
-        public function testEmptySequence()
-        {
-        }
-        public function testEmptyHash()
-        {
-        }
-        public function testEmptykey()
-        {
-        }
-        public function testMultilines()
-        {
-        }
-        public function testManyNewlines()
-        {
-        }
-        public function testWerte()
-        {
-        }
-        /* public function testNoIndent() {
-             $this->assertSame (array(
-               array ('record1'=>'value1'),
-               array ('record2'=>'value2')
-             )
-             , $this->yaml['noindent_records']);
-           } */
-        public function testColonsInKeys()
-        {
-        }
-        public function testColonsInKeys2()
-        {
-        }
-        public function testUnquotedColonsInKeys()
-        {
-        }
-        public function testComplicatedKeyWithColon()
-        {
-        }
-        public function testKeysInMappedValueException()
-        {
-        }
-        public function testKeysInValueException()
-        {
-        }
-        public function testSpecialCharacters()
-        {
-        }
-        public function testAngleQuotes()
-        {
-        }
-        public function testFailingColons()
-        {
-        }
-        public function testQuotesWithComments()
-        {
-        }
-        public function testArrayWithComments()
-        {
-        }
-        public function testAfterArrayWithKittens()
-        {
-        }
-        // Plain characters http://www.yaml.org/spec/1.2/spec.html#id2789510
-        public function testKai()
-        {
-        }
-        public function testKaiList()
-        {
-        }
-        public function testDifferentQuoteTypes()
-        {
-        }
-        public function testDifferentQuoteTypes2()
-        {
-        }
-        // Separation spaces http://www.yaml.org/spec/1.2/spec.html#id2778394
-        public function testMultipleArrays()
-        {
-        }
-    }
-    class RoundTripTest extends \PHPUnit_Framework_TestCase
-    {
-        protected function setUp()
-        {
-        }
-        public function testNull()
-        {
-        }
-        public function testY()
-        {
-        }
-        public function testExclam()
-        {
-        }
-        public function test5()
-        {
-        }
-        public function testSpaces()
-        {
-        }
-        public function testApostrophes()
-        {
-        }
-        public function testNewLines()
-        {
-        }
-        public function testHashes()
-        {
-        }
-        public function testPreserveString()
-        {
-        }
-        public function testPreserveBool()
-        {
-        }
-        public function testPreserveInteger()
-        {
-        }
-        public function testWordWrap()
-        {
-        }
-        public function testABCD()
-        {
-        }
-        public function testABCD2()
-        {
-        }
-    }
     /**
      * Lists, installs, and removes WP-CLI packages.
      *
@@ -15550,2025 +14614,6 @@ namespace WP_CLI {
     }
 }
 namespace {
-    class ComposerJsonTest extends \PHPUnit_Framework_TestCase
-    {
-        private $logger = \null;
-        private $prev_logger = \null;
-        private $prev_capture_exit = \null;
-        private $temp_dir = \null;
-        public function setUp()
-        {
-        }
-        public function tearDown()
-        {
-        }
-        public function test_create_default_composer_json()
-        {
-        }
-        public function test_get_composer_json_path()
-        {
-        }
-        public function test_get_composer_json_path_backup_decoded()
-        {
-        }
-        private function mac_safe_path($path)
-        {
-        }
-    }
-    // WP_CLI
-    class JsonManipulatorTest extends \PHPUnit_Framework_TestCase
-    {
-        /**
-         * @dataProvider linkProvider
-         */
-        public function testAddLink($json, $type, $package, $constraint, $expected)
-        {
-        }
-        public function linkProvider()
-        {
-        }
-        /**
-         * @dataProvider providerAddLinkAndSortPackages
-         */
-        public function testAddLinkAndSortPackages($json, $type, $package, $constraint, $sortPackages, $expected)
-        {
-        }
-        public function providerAddLinkAndSortPackages()
-        {
-        }
-        /**
-         * @dataProvider removeSubNodeProvider
-         */
-        public function testRemoveSubNode($json, $name, $expected, $expectedContent = \null)
-        {
-        }
-        public function removeSubNodeProvider()
-        {
-        }
-        public function testRemoveSubNodeFromRequire()
-        {
-        }
-        public function testAddSubNodeInRequire()
-        {
-        }
-        public function testAddExtraWithPackage()
-        {
-        }
-        public function testAddRepositoryCanInitializeEmptyRepositories()
-        {
-        }
-        public function testAddRepositoryCanInitializeFromScratch()
-        {
-        }
-        public function testAddRepositoryCanAdd()
-        {
-        }
-        public function testAddRepositoryCanOverrideDeepRepos()
-        {
-        }
-        public function testAddConfigSettingEscapes()
-        {
-        }
-        public function testAddConfigSettingWorksFromScratch()
-        {
-        }
-        public function testAddConfigSettingCanAdd()
-        {
-        }
-        public function testAddConfigSettingCanOverwrite()
-        {
-        }
-        public function testAddConfigSettingCanOverwriteNumbers()
-        {
-        }
-        public function testAddConfigSettingCanOverwriteArrays()
-        {
-        }
-        public function testAddConfigSettingCanAddSubKeyInEmptyConfig()
-        {
-        }
-        public function testAddConfigSettingCanAddSubKeyInEmptyVal()
-        {
-        }
-        public function testAddConfigSettingCanAddSubKeyInHash()
-        {
-        }
-        public function testAddRootSettingDoesNotBreakDots()
-        {
-        }
-        public function testRemoveConfigSettingCanRemoveSubKeyInHash()
-        {
-        }
-        public function testRemoveConfigSettingCanRemoveSubKeyInHashWithSiblings()
-        {
-        }
-        public function testAddMainKey()
-        {
-        }
-        public function testAddMainKeyWithContentHavingDollarSignFollowedByDigit()
-        {
-        }
-        public function testAddMainKeyWithContentHavingDollarSignFollowedByDigit2()
-        {
-        }
-        public function testUpdateMainKey()
-        {
-        }
-        public function testUpdateMainKey2()
-        {
-        }
-        public function testUpdateMainKey3()
-        {
-        }
-        public function testUpdateMainKeyWithContentHavingDollarSignFollowedByDigit()
-        {
-        }
-        public function testRemoveMainKey()
-        {
-        }
-        public function testIndentDetection()
-        {
-        }
-        public function testRemoveMainKeyAtEndOfFile()
-        {
-        }
-        // WP_CLI: begin caseInsensitive.
-        /**
-         * @dataProvider providerAddLinkCaseInsensitive
-         */
-        public function testAddLinkCaseInsensitive($json, $type, $package, $constraint, $sortPackages, $expected)
-        {
-        }
-        public function providerAddLinkCaseInsensitive()
-        {
-        }
-        /**
-         * @dataProvider providerAddSubNodeCase
-         */
-        public function testAddSubNodeCase($json, $mainNode, $name, $caseInsensitive, $expected)
-        {
-        }
-        public function providerAddSubNodeCase()
-        {
-        }
-        /**
-         * @dataProvider providerRemoveSubNodeCaseInsensitive
-         */
-        public function testRemoveSubNodeCaseInsensitive($json, $mainNode, $name, $expected, $expectedContent = \null)
-        {
-        }
-        public function providerRemoveSubNodeCaseInsensitive()
-        {
-        }
-    }
-    class HttpConsole
-    {
-        protected $_host;
-        protected $_prompt;
-        public function __construct($host)
-        {
-        }
-        public function handleRequest($type, $path)
-        {
-        }
-        public function run()
-        {
-        }
-    }
-}
-namespace cli {
-    /**
-     * Parses command line arguments.
-     */
-    class Arguments implements \ArrayAccess
-    {
-        protected $_flags = array();
-        protected $_options = array();
-        protected $_strict = false;
-        protected $_input = array();
-        protected $_invalid = array();
-        protected $_parsed;
-        protected $_lexer;
-        /**
-         * Initializes the argument parser. If you wish to change the default behaviour
-         * you may pass an array of options as the first argument. Valid options are
-         * `'help'` and `'strict'`, each a boolean.
-         *
-         * `'help'` is `true` by default, `'strict'` is false by default.
-         *
-         * @param  array  $options  An array of options for this parser.
-         */
-        public function __construct($options = array())
-        {
-        }
-        /**
-         * Get the list of arguments found by the defined definitions.
-         *
-         * @return array
-         */
-        public function getArguments()
-        {
-        }
-        public function getHelpScreen()
-        {
-        }
-        /**
-         * Encodes the parsed arguments as JSON.
-         *
-         * @return string
-         */
-        public function asJSON()
-        {
-        }
-        /**
-         * Returns true if a given argument was parsed.
-         *
-         * @param mixed  $offset  An Argument object or the name of the argument.
-         * @return bool
-         */
-        public function offsetExists($offset)
-        {
-        }
-        /**
-         * Get the parsed argument's value.
-         *
-         * @param mixed  $offset  An Argument object or the name of the argument.
-         * @return mixed
-         */
-        public function offsetGet($offset)
-        {
-        }
-        /**
-         * Sets the value of a parsed argument.
-         *
-         * @param mixed  $offset  An Argument object or the name of the argument.
-         * @param mixed  $value   The value to set
-         */
-        public function offsetSet($offset, $value)
-        {
-        }
-        /**
-         * Unset a parsed argument.
-         *
-         * @param mixed  $offset  An Argument object or the name of the argument.
-         */
-        public function offsetUnset($offset)
-        {
-        }
-        /**
-         * Adds a flag (boolean argument) to the argument list.
-         *
-         * @param mixed  $flag  A string representing the flag, or an array of strings.
-         * @param array  $settings  An array of settings for this flag.
-         * @setting string  description  A description to be shown in --help.
-         * @setting bool    default  The default value for this flag.
-         * @setting bool    stackable  Whether the flag is repeatable to increase the value.
-         * @setting array   aliases  Other ways to trigger this flag.
-         * @return $this
-         */
-        public function addFlag($flag, $settings = array())
-        {
-        }
-        /**
-         * Add multiple flags at once. The input array should be keyed with the
-         * primary flag character, and the values should be the settings array
-         * used by {addFlag}.
-         *
-         * @param array  $flags  An array of flags to add
-         * @return $this
-         */
-        public function addFlags($flags)
-        {
-        }
-        /**
-         * Adds an option (string argument) to the argument list.
-         *
-         * @param mixed  $option  A string representing the option, or an array of strings.
-         * @param array  $settings  An array of settings for this option.
-         * @setting string  description  A description to be shown in --help.
-         * @setting bool    default  The default value for this option.
-         * @setting array   aliases  Other ways to trigger this option.
-         * @return $this
-         */
-        public function addOption($option, $settings = array())
-        {
-        }
-        /**
-         * Add multiple options at once. The input array should be keyed with the
-         * primary option string, and the values should be the settings array
-         * used by {addOption}.
-         *
-         * @param array  $options  An array of options to add
-         * @return $this
-         */
-        public function addOptions($options)
-        {
-        }
-        /**
-         * Enable or disable strict mode. If strict mode is active any invalid
-         * arguments found by the parser will throw `cli\arguments\InvalidArguments`.
-         *
-         * Even if strict is disabled, invalid arguments are logged and can be
-         * retrieved with `cli\Arguments::getInvalidArguments()`.
-         *
-         * @param bool  $strict  True to enable, false to disable.
-         * @return $this
-         */
-        public function setStrict($strict)
-        {
-        }
-        /**
-         * Get the list of invalid arguments the parser found.
-         *
-         * @return array
-         */
-        public function getInvalidArguments()
-        {
-        }
-        /**
-         * Get a flag by primary matcher or any defined aliases.
-         *
-         * @param mixed  $flag  Either a string representing the flag or an
-         *                      cli\arguments\Argument object.
-         * @return array
-         */
-        public function getFlag($flag)
-        {
-        }
-        public function getFlags()
-        {
-        }
-        public function hasFlags()
-        {
-        }
-        /**
-         * Returns true if the given argument is defined as a flag.
-         *
-         * @param mixed  $argument  Either a string representing the flag or an
-         *                          cli\arguments\Argument object.
-         * @return bool
-         */
-        public function isFlag($argument)
-        {
-        }
-        /**
-         * Returns true if the given flag is stackable.
-         *
-         * @param mixed  $flag  Either a string representing the flag or an
-         *                      cli\arguments\Argument object.
-         * @return bool
-         */
-        public function isStackable($flag)
-        {
-        }
-        /**
-         * Get an option by primary matcher or any defined aliases.
-         *
-         * @param mixed  $option Either a string representing the option or an
-         *                       cli\arguments\Argument object.
-         * @return array
-         */
-        public function getOption($option)
-        {
-        }
-        public function getOptions()
-        {
-        }
-        public function hasOptions()
-        {
-        }
-        /**
-         * Returns true if the given argument is defined as an option.
-         *
-         * @param mixed  $argument  Either a string representing the option or an
-         *                          cli\arguments\Argument object.
-         * @return bool
-         */
-        public function isOption($argument)
-        {
-        }
-        /**
-         * Parses the argument list with the given options. The returned argument list
-         * will use either the first long name given or the first name in the list
-         * if a long name is not given.
-         *
-         * @return array
-         * @throws arguments\InvalidArguments
-         */
-        public function parse()
-        {
-        }
-        /**
-         * This applies the default values, if any, of all of the
-         * flags and options, so that if there is a default value
-         * it will be available.
-         */
-        private function _applyDefaults()
-        {
-        }
-        private function _warn($message)
-        {
-        }
-        private function _parseFlag($argument)
-        {
-        }
-        private function _parseOption($option)
-        {
-        }
-    }
-    /**
-     * Change the color of text.
-     *
-     * Reference: http://graphcomp.com/info/specs/ansi_col.html#colors
-     */
-    class Colors
-    {
-        protected static $_colors = array('color' => array('black' => 30, 'red' => 31, 'green' => 32, 'yellow' => 33, 'blue' => 34, 'magenta' => 35, 'cyan' => 36, 'white' => 37), 'style' => array('bright' => 1, 'dim' => 2, 'underline' => 4, 'blink' => 5, 'reverse' => 7, 'hidden' => 8), 'background' => array('black' => 40, 'red' => 41, 'green' => 42, 'yellow' => 43, 'blue' => 44, 'magenta' => 45, 'cyan' => 46, 'white' => 47));
-        protected static $_enabled = null;
-        protected static $_string_cache = array();
-        public static function enable($force = true)
-        {
-        }
-        public static function disable($force = true)
-        {
-        }
-        /**
-         * Check if we should colorize output based on local flags and shell type.
-         *
-         * Only check the shell type if `Colors::$_enabled` is null and `$colored` is null.
-         */
-        public static function shouldColorize($colored = null)
-        {
-        }
-        /**
-         * Set the color.
-         *
-         * @param string  $color  The name of the color or style to set.
-         * @return string
-         */
-        public static function color($color)
-        {
-        }
-        /**
-         * Colorize a string using helpful string formatters. If the `Streams::$out` points to a TTY coloring will be enabled,
-         * otherwise disabled. You can control this check with the `$colored` parameter.
-         *
-         * @param string   $string
-         * @param boolean  $colored  Force enable or disable the colorized output. If left as `null` the TTY will control coloring.
-         * @return string
-         */
-        public static function colorize($string, $colored = null)
-        {
-        }
-        /**
-         * Remove color information from a string.
-         *
-         * @param string $string A string with color information.
-         * @param int    $keep   Optional. If the 1 bit is set, color tokens (eg "%n") won't be stripped. If the 2 bit is set, color encodings (ANSI escapes) won't be stripped. Default 0.
-         * @return string A string with color information removed.
-         */
-        public static function decolorize($string, $keep = 0)
-        {
-        }
-        /**
-         * Cache the original, colorized, and decolorized versions of a string.
-         *
-         * @param string $passed The original string before colorization.
-         * @param string $colorized The string after running through self::colorize.
-         * @param string $deprecated Optional. Not used. Default null.
-         */
-        public static function cacheString($passed, $colorized, $deprecated = null)
-        {
-        }
-        /**
-         * Return the length of the string without color codes.
-         *
-         * @param string  $string  the string to measure
-         * @return int
-         */
-        public static function length($string)
-        {
-        }
-        /**
-         * Return the width (length in characters) of the string without color codes if enabled.
-         *
-         * @param string      $string        The string to measure.
-         * @param bool        $pre_colorized Optional. Set if the string is pre-colorized. Default false.
-         * @param string|bool $encoding      Optional. The encoding of the string. Default false.
-         * @return int
-         */
-        public static function width($string, $pre_colorized = false, $encoding = false)
-        {
-        }
-        /**
-         * Pad the string to a certain display length.
-         *
-         * @param string      $string        The string to pad.
-         * @param int         $length        The display length.
-         * @param bool        $pre_colorized Optional. Set if the string is pre-colorized. Default false.
-         * @param string|bool $encoding      Optional. The encoding of the string. Default false.
-         * @param int         $pad_type      Optional. Can be STR_PAD_RIGHT, STR_PAD_LEFT, or STR_PAD_BOTH. If pad_type is not specified it is assumed to be STR_PAD_RIGHT.
-         * @return string
-         */
-        public static function pad($string, $length, $pre_colorized = false, $encoding = false, $pad_type = STR_PAD_RIGHT)
-        {
-        }
-        /**
-         * Get the color mapping array.
-         *
-         * @return array Array of color tokens mapped to colors and styles.
-         */
-        public static function getColors()
-        {
-        }
-        /**
-         * Get the cached string values.
-         *
-         * @return array The cached string values.
-         */
-        public static function getStringCache()
-        {
-        }
-        /**
-         * Clear the string cache.
-         */
-        public static function clearStringCache()
-        {
-        }
-    }
-    abstract class Memoize
-    {
-        protected $_memoCache = array();
-        public function __get($name)
-        {
-        }
-        protected function _unmemo($name)
-        {
-        }
-    }
-    /**
-     * The `Notify` class is the basis of all feedback classes, such as Indicators
-     * and Progress meters. The default behaviour is to refresh output after 100ms
-     * have passed. This is done to preventing the screen from flickering and keep
-     * slowdowns from output to a minimum.
-     *
-     * The most basic form of Notifier has no maxim, and simply displays a series
-     * of characters to indicate progress is being made.
-     */
-    abstract class Notify
-    {
-        protected $_current = 0;
-        protected $_first = true;
-        protected $_interval;
-        protected $_message;
-        protected $_start;
-        protected $_timer;
-        /**
-         * Instatiates a Notification object.
-         *
-         * @param string  $msg       The text to display next to the Notifier.
-         * @param int     $interval  The interval in milliseconds between updates.
-         */
-        public function __construct($msg, $interval = 100)
-        {
-        }
-        /**
-         * This method should be used to print out the Notifier. This method is
-         * called from `cli\Notify::tick()` after `cli\Notify::$_interval` has passed.
-         *
-         * @abstract
-         * @param boolean  $finish
-         * @see cli\Notify::tick()
-         */
-        public abstract function display($finish = false);
-        /**
-         * Reset the notifier state so the same instance can be used in multiple loops.
-         */
-        public function reset()
-        {
-        }
-        /**
-         * Returns the formatted tick count.
-         *
-         * @return string  The formatted tick count.
-         */
-        public function current()
-        {
-        }
-        /**
-         * Calculates the time elapsed since the Notifier was first ticked.
-         *
-         * @return int  The elapsed time in seconds.
-         */
-        public function elapsed()
-        {
-        }
-        /**
-         * Calculates the speed (number of ticks per second) at which the Notifier
-         * is being updated.
-         *
-         * @return int  The number of ticks performed in 1 second.
-         */
-        public function speed()
-        {
-        }
-        /**
-         * Takes a time span given in seconds and formats it for display. The
-         * returned string will be in MM:SS form.
-         *
-         * @param int  $time The time span in seconds to format.
-         * @return string  The formatted time span.
-         */
-        public function formatTime($time)
-        {
-        }
-        /**
-         * Finish our Notification display. Should be called after the Notifier is
-         * no longer needed.
-         *
-         * @see cli\Notify::display()
-         */
-        public function finish()
-        {
-        }
-        /**
-         * Increments are tick counter by the given amount. If no amount is provided,
-         * the ticker is incremented by 1.
-         *
-         * @param int  $increment  The amount to increment by.
-         */
-        public function increment($increment = 1)
-        {
-        }
-        /**
-         * Determines whether the display should be updated or not according to
-         * our interval setting.
-         *
-         * @return boolean  `true` if the display should be updated, `false` otherwise.
-         */
-        public function shouldUpdate()
-        {
-        }
-        /**
-         * This method is the meat of all Notifiers. First we increment the ticker
-         * and then update the display if enough time has passed since our last tick.
-         *
-         * @param int  $increment  The amount to increment by.
-         * @see cli\Notify::increment()
-         * @see cli\Notify::shouldUpdate()
-         * @see cli\Notify::display()
-         */
-        public function tick($increment = 1)
-        {
-        }
-    }
-    /**
-     * A more complex type of Notifier, `Progress` Notifiers always have a maxim
-     * value and generally show some form of percent complete or estimated time
-     * to completion along with the standard Notifier displays.
-     *
-     * @see cli\Notify
-     */
-    abstract class Progress extends \cli\Notify
-    {
-        protected $_total = 0;
-        /**
-         * Instantiates a Progress Notifier.
-         *
-         * @param string  $msg       The text to display next to the Notifier.
-         * @param int     $total     The total number of ticks we will be performing.
-         * @param int     $interval  The interval in milliseconds between updates.
-         * @see cli\Progress::setTotal()
-         */
-        public function __construct($msg, $total, $interval = 100)
-        {
-        }
-        /**
-         * Set the max increments for this progress notifier.
-         *
-         * @param int  $total  The total number of times this indicator should be `tick`ed.
-         * @throws \InvalidArgumentException  Thrown if the `$total` is less than 0.
-         */
-        public function setTotal($total)
-        {
-        }
-        /**
-         * Reset the progress state so the same instance can be used in multiple loops.
-         */
-        public function reset($total = null)
-        {
-        }
-        /**
-         * Behaves in a similar manner to `cli\Notify::current()`, but the output
-         * is padded to match the length of `cli\Progress::total()`.
-         *
-         * @return string  The formatted and padded tick count.
-         * @see cli\Progress::total()
-         */
-        public function current()
-        {
-        }
-        /**
-         * Returns the formatted total expected ticks.
-         *
-         * @return string  The formatted total ticks.
-         */
-        public function total()
-        {
-        }
-        /**
-         * Calculates the estimated total time for the tick count to reach the
-         * total ticks given.
-         *
-         * @return int  The estimated total number of seconds for all ticks to be
-         *              completed. This is not the estimated time left, but total.
-         * @see cli\Notify::speed()
-         * @see cli\Notify::elapsed()
-         */
-        public function estimated()
-        {
-        }
-        /**
-         * Forces the current tick count to the total ticks given at instatiation
-         * time before passing on to `cli\Notify::finish()`.
-         */
-        public function finish()
-        {
-        }
-        /**
-         * Increments are tick counter by the given amount. If no amount is provided,
-         * the ticker is incremented by 1.
-         *
-         * @param int  $increment  The amount to increment by.
-         */
-        public function increment($increment = 1)
-        {
-        }
-        /**
-         * Calculate the percentage completed.
-         *
-         * @return float  The percent completed.
-         */
-        public function percent()
-        {
-        }
-    }
-    /**
-     * The `Shell` class is a utility class for shell related tasks such as
-     * information on width.
-     */
-    class Shell
-    {
-        /**
-         * Returns the number of columns the current shell has for display.
-         *
-         * @return int  The number of columns.
-         * @todo Test on more systems.
-         */
-        public static function columns()
-        {
-        }
-        /**
-         * Checks whether the output of the current script is a TTY or a pipe / redirect
-         *
-         * Returns true if STDOUT output is being redirected to a pipe or a file; false is
-         * output is being sent directly to the terminal.
-         *
-         * If an env variable SHELL_PIPE exists, returned result depends it's
-         * value. Strings like 1, 0, yes, no, that validate to booleans are accepted.
-         *
-         * To enable ASCII formatting even when shell is piped, use the
-         * ENV variable SHELL_PIPE=0
-         *
-         * @return bool
-         */
-        public static function isPiped()
-        {
-        }
-        /**
-         * Uses `stty` to hide input/output completely.
-         * @param boolean $hidden Will hide/show the next data. Defaults to true.
-         */
-        public static function hide($hidden = true)
-        {
-        }
-        /**
-         * Is this shell in Windows?
-         *
-         * @return bool
-         */
-        private static function is_windows()
-        {
-        }
-    }
-    class Streams
-    {
-        protected static $out = STDOUT;
-        protected static $in = STDIN;
-        protected static $err = STDERR;
-        static function _call($func, $args)
-        {
-        }
-        public static function isTty()
-        {
-        }
-        /**
-         * Handles rendering strings. If extra scalar arguments are given after the `$msg`
-         * the string will be rendered with `sprintf`. If the second argument is an `array`
-         * then each key in the array will be the placeholder name. Placeholders are of the
-         * format {:key}.
-         *
-         * @param string   $msg  The message to render.
-         * @param mixed    ...   Either scalar arguments or a single array argument.
-         * @return string  The rendered string.
-         */
-        public static function render($msg)
-        {
-        }
-        /**
-         * Shortcut for printing to `STDOUT`. The message and parameters are passed
-         * through `sprintf` before output.
-         *
-         * @param string  $msg  The message to output in `printf` format.
-         * @param mixed   ...   Either scalar arguments or a single array argument.
-         * @return void
-         * @see \cli\render()
-         */
-        public static function out($msg)
-        {
-        }
-        /**
-         * Pads `$msg` to the width of the shell before passing to `cli\out`.
-         *
-         * @param string  $msg  The message to pad and pass on.
-         * @param mixed   ...   Either scalar arguments or a single array argument.
-         * @return void
-         * @see cli\out()
-         */
-        public static function out_padded($msg)
-        {
-        }
-        /**
-         * Prints a message to `STDOUT` with a newline appended. See `\cli\out` for
-         * more documentation.
-         *
-         * @see cli\out()
-         */
-        public static function line($msg = '')
-        {
-        }
-        /**
-         * Shortcut for printing to `STDERR`. The message and parameters are passed
-         * through `sprintf` before output.
-         *
-         * @param string  $msg  The message to output in `printf` format. With no string,
-         *                      a newline is printed.
-         * @param mixed   ...   Either scalar arguments or a single array argument.
-         * @return void
-         */
-        public static function err($msg = '')
-        {
-        }
-        /**
-         * Takes input from `STDIN` in the given format. If an end of transmission
-         * character is sent (^D), an exception is thrown.
-         *
-         * @param string  $format  A valid input format. See `fscanf` for documentation.
-         *                         If none is given, all input up to the first newline
-         *                         is accepted.
-         * @param boolean $hide    If true will hide what the user types in.
-         * @return string  The input with whitespace trimmed.
-         * @throws \Exception  Thrown if ctrl-D (EOT) is sent as input.
-         */
-        public static function input($format = null, $hide = false)
-        {
-        }
-        /**
-         * Displays an input prompt. If no default value is provided the prompt will
-         * continue displaying until input is received.
-         *
-         * @param string      $question The question to ask the user.
-         * @param bool|string $default  A default value if the user provides no input.
-         * @param string      $marker   A string to append to the question and default value
-         *                              on display.
-         * @param boolean     $hide     Optionally hides what the user types in.
-         * @return string  The users input.
-         * @see cli\input()
-         */
-        public static function prompt($question, $default = null, $marker = ': ', $hide = false)
-        {
-        }
-        /**
-         * Presents a user with a multiple choice question, useful for 'yes/no' type
-         * questions (which this public static function defaults too).
-         *
-         * @param string  $question  The question to ask the user.
-         * @param string  $choice    A string of characters allowed as a response. Case is ignored.
-         * @param string  $default   The default choice. NULL if a default is not allowed.
-         * @return string  The users choice.
-         * @see cli\prompt()
-         */
-        public static function choose($question, $choice = 'yn', $default = 'n')
-        {
-        }
-        /**
-         * Displays an array of strings as a menu where a user can enter a number to
-         * choose an option. The array must be a single dimension with either strings
-         * or objects with a `__toString()` method.
-         *
-         * @param array   $items    The list of items the user can choose from.
-         * @param string  $default  The index of the default item.
-         * @param string  $title    The message displayed to the user when prompted.
-         * @return string  The index of the chosen item.
-         * @see cli\line()
-         * @see cli\input()
-         * @see cli\err()
-         */
-        public static function menu($items, $default = null, $title = 'Choose an item')
-        {
-        }
-        /**
-         * Sets one of the streams (input, output, or error) to a `stream` type resource.
-         *
-         * Valid $whichStream values are:
-         *    - 'in'   (default: STDIN)
-         *    - 'out'  (default: STDOUT)
-         *    - 'err'  (default: STDERR)
-         *
-         * Any custom streams will be closed for you on shutdown, so please don't close stream
-         * resources used with this method.
-         *
-         * @param string    $whichStream  The stream property to update
-         * @param resource  $stream       The new stream resource to use
-         * @return void
-         * @throws \Exception Thrown if $stream is not a resource of the 'stream' type.
-         */
-        public static function setStream($whichStream, $stream)
-        {
-        }
-    }
-    /**
-     * The `Table` class is used to display data in a tabular format.
-     */
-    class Table
-    {
-        protected $_renderer;
-        protected $_headers = array();
-        protected $_footers = array();
-        protected $_width = array();
-        protected $_rows = array();
-        /**
-         * Initializes the `Table` class.
-         *
-         * There are 3 ways to instantiate this class:
-         *
-         *  1. Pass an array of strings as the first parameter for the column headers
-         *     and a 2-dimensional array as the second parameter for the data rows.
-         *  2. Pass an array of hash tables (string indexes instead of numerical)
-         *     where each hash table is a row and the indexes of the *first* hash
-         *     table are used as the header values.
-         *  3. Pass nothing and use `setHeaders()` and `addRow()` or `setRows()`.
-         *
-         * @param array  $headers  Headers used in this table. Optional.
-         * @param array  $rows     The rows of data for this table. Optional.
-         * @param array  $footers  Footers used in this table. Optional.
-         */
-        public function __construct(array $headers = null, array $rows = null, array $footers = null)
-        {
-        }
-        public function resetTable()
-        {
-        }
-        /**
-         * Sets the renderer used by this table.
-         *
-         * @param table\Renderer  $renderer  The renderer to use for output.
-         * @see   table\Renderer
-         * @see   table\Ascii
-         * @see   table\Tabular
-         */
-        public function setRenderer(\cli\table\Renderer $renderer)
-        {
-        }
-        /**
-         * Loops through the row and sets the maximum width for each column.
-         *
-         * @param array  $row  The table row.
-         * @return array $row
-         */
-        protected function checkRow(array $row)
-        {
-        }
-        /**
-         * Output the table to `STDOUT` using `cli\line()`.
-         *
-         * If STDOUT is a pipe or redirected to a file, should output simple
-         * tab-separated text. Otherwise, renders table with ASCII table borders
-         *
-         * @uses cli\Shell::isPiped() Determine what format to output
-         *
-         * @see cli\Table::renderRow()
-         */
-        public function display()
-        {
-        }
-        /**
-         * Get the table lines to output.
-         *
-         * @see cli\Table::display()
-         * @see cli\Table::renderRow()
-         *
-         * @return array
-         */
-        public function getDisplayLines()
-        {
-        }
-        /**
-         * Sort the table by a column. Must be called before `cli\Table::display()`.
-         *
-         * @param int  $column  The index of the column to sort by.
-         */
-        public function sort($column)
-        {
-        }
-        /**
-         * Set the headers of the table.
-         *
-         * @param array  $headers  An array of strings containing column header names.
-         */
-        public function setHeaders(array $headers)
-        {
-        }
-        /**
-         * Set the footers of the table.
-         *
-         * @param array  $footers  An array of strings containing column footers names.
-         */
-        public function setFooters(array $footers)
-        {
-        }
-        /**
-         * Add a row to the table.
-         *
-         * @param array  $row  The row data.
-         * @see cli\Table::checkRow()
-         */
-        public function addRow(array $row)
-        {
-        }
-        /**
-         * Clears all previous rows and adds the given rows.
-         *
-         * @param array  $rows  A 2-dimensional array of row data.
-         * @see cli\Table::addRow()
-         */
-        public function setRows(array $rows)
-        {
-        }
-        public function countRows()
-        {
-        }
-        /**
-         * Set whether items in an Ascii table are pre-colorized.
-         *
-         * @param bool|array $precolorized A boolean to set all columns in the table as pre-colorized, or an array of booleans keyed by column index (number) to set individual columns as pre-colorized.
-         * @see cli\Ascii::setPreColorized()
-         */
-        public function setAsciiPreColorized($pre_colorized)
-        {
-        }
-        /**
-         * Is a column in an Ascii table pre-colorized?
-         *
-         * @param int $column Column index to check.
-         * @return bool True if whole Ascii table is marked as pre-colorized, or if the individual column is pre-colorized; else false.
-         * @see cli\Ascii::isPreColorized()
-         */
-        private function isAsciiPreColorized($column)
-        {
-        }
-    }
-    /**
-     * The `Tree` class is used to display data in a tree-like format.
-     */
-    class Tree
-    {
-        protected $_renderer;
-        protected $_data = array();
-        /**
-         * Sets the renderer used by this tree.
-         *
-         * @param tree\Renderer  $renderer  The renderer to use for output.
-         * @see   tree\Renderer
-         * @see   tree\Ascii
-         * @see   tree\Markdown
-         */
-        public function setRenderer(\cli\tree\Renderer $renderer)
-        {
-        }
-        /**
-         * Set the data.
-         * Format:
-         *     [
-         *         'Label' => [
-         *             'Thing' => ['Thing'],
-         *         ],
-         *         'Thing',
-         *     ]
-         * @param array $data
-         */
-        public function setData(array $data)
-        {
-        }
-        /**
-         * Render the tree and return it as a string.
-         *
-         * @return string|null
-         */
-        public function render()
-        {
-        }
-        /**
-         * Display the rendered tree
-         */
-        public function display()
-        {
-        }
-    }
-}
-namespace cli\arguments {
-    /**
-     * Represents an Argument or a value and provides several helpers related to parsing an argument list.
-     */
-    class Argument extends \cli\Memoize
-    {
-        /**
-         * The canonical name of this argument, used for aliasing.
-         *
-         * @param string
-         */
-        public $key;
-        private $_argument;
-        private $_raw;
-        /**
-         * @param string  $argument  The raw argument, leading dashes included.
-         */
-        public function __construct($argument)
-        {
-        }
-        /**
-         * Returns the raw input as a string.
-         *
-         * @return string
-         */
-        public function __toString()
-        {
-        }
-        /**
-         * Returns the formatted argument string.
-         *
-         * @return string
-         */
-        public function value()
-        {
-        }
-        /**
-         * Returns the raw input.
-         *
-         * @return mixed
-         */
-        public function raw()
-        {
-        }
-        /**
-         * Returns true if the string matches the pattern for long arguments.
-         *
-         * @return bool
-         */
-        public function isLong()
-        {
-        }
-        /**
-         * Returns true if the string matches the pattern for short arguments.
-         *
-         * @return bool
-         */
-        public function isShort()
-        {
-        }
-        /**
-         * Returns true if the string matches the pattern for arguments.
-         *
-         * @return bool
-         */
-        public function isArgument()
-        {
-        }
-        /**
-         * Returns true if the string matches the pattern for values.
-         *
-         * @return bool
-         */
-        public function isValue()
-        {
-        }
-        /**
-         * Returns true if the argument is short but contains several characters. Each
-         * character is considered a separate argument.
-         *
-         * @return bool
-         */
-        public function canExplode()
-        {
-        }
-        /**
-         * Returns all but the first character of the argument, removing them from the
-         * objects representation at the same time.
-         *
-         * @return array
-         */
-        public function exploded()
-        {
-        }
-    }
-    /**
-     * Arguments help screen renderer
-     */
-    class HelpScreen
-    {
-        protected $_flags = array();
-        protected $_maxFlag = 0;
-        protected $_options = array();
-        protected $_maxOption = 0;
-        public function __construct(\cli\Arguments $arguments)
-        {
-        }
-        public function __toString()
-        {
-        }
-        public function setArguments(\cli\Arguments $arguments)
-        {
-        }
-        public function consumeArgumentFlags(\cli\Arguments $arguments)
-        {
-        }
-        public function consumeArgumentOptions(\cli\Arguments $arguments)
-        {
-        }
-        public function render()
-        {
-        }
-        private function _renderFlags()
-        {
-        }
-        private function _renderOptions()
-        {
-        }
-        private function _renderScreen($options, $max)
-        {
-        }
-        private function _consume($options)
-        {
-        }
-    }
-    /**
-     * Thrown when undefined arguments are detected in strict mode.
-     */
-    class InvalidArguments extends \InvalidArgumentException
-    {
-        protected $arguments;
-        /**
-         * @param array  $arguments  A list of arguments that do not fit the profile.
-         */
-        public function __construct(array $arguments)
-        {
-        }
-        /**
-         * Get the arguments that caused the exception.
-         *
-         * @return array
-         */
-        public function getArguments()
-        {
-        }
-        private function _generateMessage()
-        {
-        }
-    }
-    class Lexer extends \cli\Memoize implements \Iterator
-    {
-        private $_items = array();
-        private $_index = 0;
-        private $_length = 0;
-        private $_first = true;
-        /**
-         * @param array  $items  A list of strings to process as tokens.
-         */
-        public function __construct(array $items)
-        {
-        }
-        /**
-         * The current token.
-         *
-         * @return string
-         */
-        public function current()
-        {
-        }
-        /**
-         * Peek ahead to the next token without moving the cursor.
-         *
-         * @return Argument
-         */
-        public function peek()
-        {
-        }
-        /**
-         * Move the cursor forward 1 element if it is valid.
-         */
-        public function next()
-        {
-        }
-        /**
-         * Return the current position of the cursor.
-         *
-         * @return int
-         */
-        public function key()
-        {
-        }
-        /**
-         * Move forward 1 element and, if the method hasn't been called before, reset
-         * the cursor's position to 0.
-         */
-        public function rewind()
-        {
-        }
-        /**
-         * Returns true if the cursor has not reached the end of the list.
-         *
-         * @return bool
-         */
-        public function valid()
-        {
-        }
-        /**
-         * Push an element to the front of the stack.
-         *
-         * @param mixed  $item  The value to set
-         */
-        public function unshift($item)
-        {
-        }
-        /**
-         * Returns true if the cursor is at the end of the list.
-         *
-         * @return bool
-         */
-        public function end()
-        {
-        }
-        private function _shift()
-        {
-        }
-        private function _explode()
-        {
-        }
-    }
-}
-namespace cli\notify {
-    /**
-     * A Notifer that displays a string of periods.
-     */
-    class Dots extends \cli\Notify
-    {
-        protected $_dots;
-        protected $_format = '{:msg}{:dots}  ({:elapsed}, {:speed}/s)';
-        protected $_iteration;
-        /**
-         * Instatiates a Notification object.
-         *
-         * @param string  $msg       The text to display next to the Notifier.
-         * @param int     $dots      The number of dots to iterate through.
-         * @param int     $interval  The interval in milliseconds between updates.
-         * @throws \InvalidArgumentException
-         */
-        public function __construct($msg, $dots = 3, $interval = 100)
-        {
-        }
-        /**
-         * Prints the correct number of dots to `STDOUT` with the time elapsed and
-         * tick speed.
-         *
-         * @param boolean  $finish  `true` if this was called from
-         *                          `cli\Notify::finish()`, `false` otherwise.
-         * @see cli\out_padded()
-         * @see cli\Notify::formatTime()
-         * @see cli\Notify::speed()
-         */
-        public function display($finish = false)
-        {
-        }
-    }
-    /**
-     * The `Spinner` Notifier displays an ASCII spinner.
-     */
-    class Spinner extends \cli\Notify
-    {
-        protected $_chars = '-\\|/';
-        protected $_format = '{:msg} {:char}  ({:elapsed}, {:speed}/s)';
-        protected $_iteration = 0;
-        /**
-         * Prints the current spinner position to `STDOUT` with the time elapsed
-         * and tick speed.
-         *
-         * @param boolean  $finish  `true` if this was called from
-         *                          `cli\Notify::finish()`, `false` otherwise.
-         * @see cli\out_padded()
-         * @see cli\Notify::formatTime()
-         * @see cli\Notify::speed()
-         */
-        public function display($finish = false)
-        {
-        }
-    }
-}
-namespace cli\progress {
-    /**
-     * Displays a progress bar spanning the entire shell.
-     *
-     * Basic format:
-     *
-     *   ^MSG  PER% [=======================            ]  00:00 / 00:00$
-     */
-    class Bar extends \cli\Progress
-    {
-        protected $_bars = '=>';
-        protected $_formatMessage = '{:msg}  {:percent}% [';
-        protected $_formatTiming = '] {:elapsed} / {:estimated}';
-        protected $_format = '{:msg}{:bar}{:timing}';
-        /**
-         * Prints the progress bar to the screen with percent complete, elapsed time
-         * and estimated total time.
-         *
-         * @param boolean  $finish  `true` if this was called from
-         *                          `cli\Notify::finish()`, `false` otherwise.
-         * @see cli\out()
-         * @see cli\Notify::formatTime()
-         * @see cli\Notify::elapsed()
-         * @see cli\Progress::estimated();
-         * @see cli\Progress::percent()
-         * @see cli\Shell::columns()
-         */
-        public function display($finish = false)
-        {
-        }
-        /**
-         * This method augments the base definition from cli\Notify to optionally
-         * allow passing a new message.
-         *
-         * @param int    $increment The amount to increment by.
-         * @param string $msg       The text to display next to the Notifier. (optional)
-         * @see cli\Notify::tick()
-         */
-        public function tick($increment = 1, $msg = null)
-        {
-        }
-    }
-}
-namespace cli\table {
-    /**
-     * Table renderers are used to change how a table is displayed.
-     */
-    abstract class Renderer
-    {
-        protected $_widths = array();
-        public function __construct(array $widths = array())
-        {
-        }
-        /**
-         * Set the widths of each column in the table.
-         *
-         * @param array  $widths    The widths of the columns.
-         * @param bool   $fallback  Whether to use these values as fallback only.
-         */
-        public function setWidths(array $widths, $fallback = false)
-        {
-        }
-        /**
-         * Render a border for the top and bottom and separating the headers from the
-         * table rows.
-         *
-         * @return string  The table border.
-         */
-        public function border()
-        {
-        }
-        /**
-         * Renders a row for output.
-         *
-         * @param array  $row  The table row.
-         * @return string  The formatted table row.
-         */
-        public abstract function row(array $row);
-    }
-    /**
-     * The ASCII renderer renders tables with ASCII borders.
-     */
-    class Ascii extends \cli\table\Renderer
-    {
-        protected $_characters = array('corner' => '+', 'line' => '-', 'border' => '|', 'padding' => ' ');
-        protected $_border = null;
-        protected $_constraintWidth = null;
-        protected $_pre_colorized = false;
-        /**
-         * Set the widths of each column in the table.
-         *
-         * @param array  $widths    The widths of the columns.
-         * @param bool   $fallback  Whether to use these values as fallback only.
-         */
-        public function setWidths(array $widths, $fallback = false)
-        {
-        }
-        /**
-         * Set the constraint width for the table
-         *
-         * @param int $constraintWidth
-         */
-        public function setConstraintWidth($constraintWidth)
-        {
-        }
-        /**
-         * Set the characters used for rendering the Ascii table.
-         *
-         * The keys `corner`, `line` and `border` are used in rendering.
-         *
-         * @param $characters  array  Characters used in rendering.
-         */
-        public function setCharacters(array $characters)
-        {
-        }
-        /**
-         * Render a border for the top and bottom and separating the headers from the
-         * table rows.
-         *
-         * @return string  The table border.
-         */
-        public function border()
-        {
-        }
-        /**
-         * Renders a row for output.
-         *
-         * @param array  $row  The table row.
-         * @return string  The formatted table row.
-         */
-        public function row(array $row)
-        {
-        }
-        private function padColumn($content, $column)
-        {
-        }
-        /**
-         * Set whether items are pre-colorized.
-         *
-         * @param bool|array $colorized A boolean to set all columns in the table as pre-colorized, or an array of booleans keyed by column index (number) to set individual columns as pre-colorized.
-         */
-        public function setPreColorized($pre_colorized)
-        {
-        }
-        /**
-         * Is a column pre-colorized?
-         *
-         * @param int $column Column index to check.
-         * @return bool True if whole table is marked as pre-colorized, or if the individual column is pre-colorized; else false.
-         */
-        public function isPreColorized($column)
-        {
-        }
-    }
-    /**
-     * The tabular renderer is used for displaying data in a tabular format.
-     */
-    class Tabular extends \cli\table\Renderer
-    {
-        /**
-         * Renders a row for output.
-         *
-         * @param array  $row  The table row.
-         * @return string  The formatted table row.
-         */
-        public function row(array $row)
-        {
-        }
-    }
-}
-namespace cli\tree {
-    /**
-     * Tree renderers are used to change how a tree is displayed.
-     */
-    abstract class Renderer
-    {
-        /**
-         * @param array $tree
-         * @return string|null
-         */
-        public abstract function render(array $tree);
-    }
-    /**
-     * The ASCII renderer renders trees with ASCII lines.
-     */
-    class Ascii extends \cli\tree\Renderer
-    {
-        /**
-         * @param array $tree
-         * @return string
-         */
-        public function render(array $tree)
-        {
-        }
-    }
-    /**
-     * The ASCII renderer renders trees with ASCII lines.
-     */
-    class Markdown extends \cli\tree\Renderer
-    {
-        /**
-         * How many spaces to indent by
-         * @var int
-         */
-        protected $_padding = 2;
-        /**
-         * @param int $padding Optional. Default 2.
-         */
-        function __construct($padding = null)
-        {
-        }
-        /**
-         * Renders the tree
-         *
-         * @param array $tree
-         * @param int $level Optional
-         * @return string
-         */
-        public function render(array $tree, $level = 0)
-        {
-        }
-    }
-}
-namespace {
-    /**
-     * Class TestArguments
-     * @todo add more tests to increase coverage
-     *
-     * @backupGlobals enabled
-     */
-    class TestArguments extends \PHPUnit_Framework_TestCase
-    {
-        /**
-         * Array of expected settings
-         * @var array
-         */
-        protected $settings = \null;
-        /**
-         * Array of flags
-         * @var array
-         */
-        protected $flags = \null;
-        /**
-         * Array of expected options
-         * @var array
-         */
-        protected $options = \null;
-        /**
-         * Clear the $_SERVER['argv'] array
-         */
-        public static function clearArgv()
-        {
-        }
-        /**
-         * Add one or more element(s) at the end of the $_SERVER['argv'] array
-         *
-         * @param  array $args: value(s) to add to the argv array
-         */
-        public static function pushToArgv($args)
-        {
-        }
-        /**
-         * Set up valid flags and options
-         */
-        public function setUp()
-        {
-        }
-        /**
-         * Tear down fixtures
-         */
-        public function tearDown()
-        {
-        }
-        /**
-         * Test adding a flag, getting a flag and getting all flags
-         */
-        public function testAddFlags()
-        {
-        }
-        /**
-         * Test adding a option, getting a option and getting all options
-         */
-        public function testAddOptions()
-        {
-        }
-        /**
-         * Data provider with valid args and options
-         *
-         * @return array set of args and expected parsed values
-         */
-        public function settingsWithValidOptions()
-        {
-        }
-        /**
-         * Data provider with missing options
-         *
-         * @return array set of args and expected parsed values
-         */
-        public function settingsWithMissingOptions()
-        {
-        }
-        /**
-         * Data provider with missing options. The default value should be populated
-         *
-         * @return array set of args and expected parsed values
-         */
-        public function settingsWithMissingOptionsWithDefault()
-        {
-        }
-        public function settingsWithNoOptionsWithDefault()
-        {
-        }
-        /**
-         * Generic private testParse method.
-         *
-         * @param  array $args           arguments as they appear in the cli
-         * @param  array $expectedValues expected values after parsing
-         */
-        private function _testParse($cliParams, $expectedValues)
-        {
-        }
-        /**
-         * @param  array $args           arguments as they appear in the cli
-         * @param  array $expectedValues expected values after parsing
-         *
-         * @dataProvider settingsWithValidOptions
-         */
-        public function testParseWithValidOptions($cliParams, $expectedValues)
-        {
-        }
-        /**
-         * @param  array $args           arguments as they appear in the cli
-         * @param  array $expectedValues expected values after parsing
-         * @dataProvider settingsWithMissingOptions
-         * @expectedException PHPUnit_Framework_Error_Warning
-         * @expectedExceptionMessage no value given for --option1
-         */
-        public function testParseWithMissingOptions($cliParams, $expectedValues)
-        {
-        }
-        /**
-         * @param  array $args           arguments as they appear in the cli
-         * @param  array $expectedValues expected values after parsing
-         * @dataProvider settingsWithMissingOptionsWithDefault
-         */
-        public function testParseWithMissingOptionsWithDefault($cliParams, $expectedValues)
-        {
-        }
-        /**
-         * @param  array $args           arguments as they appear in the cli
-         * @param  array $expectedValues expected values after parsing
-         * @dataProvider settingsWithNoOptionsWithDefault
-         */
-        public function testParseWithNoOptionsWithDefault($cliParams, $expectedValues)
-        {
-        }
-    }
-    class testsCli extends \PHPUnit_Framework_TestCase
-    {
-        function setUp()
-        {
-        }
-        function test_string_length()
-        {
-        }
-        function test_string_width()
-        {
-        }
-        function test_encoded_string_length()
-        {
-        }
-        function test_encoded_string_width()
-        {
-        }
-        function test_encoded_string_pad()
-        {
-        }
-        function test_colorized_string_pad()
-        {
-        }
-        function test_encoded_substr()
-        {
-        }
-        function test_various_substr()
-        {
-        }
-        function test_is_width_encoded_substr()
-        {
-        }
-        function test_colorized_string_length()
-        {
-        }
-        function test_colorized_string_width()
-        {
-        }
-        function test_colorize_string_is_colored()
-        {
-        }
-        function test_colorize_when_colorize_is_forced()
-        {
-        }
-        function test_binary_string_is_converted_back_to_original_string()
-        {
-        }
-        function test_string_cache()
-        {
-        }
-        function test_string_cache_colorize()
-        {
-        }
-        function test_decolorize()
-        {
-        }
-        function test_strwidth()
-        {
-        }
-        function test_safe_strlen()
-        {
-        }
-    }
-    class testsColors extends \PHPUnit_Framework_TestCase
-    {
-        /**
-         * @dataProvider dataColors
-         */
-        function testColors($str, $color)
-        {
-        }
-        function dataColors()
-        {
-        }
-    }
-    /**
-     * Class TestShell
-     */
-    class TestShell extends \PHPUnit_Framework_TestCase
-    {
-        /**
-         * Test getting TERM columns.
-         */
-        function testColumns()
-        {
-        }
-    }
-    /**
-     * Class Test_Table_Ascii
-     *
-     * Acceptance tests for ASCII table drawing.
-     * It will redirect STDOUT to temporary file and check that output matches with expected
-     */
-    class Test_Table_Ascii extends \PHPUnit_Framework_TestCase
-    {
-        /**
-         * @var string Path to temporary file, where STDOUT output will be redirected during tests
-         */
-        private $_mockFile;
-        /**
-         * @var \cli\Table Instance
-         */
-        private $_instance;
-        /**
-         * Creates instance and redirects STDOUT to temporary file
-         */
-        public function setUp()
-        {
-        }
-        /**
-         * Cleans temporary file
-         */
-        public function tearDown()
-        {
-        }
-        /**
-         * Draw simple One column table
-         */
-        public function testDrawOneColumnTable()
-        {
-        }
-        /**
-         * Draw simple One column table with colored string
-         * Output should look like:
-         * +-------------+
-         * | Test Header |
-         * +-------------+
-         * | x           |
-         * +-------------+
-         *
-         * where `x` character has green color.
-         * At the same time it checks that `green` defined in `cli\Colors` really looks as `green`.
-         */
-        public function testDrawOneColumnColoredTable()
-        {
-        }
-        /**
-         * Check it works with colors disabled.
-         */
-        public function testDrawOneColumnColorDisabledTable()
-        {
-        }
-        /**
-         * Checks that spacing and borders are handled correctly in table
-         */
-        public function testSpacingInTable()
-        {
-        }
-        /**
-         * Test correct table indentation and border positions for multibyte strings
-         */
-        public function testTableWithMultibyteStrings()
-        {
-        }
-        /**
-         * Test that % gets escaped correctly.
-         */
-        public function testTableWithPercentCharacters()
-        {
-        }
-        /**
-         * Test that a % is appropriately padded in the table
-         */
-        public function testTablePaddingWithPercentCharacters()
-        {
-        }
-        /**
-         * Draw wide multiplication Table.
-         * Example with many columns, many rows
-         */
-        public function testDrawMultiplicationTable()
-        {
-        }
-        /**
-         * Draw a table with headers but no data
-         */
-        public function testDrawWithHeadersNoData()
-        {
-        }
-        /**
-         * Verifies that Input and Output equals,
-         * Sugar method for fast access from tests
-         *
-         * @param array $input First element is header array, second element is rows array
-         * @param mixed $output Expected output
-         */
-        private function assertInOutEquals(array $input, $output)
-        {
-        }
-        /**
-         * Checks that contents of input string and temporary file match
-         *
-         * @param mixed $expected Expected output
-         */
-        private function assertOutFileEqualsWith($expected)
-        {
-        }
-    }
-    /**
-     * Tests for cli\Table
-     */
-    class Test_Table extends \PHPUnit_Framework_TestCase
-    {
-        public function test_column_value_too_long_ascii()
-        {
-        }
-        public function test_column_value_too_long_with_multibytes()
-        {
-        }
-        public function test_column_odd_single_width_with_double_width()
-        {
-        }
-        public function test_column_fullwidth_and_combining()
-        {
-        }
-        public function test_ascii_pre_colorized_widths()
-        {
-        }
-    }
     /**
      * Lists or flushes the site's rewrite rules, updates the permalink structure.
      *
@@ -19575,341 +16620,6 @@ namespace {
          * @return mixed
          */
         private function sanitize_widget_options($id_base, $dirty_options, $old_options)
-        {
-        }
-    }
-    /**
-     * Features context.
-     */
-    class FeatureContext extends \Behat\Behat\Context\BehatContext implements \Behat\Behat\Context\ClosuredContextInterface
-    {
-        /**
-         * The current working directory for scenarios that have a "Given a WP installation" or "Given an empty directory" step. Variable RUN_DIR. Lives until the end of the scenario.
-         */
-        private static $run_dir;
-        /**
-         * Where WordPress core is downloaded to for caching, and which is copied to RUN_DIR during a "Given a WP installation" step. Lives until manually deleted.
-         */
-        private static $cache_dir;
-        /**
-         * The directory that holds the install cache, and which is copied to RUN_DIR during a "Given a WP installation" step. Recreated on each suite run.
-         */
-        private static $install_cache_dir;
-        /**
-         * The directory that the WP-CLI cache (WP_CLI_CACHE_DIR, normally "$HOME/.wp-cli/cache") is set to on a "Given an empty cache" step.
-         * Variable SUITE_CACHE_DIR. Lives until the end of the scenario (or until another "Given an empty cache" step within the scenario).
-         */
-        private static $suite_cache_dir;
-        /**
-         * Where the current WP-CLI source repository is copied to for Composer-based tests with a "Given a dependency on current wp-cli" step.
-         * Variable COMPOSER_LOCAL_REPOSITORY. Lives until the end of the suite.
-         */
-        private static $composer_local_repository;
-        /**
-         * The test database settings. All but `dbname` can be set via environment variables. The database is dropped at the start of each scenario and created on a "Given a WP installation" step.
-         */
-        private static $db_settings = array('dbname' => 'wp_cli_test', 'dbuser' => 'wp_cli_test', 'dbpass' => 'password1', 'dbhost' => '127.0.0.1');
-        /**
-         * Array of background process ids started by the current scenario. Used to terminate them at the end of the scenario.
-         */
-        private $running_procs = array();
-        /**
-         * Array of variables available as {VARIABLE_NAME}. Some are always set: CORE_CONFIG_SETTINGS, SRC_DIR, CACHE_DIR, WP_VERSION-version-latest.
-         * Some are step-dependent: RUN_DIR, SUITE_CACHE_DIR, COMPOSER_LOCAL_REPOSITORY, PHAR_PATH. One is set on use: INVOKE_WP_CLI_WITH_PHP_ARGS-args.
-         * Scenarios can define their own variables using "Given save" steps. Variables are reset for each scenario.
-         */
-        public $variables = array();
-        /**
-         * The current feature file and scenario line number as '<file>.<line>'. Used in RUN_DIR and SUITE_CACHE_DIR directory names. Set at the start of each scenario.
-         */
-        private static $temp_dir_infix;
-        /**
-         * Settings and variables for WP_CLI_TEST_LOG_RUN_TIMES run time logging.
-         */
-        private static $log_run_times;
-        // Whether to log run times - WP_CLI_TEST_LOG_RUN_TIMES env var. Set on `@BeforeScenario'.
-        private static $suite_start_time;
-        // When the suite started, set on `@BeforeScenario'.
-        private static $output_to;
-        // Where to output log - stdout|error_log. Set on `@BeforeSuite`.
-        private static $num_top_processes;
-        // Number of processes/methods to output by longest run times. Set on `@BeforeSuite`.
-        private static $num_top_scenarios;
-        // Number of scenarios to output by longest run times. Set on `@BeforeSuite`.
-        private static $scenario_run_times = array();
-        // Scenario run times (top `self::$num_top_scenarios` only).
-        private static $scenario_count = 0;
-        // Scenario count, incremented on `@AfterScenario`.
-        private static $proc_method_run_times = array();
-        // Array of run time info for proc methods, keyed by method name and arg, each a 2-element array containing run time and run count.
-        /**
-         * Get the path to the Composer vendor folder.
-         *
-         * @return string Absolute path to the Composer vendor folder.
-         */
-        private static function get_vendor_dir()
-        {
-        }
-        /**
-         * Get the environment variables required for launched `wp` processes
-         */
-        private static function get_process_env_variables()
-        {
-        }
-        /**
-         * Get the internal variables to use within tests.
-         *
-         * @return array Associative array of internal variables that will be mapped
-         *               into tests.
-         */
-        private static function get_behat_internal_variables()
-        {
-        }
-        /**
-         * We cache the results of `wp core download` to improve test performance.
-         * Ideally, we'd cache at the HTTP layer for more reliable tests.
-         */
-        private static function cache_wp_files()
-        {
-        }
-        /**
-         * @BeforeSuite
-         */
-        public static function prepare(\Behat\Behat\Event\SuiteEvent $event)
-        {
-        }
-        /**
-         * @AfterSuite
-         */
-        public static function afterSuite(\Behat\Behat\Event\SuiteEvent $event)
-        {
-        }
-        /**
-         * @BeforeScenario
-         */
-        public function beforeScenario($event)
-        {
-        }
-        /**
-         * @AfterScenario
-         */
-        public function afterScenario($event)
-        {
-        }
-        /**
-         * Terminate a process and any of its children.
-         */
-        private static function terminate_proc($master_pid)
-        {
-        }
-        /**
-         * Create a temporary WP_CLI_CACHE_DIR. Exposed as SUITE_CACHE_DIR in "Given an empty cache" step.
-         */
-        public static function create_cache_dir()
-        {
-        }
-        /**
-         * Initializes context.
-         * Every scenario gets its own context object.
-         *
-         * @param array $parameters context parameters (set them up through behat.yml)
-         */
-        public function __construct(array $parameters)
-        {
-        }
-        public function getStepDefinitionResources()
-        {
-        }
-        public function getHookDefinitionResources()
-        {
-        }
-        /**
-         * Replace standard {VARIABLE_NAME} variables and the special {INVOKE_WP_CLI_WITH_PHP_ARGS-args} and {WP_VERSION-version-latest} variables.
-         * Note that standard variable names can only contain uppercase letters, digits and underscores and cannot begin with a digit.
-         */
-        public function replace_variables($str)
-        {
-        }
-        /**
-         * Substitute {INVOKE_WP_CLI_WITH_PHP_ARGS-args} variables.
-         */
-        private function replace_invoke_wp_cli_with_php_args($str)
-        {
-        }
-        /**
-         * Replace variables callback.
-         */
-        private function replace_var($matches)
-        {
-        }
-        /**
-         * Substitute {WP_VERSION-version-latest} variables.
-         */
-        private function replace_wp_versions($str)
-        {
-        }
-        /**
-         * Get the file and line number for the current behat event.
-         */
-        private static function get_event_file($event, &$line)
-        {
-        }
-        /**
-         * Create the RUN_DIR directory, unless already set for this scenario.
-         */
-        public function create_run_dir()
-        {
-        }
-        public function build_phar($version = 'same')
-        {
-        }
-        public function download_phar($version = 'same')
-        {
-        }
-        /**
-         * CACHE_DIR is a cache for downloaded test data such as images. Lives until manually deleted.
-         */
-        private function set_cache_dir()
-        {
-        }
-        /**
-         * Run a MySQL command with `$db_settings`.
-         *
-         * @param string $sql_cmd Command to run.
-         * @param array $assoc_args Optional. Associative array of options. Default empty.
-         * @param bool $add_database Optional. Whether to add dbname to the $sql_cmd. Default false.
-         */
-        private static function run_sql($sql_cmd, $assoc_args = array(), $add_database = \false)
-        {
-        }
-        public function create_db()
-        {
-        }
-        public function drop_db()
-        {
-        }
-        public function proc($command, $assoc_args = array(), $path = '')
-        {
-        }
-        /**
-         * Start a background process. Will automatically be closed when the tests finish.
-         */
-        public function background_proc($cmd)
-        {
-        }
-        public function move_files($src, $dest)
-        {
-        }
-        /**
-         * Remove a directory (recursive).
-         */
-        public static function remove_dir($dir)
-        {
-        }
-        /**
-         * Copy a directory (recursive). Destination directory must exist.
-         */
-        public static function copy_dir($src_dir, $dest_dir)
-        {
-        }
-        public function add_line_to_wp_config(&$wp_config_code, $line)
-        {
-        }
-        public function download_wp($subdir = '')
-        {
-        }
-        public function create_config($subdir = '', $extra_php = \false)
-        {
-        }
-        public function install_wp($subdir = '')
-        {
-        }
-        public function install_wp_with_composer($vendor_directory = 'vendor')
-        {
-        }
-        public function composer_add_wp_cli_local_repository()
-        {
-        }
-        public function composer_require_current_wp_cli()
-        {
-        }
-        public function start_php_server($subdir = '')
-        {
-        }
-        private function composer_command($cmd)
-        {
-        }
-        /**
-         * Initialize run time logging.
-         */
-        private static function log_run_times_before_suite($event)
-        {
-        }
-        /**
-         * Record the start time of the scenario into the `$scenario_run_times` array.
-         */
-        private static function log_run_times_before_scenario($event)
-        {
-        }
-        /**
-         * Save the run time of the scenario into the `$scenario_run_times` array. Only the top `self::$num_top_scenarios` are kept.
-         */
-        private static function log_run_times_after_scenario($event)
-        {
-        }
-        /**
-         * Copy files in updated directory that are not in source directory to copy directory. ("Incremental backup".)
-         * Note: does not deal with changed files (ie does not compare file contents for changes), for speed reasons.
-         *
-         * @param string $upd_dir The directory to search looking for files/directories not in `$src_dir`.
-         * @param string $src_dir The directory to be compared to `$upd_dir`.
-         * @param string $cop_dir Where to copy any files/directories in `$upd_dir` but not in `$src_dir` to.
-         */
-        private static function dir_diff_copy($upd_dir, $src_dir, $cop_dir)
-        {
-        }
-        /**
-         * Get the scenario key used for `$scenario_run_times` array.
-         * Format "<grandparent-dir> <feature-file>:<line-number>", eg "core-command core-update.feature:221".
-         */
-        private static function get_scenario_key($event)
-        {
-        }
-        /**
-         * Print out stats on the run times of processes and scenarios.
-         */
-        private static function log_run_times_after_suite($event)
-        {
-        }
-        /**
-         * Log the run time of a proc method (one that doesn't use Process but does (use a function that does) a `proc_open()`).
-         */
-        private static function log_proc_method_run_time($key, $start_time)
-        {
-        }
-    }
-    class BehatTagsTest extends \PHPUnit_Framework_TestCase
-    {
-        public $temp_dir;
-        protected function setUp()
-        {
-        }
-        protected function tearDown()
-        {
-        }
-        /**
-         * @dataProvider data_behat_tags_wp_version_github_token
-         */
-        public function test_behat_tags_wp_version_github_token($env, $expected)
-        {
-        }
-        public function data_behat_tags_wp_version_github_token()
-        {
-        }
-        public function test_behat_tags_php_version()
-        {
-        }
-        public function test_behat_tags_extension()
         {
         }
     }
@@ -24116,184 +20826,92 @@ namespace {
         {
         }
     }
-    /**
-     * Basic class
-     *
-     * ## EXAMPLES
-     *
-     *     # Foo.
-     *     $ wp foo
-     */
-    class CommandFactoryTests_Get_Doc_Comment_1_Command_Win extends \WP_CLI_Command
+    class Contrib_List_Command
     {
         /**
-         * Command1 method
+         * List all contributors to this release.
+         *
+         * Run within the main WP-CLI project repository.
          *
          * ## OPTIONS
          *
-         * ## EXAMPLES
+         * [--format=<format>]
+         * : Render output in a specific format.
+         * ---
+         * default: markdown
+         * options:
+         *   - markdown
+         *   - html
+         * ---
          *
-         *     $ wp foo command1 public
+         * @when before_wp_load
          */
-        function command1()
+        public function __invoke($_, $assoc_args)
         {
         }
         /**
-         * Command2 function
+         * Get the milestones for a given project
          *
-         * ## OPTIONS
-         *
-         * [--path=<path>]
-         *
-         * ## EXAMPLES
-         *
-         *     $ wp foo command2 --path=/**a/**b/**c/**
+         * @param string $project
+         * @return array
          */
-        protected static final function command2()
+        private static function get_project_milestones($project, $args = array())
         {
         }
         /**
-        	 * Command3 function
-        	 *
-        	 * ## OPTIONS
-        	 *
-        	 * [--path=<path>]
-        	 *
-        	 * ## EXAMPLES
-        	 *
-        	 *     $ wp foo command3 --path=/**a/**b/**c/**
-        	 function*/
-        public function command3($function)
+         * Get the pull requests assigned to a milestone of a given project
+         *
+         * @param string $project
+         * @param integer $milestone_id
+         * @return array
+         */
+        private static function get_project_milestone_pull_requests($project, $milestone_id)
         {
         }
-        function command4()
+        /**
+         * Parse the contributors from pull request objects
+         *
+         * @param array $pull_requests
+         * @return array
+         */
+        private static function parse_contributors_from_pull_requests($pull_requests)
+        {
+        }
+        /**
+         * Make a request to the GitHub API
+         *
+         * @param string $url
+         * @param string $args
+         * @return array
+         */
+        private static function make_github_api_request($url, $args = array())
         {
         }
     }
-    /**
-     * Basic class
-     *
-     * ## EXAMPLES
-     *
-     *     # Foo.
-     *     $ wp foo --final abstract
-     class*/
-    abstract class CommandFactoryTests_Get_Doc_Comment_2_Command_Win extends \WP_CLI_Command
+    class ProcessTests extends \PHPUnit_Framework_TestCase
     {
-        function command1()
+        /**
+         * @dataProvider data_process_env
+         */
+        public function test_process_env($cmd_prefix, $env, $expected_env_vars, $expected_out)
+        {
+        }
+        public function data_process_env()
         {
         }
     }
-    /**
-     * Basic class
-     *
-     * ## EXAMPLES
-     *
-     *     # Foo.
-     *     $ wp foo
-     */
-    class CommandFactoryTests_Get_Doc_Comment_1_Command extends \WP_CLI_Command
+    class FileCacheTest extends \PHPUnit_Framework_TestCase
     {
         /**
-         * Command1 method
-         *
-         * ## OPTIONS
-         *
-         * ## EXAMPLES
-         *
-         *     $ wp foo command1 public
+         * Test get_root() deals with backslashed directory.
          */
-        function command1()
+        public function testGetRoot()
         {
         }
-        /**
-         * Command2 function
-         *
-         * ## OPTIONS
-         *
-         * [--path=<path>]
-         *
-         * ## EXAMPLES
-         *
-         *     $ wp foo command2 --path=/**a/**b/**c/**
-         */
-        protected static final function command2()
+        public function test_ensure_dir_exists()
         {
         }
-        /**
-        	 * Command3 function
-        	 *
-        	 * ## OPTIONS
-        	 *
-        	 * [--path=<path>]
-        	 *
-        	 * ## EXAMPLES
-        	 *
-        	 *     $ wp foo command3 --path=/**a/**b/**c/**
-        	 function*/
-        public function command3($function)
-        {
-        }
-        function command4()
-        {
-        }
-    }
-    /**
-     * Basic class
-     *
-     * ## EXAMPLES
-     *
-     *     # Foo.
-     *     $ wp foo --final abstract
-     class*/
-    abstract class CommandFactoryTests_Get_Doc_Comment_2_Command extends \WP_CLI_Command
-    {
-        function command1()
-        {
-        }
-    }
-    class ArgValidationTests extends \PHPUnit_Framework_TestCase
-    {
-        public function testMissingPositional()
-        {
-        }
-        public function testRepeatingPositional()
-        {
-        }
-        public function testUnknownAssocEmpty()
-        {
-        }
-        public function testUnknownAssoc()
-        {
-        }
-        public function testMissingAssoc()
-        {
-        }
-        public function testAssocWithOptionalValue()
-        {
-        }
-    }
-    class CommandFactoryTests extends \PHPUnit_Framework_TestCase
-    {
-        /**
-         * @dataProvider dataProviderExtractLastDocComment
-         */
-        public function testExtractLastDocComment($content, $expected)
-        {
-        }
-        /**
-         * @dataProvider dataProviderExtractLastDocComment
-         */
-        public function testExtractLastDocCommentWin($content, $expected)
-        {
-        }
-        public function dataProviderExtractLastDocComment()
-        {
-        }
-        public function testGetDocComment()
-        {
-        }
-        public function testGetDocCommentWin()
+        public function test_export()
         {
         }
     }
@@ -24309,6 +20927,15 @@ namespace {
         {
         }
         public function testExtractAssocDoubleDashInValue()
+        {
+        }
+    }
+    class WPVersionCompareTest extends \PHPUnit_Framework_TestCase
+    {
+        /**
+         * Test basic functionality
+         */
+        public function testBasic()
         {
         }
     }
@@ -24333,90 +20960,6 @@ namespace {
         {
         }
         public function test_desc_doesnt_parse_far_args_yaml()
-        {
-        }
-    }
-    class Extractor_Test extends \PHPUnit_Framework_TestCase
-    {
-        public static $copy_overwrite_files_prefix = 'wp-cli-test-utils-copy-overwrite-files-';
-        public static $expected_wp = array('index1.php', 'license2.php', 'wp-admin/', 'wp-admin/about3.php', 'wp-admin/includes/', 'wp-admin/includes/file4.php', 'wp-admin/widgets5.php', 'wp-config6.php', 'wp-includes/', 'wp-includes/file7.php', 'xmlrpc8.php');
-        public static $logger = \null;
-        public static $prev_logger = \null;
-        public function setUp()
-        {
-        }
-        public function tearDown()
-        {
-        }
-        public function test_rmdir()
-        {
-        }
-        public function test_err_rmdir()
-        {
-        }
-        public function test_copy_overwrite_files()
-        {
-        }
-        public function test_err_copy_overwrite_files()
-        {
-        }
-        public function test_extract_tarball()
-        {
-        }
-        public function test_err_extract_tarball()
-        {
-        }
-        public function test_extract_zip()
-        {
-        }
-        public function test_err_extract_zip()
-        {
-        }
-        public function test_err_extract()
-        {
-        }
-        private function create_test_directory_structure()
-        {
-        }
-        private function recursive_scandir($dir, $prefix_dir = '')
-        {
-        }
-    }
-    class FileCacheTest extends \PHPUnit_Framework_TestCase
-    {
-        /**
-         * Test get_root() deals with backslashed directory.
-         */
-        public function testGetRoot()
-        {
-        }
-        public function test_ensure_dir_exists()
-        {
-        }
-        public function test_export()
-        {
-        }
-    }
-    class HelpTest extends \PHPUnit_Framework_TestCase
-    {
-        public function test_parse_reference_links()
-        {
-        }
-    }
-    class InflectorTest extends \PHPUnit_Framework_TestCase
-    {
-        /** @dataProvider dataProviderPluralize */
-        public function testPluralize($singular, $expected)
-        {
-        }
-        public function dataProviderPluralize()
-        {
-        }
-        /** @dataProvider dataProviderSingularize */
-        public function testSingularize($singular, $expected)
-        {
-        }
-        public function dataProviderSingularize()
         {
         }
     }
@@ -24446,57 +20989,6 @@ namespace {
         {
         }
         public function testExecutionLogger()
-        {
-        }
-    }
-    class ProcessTests extends \PHPUnit_Framework_TestCase
-    {
-        /**
-         * @dataProvider data_process_env
-         */
-        public function test_process_env($cmd_prefix, $env, $expected_env_vars, $expected_out)
-        {
-        }
-        public function data_process_env()
-        {
-        }
-    }
-    class SynopsisParserTest extends \PHPUnit_Framework_TestCase
-    {
-        public function testEmpty()
-        {
-        }
-        public function testPositional()
-        {
-        }
-        public function testFlag()
-        {
-        }
-        public function testGeneric()
-        {
-        }
-        public function testAssoc()
-        {
-        }
-        public function testInvalidAssoc()
-        {
-        }
-        public function testRepeating()
-        {
-        }
-        public function testCombined()
-        {
-        }
-        public function testAllowedValueCharacters()
-        {
-        }
-        public function testRender()
-        {
-        }
-        public function testParseThenRender()
-        {
-        }
-        public function testParseThenRenderNumeric()
         {
         }
     }
@@ -24641,6 +21133,57 @@ namespace {
         {
         }
     }
+    class ArgValidationTests extends \PHPUnit_Framework_TestCase
+    {
+        public function testMissingPositional()
+        {
+        }
+        public function testRepeatingPositional()
+        {
+        }
+        public function testUnknownAssocEmpty()
+        {
+        }
+        public function testUnknownAssoc()
+        {
+        }
+        public function testMissingAssoc()
+        {
+        }
+        public function testAssocWithOptionalValue()
+        {
+        }
+    }
+    class CommandFactoryTests extends \PHPUnit_Framework_TestCase
+    {
+        /**
+         * @dataProvider dataProviderExtractLastDocComment
+         */
+        public function testExtractLastDocComment($content, $expected)
+        {
+        }
+        /**
+         * @dataProvider dataProviderExtractLastDocComment
+         */
+        public function testExtractLastDocCommentWin($content, $expected)
+        {
+        }
+        public function dataProviderExtractLastDocComment()
+        {
+        }
+        public function testGetDocComment()
+        {
+        }
+        public function testGetDocCommentWin()
+        {
+        }
+    }
+    class HelpTest extends \PHPUnit_Framework_TestCase
+    {
+        public function test_parse_reference_links()
+        {
+        }
+    }
     class WP_CLI_Test extends \PHPUnit_Framework_TestCase
     {
         public function testGetPHPBinary()
@@ -24650,77 +21193,1456 @@ namespace {
         {
         }
     }
-    class WPVersionCompareTest extends \PHPUnit_Framework_TestCase
+    class SynopsisParserTest extends \PHPUnit_Framework_TestCase
     {
-        /**
-         * Test basic functionality
-         */
-        public function testBasic()
+        public function testEmpty()
+        {
+        }
+        public function testPositional()
+        {
+        }
+        public function testFlag()
+        {
+        }
+        public function testGeneric()
+        {
+        }
+        public function testAssoc()
+        {
+        }
+        public function testInvalidAssoc()
+        {
+        }
+        public function testRepeating()
+        {
+        }
+        public function testCombined()
+        {
+        }
+        public function testAllowedValueCharacters()
+        {
+        }
+        public function testRender()
+        {
+        }
+        public function testParseThenRender()
+        {
+        }
+        public function testParseThenRenderNumeric()
         {
         }
     }
-    class Contrib_List_Command
+    /**
+     * Basic class
+     *
+     * ## EXAMPLES
+     *
+     *     # Foo.
+     *     $ wp foo
+     */
+    class CommandFactoryTests_Get_Doc_Comment_1_Command extends \WP_CLI_Command
     {
         /**
-         * List all contributors to this release.
-         *
-         * Run within the main WP-CLI project repository.
+         * Command1 method
          *
          * ## OPTIONS
          *
-         * [--format=<format>]
-         * : Render output in a specific format.
-         * ---
-         * default: markdown
-         * options:
-         *   - markdown
-         *   - html
-         * ---
+         * ## EXAMPLES
          *
-         * @when before_wp_load
+         *     $ wp foo command1 public
          */
-        public function __invoke($_, $assoc_args)
+        function command1()
         {
         }
         /**
-         * Get the milestones for a given project
+         * Command2 function
          *
-         * @param string $project
-         * @return array
+         * ## OPTIONS
+         *
+         * [--path=<path>]
+         *
+         * ## EXAMPLES
+         *
+         *     $ wp foo command2 --path=/**a/**b/**c/**
          */
-        private static function get_project_milestones($project, $args = array())
+        protected static final function command2()
         {
         }
         /**
-         * Get the pull requests assigned to a milestone of a given project
-         *
-         * @param string $project
-         * @param integer $milestone_id
-         * @return array
-         */
-        private static function get_project_milestone_pull_requests($project, $milestone_id)
+        	 * Command3 function
+        	 *
+        	 * ## OPTIONS
+        	 *
+        	 * [--path=<path>]
+        	 *
+        	 * ## EXAMPLES
+        	 *
+        	 *     $ wp foo command3 --path=/**a/**b/**c/**
+        	 function*/
+        public function command3($function)
         {
         }
-        /**
-         * Parse the contributors from pull request objects
-         *
-         * @param array $pull_requests
-         * @return array
-         */
-        private static function parse_contributors_from_pull_requests($pull_requests)
-        {
-        }
-        /**
-         * Make a request to the GitHub API
-         *
-         * @param string $url
-         * @param string $args
-         * @return array
-         */
-        private static function make_github_api_request($url, $args = array())
+        function command4()
         {
         }
     }
+    /**
+     * Basic class
+     *
+     * ## EXAMPLES
+     *
+     *     # Foo.
+     *     $ wp foo --final abstract
+     class*/
+    abstract class CommandFactoryTests_Get_Doc_Comment_2_Command extends \WP_CLI_Command
+    {
+        function command1()
+        {
+        }
+    }
+    /**
+     * Basic class
+     *
+     * ## EXAMPLES
+     *
+     *     # Foo.
+     *     $ wp foo
+     */
+    class CommandFactoryTests_Get_Doc_Comment_1_Command_Win extends \WP_CLI_Command
+    {
+        /**
+         * Command1 method
+         *
+         * ## OPTIONS
+         *
+         * ## EXAMPLES
+         *
+         *     $ wp foo command1 public
+         */
+        function command1()
+        {
+        }
+        /**
+         * Command2 function
+         *
+         * ## OPTIONS
+         *
+         * [--path=<path>]
+         *
+         * ## EXAMPLES
+         *
+         *     $ wp foo command2 --path=/**a/**b/**c/**
+         */
+        protected static final function command2()
+        {
+        }
+        /**
+        	 * Command3 function
+        	 *
+        	 * ## OPTIONS
+        	 *
+        	 * [--path=<path>]
+        	 *
+        	 * ## EXAMPLES
+        	 *
+        	 *     $ wp foo command3 --path=/**a/**b/**c/**
+        	 function*/
+        public function command3($function)
+        {
+        }
+        function command4()
+        {
+        }
+    }
+    /**
+     * Basic class
+     *
+     * ## EXAMPLES
+     *
+     *     # Foo.
+     *     $ wp foo --final abstract
+     class*/
+    abstract class CommandFactoryTests_Get_Doc_Comment_2_Command_Win extends \WP_CLI_Command
+    {
+        function command1()
+        {
+        }
+    }
+    class InflectorTest extends \PHPUnit_Framework_TestCase
+    {
+        /** @dataProvider dataProviderPluralize */
+        public function testPluralize($singular, $expected)
+        {
+        }
+        public function dataProviderPluralize()
+        {
+        }
+        /** @dataProvider dataProviderSingularize */
+        public function testSingularize($singular, $expected)
+        {
+        }
+        public function dataProviderSingularize()
+        {
+        }
+    }
+    class Extractor_Test extends \PHPUnit_Framework_TestCase
+    {
+        public static $copy_overwrite_files_prefix = 'wp-cli-test-utils-copy-overwrite-files-';
+        public static $expected_wp = array('index1.php', 'license2.php', 'wp-admin/', 'wp-admin/about3.php', 'wp-admin/includes/', 'wp-admin/includes/file4.php', 'wp-admin/widgets5.php', 'wp-config6.php', 'wp-includes/', 'wp-includes/file7.php', 'xmlrpc8.php');
+        public static $logger = \null;
+        public static $prev_logger = \null;
+        public function setUp()
+        {
+        }
+        public function tearDown()
+        {
+        }
+        public function test_rmdir()
+        {
+        }
+        public function test_err_rmdir()
+        {
+        }
+        public function test_copy_overwrite_files()
+        {
+        }
+        public function test_err_copy_overwrite_files()
+        {
+        }
+        public function test_extract_tarball()
+        {
+        }
+        public function test_err_extract_tarball()
+        {
+        }
+        public function test_extract_zip()
+        {
+        }
+        public function test_err_extract_zip()
+        {
+        }
+        public function test_err_extract()
+        {
+        }
+        private function create_test_directory_structure()
+        {
+        }
+        private function recursive_scandir($dir, $prefix_dir = '')
+        {
+        }
+    }
+    /**
+     * Features context.
+     */
+    class FeatureContext extends \Behat\Behat\Context\BehatContext implements \Behat\Behat\Context\ClosuredContextInterface
+    {
+        /**
+         * The current working directory for scenarios that have a "Given a WP installation" or "Given an empty directory" step. Variable RUN_DIR. Lives until the end of the scenario.
+         */
+        private static $run_dir;
+        /**
+         * Where WordPress core is downloaded to for caching, and which is copied to RUN_DIR during a "Given a WP installation" step. Lives until manually deleted.
+         */
+        private static $cache_dir;
+        /**
+         * The directory that holds the install cache, and which is copied to RUN_DIR during a "Given a WP installation" step. Recreated on each suite run.
+         */
+        private static $install_cache_dir;
+        /**
+         * The directory that the WP-CLI cache (WP_CLI_CACHE_DIR, normally "$HOME/.wp-cli/cache") is set to on a "Given an empty cache" step.
+         * Variable SUITE_CACHE_DIR. Lives until the end of the scenario (or until another "Given an empty cache" step within the scenario).
+         */
+        private static $suite_cache_dir;
+        /**
+         * Where the current WP-CLI source repository is copied to for Composer-based tests with a "Given a dependency on current wp-cli" step.
+         * Variable COMPOSER_LOCAL_REPOSITORY. Lives until the end of the suite.
+         */
+        private static $composer_local_repository;
+        /**
+         * The test database settings. All but `dbname` can be set via environment variables. The database is dropped at the start of each scenario and created on a "Given a WP installation" step.
+         */
+        private static $db_settings = array('dbname' => 'wp_cli_test', 'dbuser' => 'wp_cli_test', 'dbpass' => 'password1', 'dbhost' => '127.0.0.1');
+        /**
+         * Array of background process ids started by the current scenario. Used to terminate them at the end of the scenario.
+         */
+        private $running_procs = array();
+        /**
+         * Array of variables available as {VARIABLE_NAME}. Some are always set: CORE_CONFIG_SETTINGS, SRC_DIR, CACHE_DIR, WP_VERSION-version-latest.
+         * Some are step-dependent: RUN_DIR, SUITE_CACHE_DIR, COMPOSER_LOCAL_REPOSITORY, PHAR_PATH. One is set on use: INVOKE_WP_CLI_WITH_PHP_ARGS-args.
+         * Scenarios can define their own variables using "Given save" steps. Variables are reset for each scenario.
+         */
+        public $variables = array();
+        /**
+         * The current feature file and scenario line number as '<file>.<line>'. Used in RUN_DIR and SUITE_CACHE_DIR directory names. Set at the start of each scenario.
+         */
+        private static $temp_dir_infix;
+        /**
+         * Settings and variables for WP_CLI_TEST_LOG_RUN_TIMES run time logging.
+         */
+        private static $log_run_times;
+        // Whether to log run times - WP_CLI_TEST_LOG_RUN_TIMES env var. Set on `@BeforeScenario'.
+        private static $suite_start_time;
+        // When the suite started, set on `@BeforeScenario'.
+        private static $output_to;
+        // Where to output log - stdout|error_log. Set on `@BeforeSuite`.
+        private static $num_top_processes;
+        // Number of processes/methods to output by longest run times. Set on `@BeforeSuite`.
+        private static $num_top_scenarios;
+        // Number of scenarios to output by longest run times. Set on `@BeforeSuite`.
+        private static $scenario_run_times = array();
+        // Scenario run times (top `self::$num_top_scenarios` only).
+        private static $scenario_count = 0;
+        // Scenario count, incremented on `@AfterScenario`.
+        private static $proc_method_run_times = array();
+        // Array of run time info for proc methods, keyed by method name and arg, each a 2-element array containing run time and run count.
+        /**
+         * Get the path to the Composer vendor folder.
+         *
+         * @return string Absolute path to the Composer vendor folder.
+         */
+        private static function get_vendor_dir()
+        {
+        }
+        /**
+         * Get the environment variables required for launched `wp` processes
+         */
+        private static function get_process_env_variables()
+        {
+        }
+        /**
+         * Get the internal variables to use within tests.
+         *
+         * @return array Associative array of internal variables that will be mapped
+         *               into tests.
+         */
+        private static function get_behat_internal_variables()
+        {
+        }
+        /**
+         * We cache the results of `wp core download` to improve test performance.
+         * Ideally, we'd cache at the HTTP layer for more reliable tests.
+         */
+        private static function cache_wp_files()
+        {
+        }
+        /**
+         * @BeforeSuite
+         */
+        public static function prepare(\Behat\Behat\Event\SuiteEvent $event)
+        {
+        }
+        /**
+         * @AfterSuite
+         */
+        public static function afterSuite(\Behat\Behat\Event\SuiteEvent $event)
+        {
+        }
+        /**
+         * @BeforeScenario
+         */
+        public function beforeScenario($event)
+        {
+        }
+        /**
+         * @AfterScenario
+         */
+        public function afterScenario($event)
+        {
+        }
+        /**
+         * Terminate a process and any of its children.
+         */
+        private static function terminate_proc($master_pid)
+        {
+        }
+        /**
+         * Create a temporary WP_CLI_CACHE_DIR. Exposed as SUITE_CACHE_DIR in "Given an empty cache" step.
+         */
+        public static function create_cache_dir()
+        {
+        }
+        /**
+         * Initializes context.
+         * Every scenario gets its own context object.
+         *
+         * @param array $parameters context parameters (set them up through behat.yml)
+         */
+        public function __construct(array $parameters)
+        {
+        }
+        public function getStepDefinitionResources()
+        {
+        }
+        public function getHookDefinitionResources()
+        {
+        }
+        /**
+         * Replace standard {VARIABLE_NAME} variables and the special {INVOKE_WP_CLI_WITH_PHP_ARGS-args} and {WP_VERSION-version-latest} variables.
+         * Note that standard variable names can only contain uppercase letters, digits and underscores and cannot begin with a digit.
+         */
+        public function replace_variables($str)
+        {
+        }
+        /**
+         * Substitute {INVOKE_WP_CLI_WITH_PHP_ARGS-args} variables.
+         */
+        private function replace_invoke_wp_cli_with_php_args($str)
+        {
+        }
+        /**
+         * Replace variables callback.
+         */
+        private function replace_var($matches)
+        {
+        }
+        /**
+         * Substitute {WP_VERSION-version-latest} variables.
+         */
+        private function replace_wp_versions($str)
+        {
+        }
+        /**
+         * Get the file and line number for the current behat event.
+         */
+        private static function get_event_file($event, &$line)
+        {
+        }
+        /**
+         * Create the RUN_DIR directory, unless already set for this scenario.
+         */
+        public function create_run_dir()
+        {
+        }
+        public function build_phar($version = 'same')
+        {
+        }
+        public function download_phar($version = 'same')
+        {
+        }
+        /**
+         * CACHE_DIR is a cache for downloaded test data such as images. Lives until manually deleted.
+         */
+        private function set_cache_dir()
+        {
+        }
+        /**
+         * Run a MySQL command with `$db_settings`.
+         *
+         * @param string $sql_cmd Command to run.
+         * @param array $assoc_args Optional. Associative array of options. Default empty.
+         * @param bool $add_database Optional. Whether to add dbname to the $sql_cmd. Default false.
+         */
+        private static function run_sql($sql_cmd, $assoc_args = array(), $add_database = \false)
+        {
+        }
+        public function create_db()
+        {
+        }
+        public function drop_db()
+        {
+        }
+        public function proc($command, $assoc_args = array(), $path = '')
+        {
+        }
+        /**
+         * Start a background process. Will automatically be closed when the tests finish.
+         */
+        public function background_proc($cmd)
+        {
+        }
+        public function move_files($src, $dest)
+        {
+        }
+        /**
+         * Remove a directory (recursive).
+         */
+        public static function remove_dir($dir)
+        {
+        }
+        /**
+         * Copy a directory (recursive). Destination directory must exist.
+         */
+        public static function copy_dir($src_dir, $dest_dir)
+        {
+        }
+        public function add_line_to_wp_config(&$wp_config_code, $line)
+        {
+        }
+        public function download_wp($subdir = '')
+        {
+        }
+        public function create_config($subdir = '', $extra_php = \false)
+        {
+        }
+        public function install_wp($subdir = '')
+        {
+        }
+        public function install_wp_with_composer($vendor_directory = 'vendor')
+        {
+        }
+        public function composer_add_wp_cli_local_repository()
+        {
+        }
+        public function composer_require_current_wp_cli()
+        {
+        }
+        public function start_php_server($subdir = '')
+        {
+        }
+        private function composer_command($cmd)
+        {
+        }
+        /**
+         * Initialize run time logging.
+         */
+        private static function log_run_times_before_suite($event)
+        {
+        }
+        /**
+         * Record the start time of the scenario into the `$scenario_run_times` array.
+         */
+        private static function log_run_times_before_scenario($event)
+        {
+        }
+        /**
+         * Save the run time of the scenario into the `$scenario_run_times` array. Only the top `self::$num_top_scenarios` are kept.
+         */
+        private static function log_run_times_after_scenario($event)
+        {
+        }
+        /**
+         * Copy files in updated directory that are not in source directory to copy directory. ("Incremental backup".)
+         * Note: does not deal with changed files (ie does not compare file contents for changes), for speed reasons.
+         *
+         * @param string $upd_dir The directory to search looking for files/directories not in `$src_dir`.
+         * @param string $src_dir The directory to be compared to `$upd_dir`.
+         * @param string $cop_dir Where to copy any files/directories in `$upd_dir` but not in `$src_dir` to.
+         */
+        private static function dir_diff_copy($upd_dir, $src_dir, $cop_dir)
+        {
+        }
+        /**
+         * Get the scenario key used for `$scenario_run_times` array.
+         * Format "<grandparent-dir> <feature-file>:<line-number>", eg "core-command core-update.feature:221".
+         */
+        private static function get_scenario_key($event)
+        {
+        }
+        /**
+         * Print out stats on the run times of processes and scenarios.
+         */
+        private static function log_run_times_after_suite($event)
+        {
+        }
+        /**
+         * Log the run time of a proc method (one that doesn't use Process but does (use a function that does) a `proc_open()`).
+         */
+        private static function log_proc_method_run_time($key, $start_time)
+        {
+        }
+    }
+    class BehatTagsTest extends \PHPUnit_Framework_TestCase
+    {
+        public $temp_dir;
+        protected function setUp()
+        {
+        }
+        protected function tearDown()
+        {
+        }
+        /**
+         * @dataProvider data_behat_tags_wp_version_github_token
+         */
+        public function test_behat_tags_wp_version_github_token($env, $expected)
+        {
+        }
+        public function data_behat_tags_wp_version_github_token()
+        {
+        }
+        public function test_behat_tags_php_version()
+        {
+        }
+        public function test_behat_tags_extension()
+        {
+        }
+    }
+}
+namespace WP_CLI\Entity\Tests {
+    class RecursiveDataStructureTraverserTest extends \PHPUnit_Framework_TestCase
+    {
+        /** @test */
+        public function it_can_get_a_top_level_array_value()
+        {
+        }
+        /** @test */
+        public function it_can_get_a_top_level_object_value()
+        {
+        }
+        /** @test */
+        public function it_can_get_a_nested_array_value()
+        {
+        }
+        /** @test */
+        public function it_can_get_a_nested_object_value()
+        {
+        }
+        /** @test */
+        public function it_can_set_a_nested_array_value()
+        {
+        }
+        /** @test */
+        public function it_can_set_a_nested_object_value()
+        {
+        }
+        /** @test */
+        public function it_can_update_an_integer_object_value()
+        {
+        }
+        /** @test */
+        public function it_can_delete_a_nested_array_value()
+        {
+        }
+        /** @test */
+        public function it_can_delete_a_nested_object_value()
+        {
+        }
+        /** @test */
+        public function it_can_insert_a_key_into_a_nested_array()
+        {
+        }
+        /** @test */
+        public function it_throws_an_exception_when_attempting_to_create_a_key_on_an_invalid_type()
+        {
+        }
+    }
+}
+namespace {
+    class IndentTest extends \PHPUnit_Framework_TestCase
+    {
+        protected $Y;
+        protected function setUp()
+        {
+        }
+        public function testIndent_1()
+        {
+        }
+        public function testIndent_2()
+        {
+        }
+        public function testIndent_3()
+        {
+        }
+        public function testIndent_4()
+        {
+        }
+        public function testIndent_5()
+        {
+        }
+        public function testIndent_6()
+        {
+        }
+        public function testIndent_space()
+        {
+        }
+        public function testListAndComment()
+        {
+        }
+        public function testAnchorAndAlias()
+        {
+        }
+    }
+    class LoadTest extends \PHPUnit_Framework_TestCase
+    {
+        public function testQuotes()
+        {
+        }
+    }
+    class RoundTripTest extends \PHPUnit_Framework_TestCase
+    {
+        protected function setUp()
+        {
+        }
+        public function testNull()
+        {
+        }
+        public function testY()
+        {
+        }
+        public function testExclam()
+        {
+        }
+        public function test5()
+        {
+        }
+        public function testSpaces()
+        {
+        }
+        public function testApostrophes()
+        {
+        }
+        public function testNewLines()
+        {
+        }
+        public function testHashes()
+        {
+        }
+        public function testPreserveString()
+        {
+        }
+        public function testPreserveBool()
+        {
+        }
+        public function testPreserveInteger()
+        {
+        }
+        public function testWordWrap()
+        {
+        }
+        public function testABCD()
+        {
+        }
+        public function testABCD2()
+        {
+        }
+    }
+    class ParseTest extends \PHPUnit_Framework_TestCase
+    {
+        protected $yaml;
+        protected function setUp()
+        {
+        }
+        public function testMergeHashKeys()
+        {
+        }
+        public function testDeathMasks()
+        {
+        }
+        public function testDevDb()
+        {
+        }
+        public function testNumericKey()
+        {
+        }
+        public function testMappingsString()
+        {
+        }
+        public function testMappingsInt()
+        {
+        }
+        public function testMappingsHex()
+        {
+        }
+        public function testMappingsBooleanTrue()
+        {
+        }
+        public function testMappingsBooleanFalse()
+        {
+        }
+        public function testMappingsZero()
+        {
+        }
+        public function testMappingsNull()
+        {
+        }
+        public function testMappingsNotNull()
+        {
+        }
+        public function testMappingsFloat()
+        {
+        }
+        public function testMappingsNegative()
+        {
+        }
+        public function testMappingsSmallFloat()
+        {
+        }
+        public function testNewline()
+        {
+        }
+        public function testQuotedNewline()
+        {
+        }
+        public function testSeq0()
+        {
+        }
+        public function testSeq1()
+        {
+        }
+        public function testSeq2()
+        {
+        }
+        public function testSeq3()
+        {
+        }
+        public function testSeqMap()
+        {
+        }
+        public function testMappedSequence()
+        {
+        }
+        public function testAnotherSequence()
+        {
+        }
+        public function testFoldedBlock()
+        {
+        }
+        public function testLiteralAsMapped()
+        {
+        }
+        public function testCrazy()
+        {
+        }
+        public function testColons()
+        {
+        }
+        public function testInline()
+        {
+        }
+        public function testNestedInline()
+        {
+        }
+        public function testNestedNestedInline()
+        {
+        }
+        public function testInlineMappings()
+        {
+        }
+        public function testNestedInlineMappings()
+        {
+        }
+        public function testReferences()
+        {
+        }
+        public function testReferences2()
+        {
+        }
+        public function testReferences3()
+        {
+        }
+        public function testEscapedQuotes()
+        {
+        }
+        public function testEscapedQuotes_2()
+        {
+        }
+        public function testEscapedQuotes_3()
+        {
+        }
+        public function testQuotes()
+        {
+        }
+        public function testQuoteSequence()
+        {
+        }
+        public function testShortSequence()
+        {
+        }
+        public function testQuotedNewlines()
+        {
+        }
+        public function testHash_1()
+        {
+        }
+        public function testHash_2()
+        {
+        }
+        public function testHash_3()
+        {
+        }
+        public function testEndloop()
+        {
+        }
+        public function testReallyLargeNumber()
+        {
+        }
+        public function testFloatWithZeros()
+        {
+        }
+        public function testFloatWithQuotes()
+        {
+        }
+        public function testFloatInverse()
+        {
+        }
+        public function testIntArray()
+        {
+        }
+        public function testArrayOnSeveralLines()
+        {
+        }
+        public function testArrayWithCommas()
+        {
+        }
+        public function testmoreLessKey()
+        {
+        }
+        public function testArrayOfZero()
+        {
+        }
+        public function testSophisticatedArrayOfZero()
+        {
+        }
+        public function testSwitches()
+        {
+        }
+        public function testEmptySequence()
+        {
+        }
+        public function testEmptyHash()
+        {
+        }
+        public function testEmptykey()
+        {
+        }
+        public function testMultilines()
+        {
+        }
+        public function testManyNewlines()
+        {
+        }
+        public function testWerte()
+        {
+        }
+        /* public function testNoIndent() {
+             $this->assertSame (array(
+               array ('record1'=>'value1'),
+               array ('record2'=>'value2')
+             )
+             , $this->yaml['noindent_records']);
+           } */
+        public function testColonsInKeys()
+        {
+        }
+        public function testColonsInKeys2()
+        {
+        }
+        public function testUnquotedColonsInKeys()
+        {
+        }
+        public function testComplicatedKeyWithColon()
+        {
+        }
+        public function testKeysInMappedValueException()
+        {
+        }
+        public function testKeysInValueException()
+        {
+        }
+        public function testSpecialCharacters()
+        {
+        }
+        public function testAngleQuotes()
+        {
+        }
+        public function testFailingColons()
+        {
+        }
+        public function testQuotesWithComments()
+        {
+        }
+        public function testArrayWithComments()
+        {
+        }
+        public function testAfterArrayWithKittens()
+        {
+        }
+        // Plain characters http://www.yaml.org/spec/1.2/spec.html#id2789510
+        public function testKai()
+        {
+        }
+        public function testKaiList()
+        {
+        }
+        public function testDifferentQuoteTypes()
+        {
+        }
+        public function testDifferentQuoteTypes2()
+        {
+        }
+        // Separation spaces http://www.yaml.org/spec/1.2/spec.html#id2778394
+        public function testMultipleArrays()
+        {
+        }
+    }
+    class DumpTest extends \PHPUnit_Framework_TestCase
+    {
+        private $files_to_test = array();
+        public function setUp()
+        {
+        }
+        public function testShortSyntax()
+        {
+        }
+        public function testDump()
+        {
+        }
+        public function testDumpWithQuotes()
+        {
+        }
+        public function testDumpArrays()
+        {
+        }
+        public function testNull()
+        {
+        }
+        public function testNext()
+        {
+        }
+        public function testDumpingMixedArrays()
+        {
+        }
+        public function testMixed()
+        {
+        }
+        public function testDumpNumerics()
+        {
+        }
+        public function testDumpAsterisks()
+        {
+        }
+        public function testDumpAmpersands()
+        {
+        }
+        public function testDumpExclamations()
+        {
+        }
+        public function testDumpExclamations2()
+        {
+        }
+        public function testDumpApostrophes()
+        {
+        }
+        public function testDumpNumericHashes()
+        {
+        }
+        public function testEmpty()
+        {
+        }
+        public function testHashesInKeys()
+        {
+        }
+        public function testParagraph()
+        {
+        }
+        public function testParagraphTwo()
+        {
+        }
+        public function testString()
+        {
+        }
+        public function testStringLong()
+        {
+        }
+        public function testStringDoubleQuote()
+        {
+        }
+        public function testLongStringDoubleQuote()
+        {
+        }
+        public function testStringStartingWithSpace()
+        {
+        }
+        public function testPerCentOne()
+        {
+        }
+        public function testPerCentAndSimpleQuote()
+        {
+        }
+        public function testPerCentAndDoubleQuote()
+        {
+        }
+    }
+}
+namespace Mustangostang {
+    /**
+     * Spyc -- A Simple PHP YAML Class
+     * @version 0.6.2
+     * @author Vlad Andersen <vlad.andersen@gmail.com>
+     * @author Chris Wanstrath <chris@ozmm.org>
+     * @link https://github.com/mustangostang/spyc/
+     * @copyright Copyright 2005-2006 Chris Wanstrath, 2006-2011 Vlad Andersen
+     * @license http://www.opensource.org/licenses/mit-license.php MIT License
+     * @package Spyc
+     */
+    /**
+     * The Simple PHP YAML Class.
+     *
+     * This class can be used to read a YAML file and convert its contents
+     * into a PHP array.  It currently supports a very limited subsection of
+     * the YAML spec.
+     *
+     * Usage:
+     * <code>
+     *   $Spyc  = new Spyc;
+     *   $array = $Spyc->load($file);
+     * </code>
+     * or:
+     * <code>
+     *   $array = Spyc::YAMLLoad($file);
+     * </code>
+     * or:
+     * <code>
+     *   $array = spyc_load_file($file);
+     * </code>
+     * @package Spyc
+     */
+    class Spyc
+    {
+        // SETTINGS
+        const REMPTY = "\0\0\0\0\0";
+        /**
+         * Setting this to true will force YAMLDump to enclose any string value in
+         * quotes.  False by default.
+         *
+         * @var bool
+         */
+        public $setting_dump_force_quotes = false;
+        /**
+         * Setting this to true will forse YAMLLoad to use syck_load function when
+         * possible. False by default.
+         * @var bool
+         */
+        public $setting_use_syck_is_possible = false;
+        /**#@+
+         * @access private
+         * @var mixed
+         */
+        private $_dumpIndent;
+        private $_dumpWordWrap;
+        private $_containsGroupAnchor = false;
+        private $_containsGroupAlias = false;
+        private $path;
+        private $result;
+        private $LiteralPlaceHolder = '___YAML_Literal_Block___';
+        private $SavedGroups = array();
+        private $indent;
+        /**
+         * Path modifier that should be applied after adding current element.
+         * @var array
+         */
+        private $delayedPath = array();
+        /**#@+
+         * @access public
+         * @var mixed
+         */
+        public $_nodeId;
+        /**
+         * Load a valid YAML string to Spyc.
+         * @param string $input
+         * @return array
+         */
+        public function load($input)
+        {
+        }
+        /**
+         * Load a valid YAML file to Spyc.
+         * @param string $file
+         * @return array
+         */
+        public function loadFile($file)
+        {
+        }
+        /**
+         * Load YAML into a PHP array statically
+         *
+         * The load method, when supplied with a YAML stream (string or file),
+         * will do its best to convert YAML in a file into a PHP array.  Pretty
+         * simple.
+         *  Usage:
+         *  <code>
+         *   $array = Spyc::YAMLLoad('lucky.yaml');
+         *   print_r($array);
+         *  </code>
+         * @access public
+         * @return array
+         * @param string $input Path of YAML file or string containing YAML
+         */
+        public static function YAMLLoad($input)
+        {
+        }
+        /**
+         * Load a string of YAML into a PHP array statically
+         *
+         * The load method, when supplied with a YAML string, will do its best
+         * to convert YAML in a string into a PHP array.  Pretty simple.
+         *
+         * Note: use this function if you don't want files from the file system
+         * loaded and processed as YAML.  This is of interest to people concerned
+         * about security whose input is from a string.
+         *
+         *  Usage:
+         *  <code>
+         *   $array = Spyc::YAMLLoadString("---\n0: hello world\n");
+         *   print_r($array);
+         *  </code>
+         * @access public
+         * @return array
+         * @param string $input String containing YAML
+         */
+        public static function YAMLLoadString($input)
+        {
+        }
+        /**
+         * Dump YAML from PHP array statically
+         *
+         * The dump method, when supplied with an array, will do its best
+         * to convert the array into friendly YAML.  Pretty simple.  Feel free to
+         * save the returned string as nothing.yaml and pass it around.
+         *
+         * Oh, and you can decide how big the indent is and what the wordwrap
+         * for folding is.  Pretty cool -- just pass in 'false' for either if
+         * you want to use the default.
+         *
+         * Indent's default is 2 spaces, wordwrap's default is 40 characters.  And
+         * you can turn off wordwrap by passing in 0.
+         *
+         * @access public
+         * @return string
+         * @param array|\stdClass $array PHP array
+         * @param int $indent Pass in false to use the default, which is 2
+         * @param int $wordwrap Pass in 0 for no wordwrap, false for default (40)
+         * @param bool $no_opening_dashes Do not start YAML file with "---\n"
+         */
+        public static function YAMLDump($array, $indent = false, $wordwrap = false, $no_opening_dashes = false)
+        {
+        }
+        /**
+         * Dump PHP array to YAML
+         *
+         * The dump method, when supplied with an array, will do its best
+         * to convert the array into friendly YAML.  Pretty simple.  Feel free to
+         * save the returned string as tasteful.yaml and pass it around.
+         *
+         * Oh, and you can decide how big the indent is and what the wordwrap
+         * for folding is.  Pretty cool -- just pass in 'false' for either if
+         * you want to use the default.
+         *
+         * Indent's default is 2 spaces, wordwrap's default is 40 characters.  And
+         * you can turn off wordwrap by passing in 0.
+         *
+         * @access public
+         * @return string
+         * @param array $array PHP array
+         * @param int $indent Pass in false to use the default, which is 2
+         * @param int $wordwrap Pass in 0 for no wordwrap, false for default (40)
+         */
+        public function dump($array, $indent = false, $wordwrap = false, $no_opening_dashes = false)
+        {
+        }
+        /**
+         * Attempts to convert a key / value array item to YAML
+         * @access private
+         * @return string
+         * @param $key The name of the key
+         * @param $value The value of the item
+         * @param $indent The indent of the current node
+         */
+        private function _yamlize($key, $value, $indent, $previous_key = -1, $first_key = 0, $source_array = null)
+        {
+        }
+        /**
+         * Attempts to convert an array to YAML
+         * @access private
+         * @return string
+         * @param $array The array you want to convert
+         * @param $indent The indent of the current level
+         */
+        private function _yamlizeArray($array, $indent)
+        {
+        }
+        /**
+         * Returns YAML from a key and a value
+         * @access private
+         * @return string
+         * @param $key The name of the key
+         * @param $value The value of the item
+         * @param $indent The indent of the current node
+         */
+        private function _dumpNode($key, $value, $indent, $previous_key = -1, $first_key = 0, $source_array = null)
+        {
+        }
+        /**
+         * Creates a literal block for dumping
+         * @access private
+         * @return string
+         * @param $value
+         * @param $indent int The value of the indent
+         */
+        private function _doLiteralBlock($value, $indent)
+        {
+        }
+        /**
+         * Folds a string of text, if necessary
+         * @access private
+         * @return string
+         * @param $value The string you wish to fold
+         */
+        private function _doFolding($value, $indent)
+        {
+        }
+        private function isTrueWord($value)
+        {
+        }
+        private function isFalseWord($value)
+        {
+        }
+        private function isNullWord($value)
+        {
+        }
+        private function isTranslationWord($value)
+        {
+        }
+        /**
+         * Coerce a string into a native type
+         * Reference: http://yaml.org/type/bool.html
+         * TODO: Use only words from the YAML spec.
+         * @access private
+         * @param $value The value to coerce
+         */
+        private function coerceValue(&$value)
+        {
+        }
+        /**
+         * Given a set of words, perform the appropriate translations on them to
+         * match the YAML 1.1 specification for type coercing.
+         * @param $words The words to translate
+         * @access private
+         */
+        private static function getTranslations(array $words)
+        {
+        }
+        // LOADING FUNCTIONS
+        private function _load($input)
+        {
+        }
+        private function _loadString($input)
+        {
+        }
+        private function loadWithSource($Source)
+        {
+        }
+        private function loadFromSource($input)
+        {
+        }
+        private function loadFromString($input)
+        {
+        }
+        /**
+         * Parses YAML code and returns an array for a node
+         * @access private
+         * @return array
+         * @param string $line A line from the YAML file
+         */
+        private function _parseLine($line)
+        {
+        }
+        /**
+         * Finds the type of the passed value, returns the value as the new type.
+         * @access private
+         * @param string $value
+         * @return mixed
+         */
+        private function _toType($value)
+        {
+        }
+        /**
+         * Used in inlines to check for more inlines or quoted strings
+         * @access private
+         * @return array
+         */
+        private function _inlineEscape($inline)
+        {
+        }
+        private function literalBlockContinues($line, $lineIndent)
+        {
+        }
+        private function referenceContentsByAlias($alias)
+        {
+        }
+        private function addArrayInline($array, $indent)
+        {
+        }
+        private function addArray($incoming_data, $incoming_indent)
+        {
+        }
+        private static function startsLiteralBlock($line)
+        {
+        }
+        private static function greedilyNeedNextLine($line)
+        {
+        }
+        private function addLiteralLine($literalBlock, $line, $literalBlockStyle, $indent = -1)
+        {
+        }
+        function revertLiteralPlaceHolder($lineArray, $literalBlock)
+        {
+        }
+        private static function stripIndent($line, $indent = -1)
+        {
+        }
+        private function getParentPathByIndent($indent)
+        {
+        }
+        private function clearBiggerPathValues($indent)
+        {
+        }
+        private static function isComment($line)
+        {
+        }
+        private static function isEmpty($line)
+        {
+        }
+        private function isArrayElement($line)
+        {
+        }
+        private function isHashElement($line)
+        {
+        }
+        private function isLiteral($line)
+        {
+        }
+        private static function unquote($value)
+        {
+        }
+        private function startsMappedSequence($line)
+        {
+        }
+        private function returnMappedSequence($line)
+        {
+        }
+        private function checkKeysInValue($value)
+        {
+        }
+        private function returnMappedValue($line)
+        {
+        }
+        private function startsMappedValue($line)
+        {
+        }
+        private function isPlainArray($line)
+        {
+        }
+        private function returnPlainArray($line)
+        {
+        }
+        private function returnKeyValuePair($line)
+        {
+        }
+        private function returnArrayElement($line)
+        {
+        }
+        private function nodeContainsGroup($line)
+        {
+        }
+        private function addGroup($line, $group)
+        {
+        }
+        private function stripGroup($line, $group)
+        {
+        }
+    }
+}
+namespace {
     /**
      * Transforms a wp-config.php file.
      */
@@ -24877,6 +22799,1564 @@ namespace {
          * @return bool
          */
         protected function save($contents)
+        {
+        }
+    }
+    class ComposerJsonTest extends \PHPUnit_Framework_TestCase
+    {
+        private $logger = \null;
+        private $prev_logger = \null;
+        private $prev_capture_exit = \null;
+        private $temp_dir = \null;
+        public function setUp()
+        {
+        }
+        public function tearDown()
+        {
+        }
+        public function test_create_default_composer_json()
+        {
+        }
+        public function test_get_composer_json_path()
+        {
+        }
+        public function test_get_composer_json_path_backup_decoded()
+        {
+        }
+        private function mac_safe_path($path)
+        {
+        }
+    }
+    // WP_CLI
+    class JsonManipulatorTest extends \PHPUnit_Framework_TestCase
+    {
+        /**
+         * @dataProvider linkProvider
+         */
+        public function testAddLink($json, $type, $package, $constraint, $expected)
+        {
+        }
+        public function linkProvider()
+        {
+        }
+        /**
+         * @dataProvider providerAddLinkAndSortPackages
+         */
+        public function testAddLinkAndSortPackages($json, $type, $package, $constraint, $sortPackages, $expected)
+        {
+        }
+        public function providerAddLinkAndSortPackages()
+        {
+        }
+        /**
+         * @dataProvider removeSubNodeProvider
+         */
+        public function testRemoveSubNode($json, $name, $expected, $expectedContent = \null)
+        {
+        }
+        public function removeSubNodeProvider()
+        {
+        }
+        public function testRemoveSubNodeFromRequire()
+        {
+        }
+        public function testAddSubNodeInRequire()
+        {
+        }
+        public function testAddExtraWithPackage()
+        {
+        }
+        public function testAddRepositoryCanInitializeEmptyRepositories()
+        {
+        }
+        public function testAddRepositoryCanInitializeFromScratch()
+        {
+        }
+        public function testAddRepositoryCanAdd()
+        {
+        }
+        public function testAddRepositoryCanOverrideDeepRepos()
+        {
+        }
+        public function testAddConfigSettingEscapes()
+        {
+        }
+        public function testAddConfigSettingWorksFromScratch()
+        {
+        }
+        public function testAddConfigSettingCanAdd()
+        {
+        }
+        public function testAddConfigSettingCanOverwrite()
+        {
+        }
+        public function testAddConfigSettingCanOverwriteNumbers()
+        {
+        }
+        public function testAddConfigSettingCanOverwriteArrays()
+        {
+        }
+        public function testAddConfigSettingCanAddSubKeyInEmptyConfig()
+        {
+        }
+        public function testAddConfigSettingCanAddSubKeyInEmptyVal()
+        {
+        }
+        public function testAddConfigSettingCanAddSubKeyInHash()
+        {
+        }
+        public function testAddRootSettingDoesNotBreakDots()
+        {
+        }
+        public function testRemoveConfigSettingCanRemoveSubKeyInHash()
+        {
+        }
+        public function testRemoveConfigSettingCanRemoveSubKeyInHashWithSiblings()
+        {
+        }
+        public function testAddMainKey()
+        {
+        }
+        public function testAddMainKeyWithContentHavingDollarSignFollowedByDigit()
+        {
+        }
+        public function testAddMainKeyWithContentHavingDollarSignFollowedByDigit2()
+        {
+        }
+        public function testUpdateMainKey()
+        {
+        }
+        public function testUpdateMainKey2()
+        {
+        }
+        public function testUpdateMainKey3()
+        {
+        }
+        public function testUpdateMainKeyWithContentHavingDollarSignFollowedByDigit()
+        {
+        }
+        public function testRemoveMainKey()
+        {
+        }
+        public function testIndentDetection()
+        {
+        }
+        public function testRemoveMainKeyAtEndOfFile()
+        {
+        }
+        // WP_CLI: begin caseInsensitive.
+        /**
+         * @dataProvider providerAddLinkCaseInsensitive
+         */
+        public function testAddLinkCaseInsensitive($json, $type, $package, $constraint, $sortPackages, $expected)
+        {
+        }
+        public function providerAddLinkCaseInsensitive()
+        {
+        }
+        /**
+         * @dataProvider providerAddSubNodeCase
+         */
+        public function testAddSubNodeCase($json, $mainNode, $name, $caseInsensitive, $expected)
+        {
+        }
+        public function providerAddSubNodeCase()
+        {
+        }
+        /**
+         * @dataProvider providerRemoveSubNodeCaseInsensitive
+         */
+        public function testRemoveSubNodeCaseInsensitive($json, $mainNode, $name, $expected, $expectedContent = \null)
+        {
+        }
+        public function providerRemoveSubNodeCaseInsensitive()
+        {
+        }
+    }
+    /**
+     * Class TestArguments
+     * @todo add more tests to increase coverage
+     *
+     * @backupGlobals enabled
+     */
+    class TestArguments extends \PHPUnit_Framework_TestCase
+    {
+        /**
+         * Array of expected settings
+         * @var array
+         */
+        protected $settings = \null;
+        /**
+         * Array of flags
+         * @var array
+         */
+        protected $flags = \null;
+        /**
+         * Array of expected options
+         * @var array
+         */
+        protected $options = \null;
+        /**
+         * Clear the $_SERVER['argv'] array
+         */
+        public static function clearArgv()
+        {
+        }
+        /**
+         * Add one or more element(s) at the end of the $_SERVER['argv'] array
+         *
+         * @param  array $args: value(s) to add to the argv array
+         */
+        public static function pushToArgv($args)
+        {
+        }
+        /**
+         * Set up valid flags and options
+         */
+        public function setUp()
+        {
+        }
+        /**
+         * Tear down fixtures
+         */
+        public function tearDown()
+        {
+        }
+        /**
+         * Test adding a flag, getting a flag and getting all flags
+         */
+        public function testAddFlags()
+        {
+        }
+        /**
+         * Test adding a option, getting a option and getting all options
+         */
+        public function testAddOptions()
+        {
+        }
+        /**
+         * Data provider with valid args and options
+         *
+         * @return array set of args and expected parsed values
+         */
+        public function settingsWithValidOptions()
+        {
+        }
+        /**
+         * Data provider with missing options
+         *
+         * @return array set of args and expected parsed values
+         */
+        public function settingsWithMissingOptions()
+        {
+        }
+        /**
+         * Data provider with missing options. The default value should be populated
+         *
+         * @return array set of args and expected parsed values
+         */
+        public function settingsWithMissingOptionsWithDefault()
+        {
+        }
+        public function settingsWithNoOptionsWithDefault()
+        {
+        }
+        /**
+         * Generic private testParse method.
+         *
+         * @param  array $args           arguments as they appear in the cli
+         * @param  array $expectedValues expected values after parsing
+         */
+        private function _testParse($cliParams, $expectedValues)
+        {
+        }
+        /**
+         * @param  array $args           arguments as they appear in the cli
+         * @param  array $expectedValues expected values after parsing
+         *
+         * @dataProvider settingsWithValidOptions
+         */
+        public function testParseWithValidOptions($cliParams, $expectedValues)
+        {
+        }
+        /**
+         * @param  array $args           arguments as they appear in the cli
+         * @param  array $expectedValues expected values after parsing
+         * @dataProvider settingsWithMissingOptions
+         * @expectedException PHPUnit_Framework_Error_Warning
+         * @expectedExceptionMessage no value given for --option1
+         */
+        public function testParseWithMissingOptions($cliParams, $expectedValues)
+        {
+        }
+        /**
+         * @param  array $args           arguments as they appear in the cli
+         * @param  array $expectedValues expected values after parsing
+         * @dataProvider settingsWithMissingOptionsWithDefault
+         */
+        public function testParseWithMissingOptionsWithDefault($cliParams, $expectedValues)
+        {
+        }
+        /**
+         * @param  array $args           arguments as they appear in the cli
+         * @param  array $expectedValues expected values after parsing
+         * @dataProvider settingsWithNoOptionsWithDefault
+         */
+        public function testParseWithNoOptionsWithDefault($cliParams, $expectedValues)
+        {
+        }
+    }
+    /**
+     * Tests for cli\Table
+     */
+    class Test_Table extends \PHPUnit_Framework_TestCase
+    {
+        public function test_column_value_too_long_ascii()
+        {
+        }
+        public function test_column_value_too_long_with_multibytes()
+        {
+        }
+        public function test_column_odd_single_width_with_double_width()
+        {
+        }
+        public function test_column_fullwidth_and_combining()
+        {
+        }
+        public function test_ascii_pre_colorized_widths()
+        {
+        }
+    }
+    class testsCli extends \PHPUnit_Framework_TestCase
+    {
+        function setUp()
+        {
+        }
+        function test_string_length()
+        {
+        }
+        function test_string_width()
+        {
+        }
+        function test_encoded_string_length()
+        {
+        }
+        function test_encoded_string_width()
+        {
+        }
+        function test_encoded_string_pad()
+        {
+        }
+        function test_colorized_string_pad()
+        {
+        }
+        function test_encoded_substr()
+        {
+        }
+        function test_various_substr()
+        {
+        }
+        function test_is_width_encoded_substr()
+        {
+        }
+        function test_colorized_string_length()
+        {
+        }
+        function test_colorized_string_width()
+        {
+        }
+        function test_colorize_string_is_colored()
+        {
+        }
+        function test_colorize_when_colorize_is_forced()
+        {
+        }
+        function test_binary_string_is_converted_back_to_original_string()
+        {
+        }
+        function test_string_cache()
+        {
+        }
+        function test_string_cache_colorize()
+        {
+        }
+        function test_decolorize()
+        {
+        }
+        function test_strwidth()
+        {
+        }
+        function test_safe_strlen()
+        {
+        }
+    }
+    /**
+     * Class TestShell
+     */
+    class TestShell extends \PHPUnit_Framework_TestCase
+    {
+        /**
+         * Test getting TERM columns.
+         */
+        function testColumns()
+        {
+        }
+    }
+    class testsColors extends \PHPUnit_Framework_TestCase
+    {
+        /**
+         * @dataProvider dataColors
+         */
+        function testColors($str, $color)
+        {
+        }
+        function dataColors()
+        {
+        }
+    }
+    /**
+     * Class Test_Table_Ascii
+     *
+     * Acceptance tests for ASCII table drawing.
+     * It will redirect STDOUT to temporary file and check that output matches with expected
+     */
+    class Test_Table_Ascii extends \PHPUnit_Framework_TestCase
+    {
+        /**
+         * @var string Path to temporary file, where STDOUT output will be redirected during tests
+         */
+        private $_mockFile;
+        /**
+         * @var \cli\Table Instance
+         */
+        private $_instance;
+        /**
+         * Creates instance and redirects STDOUT to temporary file
+         */
+        public function setUp()
+        {
+        }
+        /**
+         * Cleans temporary file
+         */
+        public function tearDown()
+        {
+        }
+        /**
+         * Draw simple One column table
+         */
+        public function testDrawOneColumnTable()
+        {
+        }
+        /**
+         * Draw simple One column table with colored string
+         * Output should look like:
+         * +-------------+
+         * | Test Header |
+         * +-------------+
+         * | x           |
+         * +-------------+
+         *
+         * where `x` character has green color.
+         * At the same time it checks that `green` defined in `cli\Colors` really looks as `green`.
+         */
+        public function testDrawOneColumnColoredTable()
+        {
+        }
+        /**
+         * Check it works with colors disabled.
+         */
+        public function testDrawOneColumnColorDisabledTable()
+        {
+        }
+        /**
+         * Checks that spacing and borders are handled correctly in table
+         */
+        public function testSpacingInTable()
+        {
+        }
+        /**
+         * Test correct table indentation and border positions for multibyte strings
+         */
+        public function testTableWithMultibyteStrings()
+        {
+        }
+        /**
+         * Test that % gets escaped correctly.
+         */
+        public function testTableWithPercentCharacters()
+        {
+        }
+        /**
+         * Test that a % is appropriately padded in the table
+         */
+        public function testTablePaddingWithPercentCharacters()
+        {
+        }
+        /**
+         * Draw wide multiplication Table.
+         * Example with many columns, many rows
+         */
+        public function testDrawMultiplicationTable()
+        {
+        }
+        /**
+         * Draw a table with headers but no data
+         */
+        public function testDrawWithHeadersNoData()
+        {
+        }
+        /**
+         * Verifies that Input and Output equals,
+         * Sugar method for fast access from tests
+         *
+         * @param array $input First element is header array, second element is rows array
+         * @param mixed $output Expected output
+         */
+        private function assertInOutEquals(array $input, $output)
+        {
+        }
+        /**
+         * Checks that contents of input string and temporary file match
+         *
+         * @param mixed $expected Expected output
+         */
+        private function assertOutFileEqualsWith($expected)
+        {
+        }
+    }
+    class HttpConsole
+    {
+        protected $_host;
+        protected $_prompt;
+        public function __construct($host)
+        {
+        }
+        public function handleRequest($type, $path)
+        {
+        }
+        public function run()
+        {
+        }
+    }
+}
+namespace cli {
+    /**
+     * The `Shell` class is a utility class for shell related tasks such as
+     * information on width.
+     */
+    class Shell
+    {
+        /**
+         * Returns the number of columns the current shell has for display.
+         *
+         * @return int  The number of columns.
+         * @todo Test on more systems.
+         */
+        public static function columns()
+        {
+        }
+        /**
+         * Checks whether the output of the current script is a TTY or a pipe / redirect
+         *
+         * Returns true if STDOUT output is being redirected to a pipe or a file; false is
+         * output is being sent directly to the terminal.
+         *
+         * If an env variable SHELL_PIPE exists, returned result depends it's
+         * value. Strings like 1, 0, yes, no, that validate to booleans are accepted.
+         *
+         * To enable ASCII formatting even when shell is piped, use the
+         * ENV variable SHELL_PIPE=0
+         *
+         * @return bool
+         */
+        public static function isPiped()
+        {
+        }
+        /**
+         * Uses `stty` to hide input/output completely.
+         * @param boolean $hidden Will hide/show the next data. Defaults to true.
+         */
+        public static function hide($hidden = true)
+        {
+        }
+        /**
+         * Is this shell in Windows?
+         *
+         * @return bool
+         */
+        private static function is_windows()
+        {
+        }
+    }
+    /**
+     * The `Notify` class is the basis of all feedback classes, such as Indicators
+     * and Progress meters. The default behaviour is to refresh output after 100ms
+     * have passed. This is done to preventing the screen from flickering and keep
+     * slowdowns from output to a minimum.
+     *
+     * The most basic form of Notifier has no maxim, and simply displays a series
+     * of characters to indicate progress is being made.
+     */
+    abstract class Notify
+    {
+        protected $_current = 0;
+        protected $_first = true;
+        protected $_interval;
+        protected $_message;
+        protected $_start;
+        protected $_timer;
+        /**
+         * Instatiates a Notification object.
+         *
+         * @param string  $msg       The text to display next to the Notifier.
+         * @param int     $interval  The interval in milliseconds between updates.
+         */
+        public function __construct($msg, $interval = 100)
+        {
+        }
+        /**
+         * This method should be used to print out the Notifier. This method is
+         * called from `cli\Notify::tick()` after `cli\Notify::$_interval` has passed.
+         *
+         * @abstract
+         * @param boolean  $finish
+         * @see cli\Notify::tick()
+         */
+        public abstract function display($finish = false);
+        /**
+         * Reset the notifier state so the same instance can be used in multiple loops.
+         */
+        public function reset()
+        {
+        }
+        /**
+         * Returns the formatted tick count.
+         *
+         * @return string  The formatted tick count.
+         */
+        public function current()
+        {
+        }
+        /**
+         * Calculates the time elapsed since the Notifier was first ticked.
+         *
+         * @return int  The elapsed time in seconds.
+         */
+        public function elapsed()
+        {
+        }
+        /**
+         * Calculates the speed (number of ticks per second) at which the Notifier
+         * is being updated.
+         *
+         * @return int  The number of ticks performed in 1 second.
+         */
+        public function speed()
+        {
+        }
+        /**
+         * Takes a time span given in seconds and formats it for display. The
+         * returned string will be in MM:SS form.
+         *
+         * @param int  $time The time span in seconds to format.
+         * @return string  The formatted time span.
+         */
+        public function formatTime($time)
+        {
+        }
+        /**
+         * Finish our Notification display. Should be called after the Notifier is
+         * no longer needed.
+         *
+         * @see cli\Notify::display()
+         */
+        public function finish()
+        {
+        }
+        /**
+         * Increments are tick counter by the given amount. If no amount is provided,
+         * the ticker is incremented by 1.
+         *
+         * @param int  $increment  The amount to increment by.
+         */
+        public function increment($increment = 1)
+        {
+        }
+        /**
+         * Determines whether the display should be updated or not according to
+         * our interval setting.
+         *
+         * @return boolean  `true` if the display should be updated, `false` otherwise.
+         */
+        public function shouldUpdate()
+        {
+        }
+        /**
+         * This method is the meat of all Notifiers. First we increment the ticker
+         * and then update the display if enough time has passed since our last tick.
+         *
+         * @param int  $increment  The amount to increment by.
+         * @see cli\Notify::increment()
+         * @see cli\Notify::shouldUpdate()
+         * @see cli\Notify::display()
+         */
+        public function tick($increment = 1)
+        {
+        }
+    }
+    /**
+     * A more complex type of Notifier, `Progress` Notifiers always have a maxim
+     * value and generally show some form of percent complete or estimated time
+     * to completion along with the standard Notifier displays.
+     *
+     * @see cli\Notify
+     */
+    abstract class Progress extends \cli\Notify
+    {
+        protected $_total = 0;
+        /**
+         * Instantiates a Progress Notifier.
+         *
+         * @param string  $msg       The text to display next to the Notifier.
+         * @param int     $total     The total number of ticks we will be performing.
+         * @param int     $interval  The interval in milliseconds between updates.
+         * @see cli\Progress::setTotal()
+         */
+        public function __construct($msg, $total, $interval = 100)
+        {
+        }
+        /**
+         * Set the max increments for this progress notifier.
+         *
+         * @param int  $total  The total number of times this indicator should be `tick`ed.
+         * @throws \InvalidArgumentException  Thrown if the `$total` is less than 0.
+         */
+        public function setTotal($total)
+        {
+        }
+        /**
+         * Reset the progress state so the same instance can be used in multiple loops.
+         */
+        public function reset($total = null)
+        {
+        }
+        /**
+         * Behaves in a similar manner to `cli\Notify::current()`, but the output
+         * is padded to match the length of `cli\Progress::total()`.
+         *
+         * @return string  The formatted and padded tick count.
+         * @see cli\Progress::total()
+         */
+        public function current()
+        {
+        }
+        /**
+         * Returns the formatted total expected ticks.
+         *
+         * @return string  The formatted total ticks.
+         */
+        public function total()
+        {
+        }
+        /**
+         * Calculates the estimated total time for the tick count to reach the
+         * total ticks given.
+         *
+         * @return int  The estimated total number of seconds for all ticks to be
+         *              completed. This is not the estimated time left, but total.
+         * @see cli\Notify::speed()
+         * @see cli\Notify::elapsed()
+         */
+        public function estimated()
+        {
+        }
+        /**
+         * Forces the current tick count to the total ticks given at instatiation
+         * time before passing on to `cli\Notify::finish()`.
+         */
+        public function finish()
+        {
+        }
+        /**
+         * Increments are tick counter by the given amount. If no amount is provided,
+         * the ticker is incremented by 1.
+         *
+         * @param int  $increment  The amount to increment by.
+         */
+        public function increment($increment = 1)
+        {
+        }
+        /**
+         * Calculate the percentage completed.
+         *
+         * @return float  The percent completed.
+         */
+        public function percent()
+        {
+        }
+    }
+    /**
+     * The `Table` class is used to display data in a tabular format.
+     */
+    class Table
+    {
+        protected $_renderer;
+        protected $_headers = array();
+        protected $_footers = array();
+        protected $_width = array();
+        protected $_rows = array();
+        /**
+         * Initializes the `Table` class.
+         *
+         * There are 3 ways to instantiate this class:
+         *
+         *  1. Pass an array of strings as the first parameter for the column headers
+         *     and a 2-dimensional array as the second parameter for the data rows.
+         *  2. Pass an array of hash tables (string indexes instead of numerical)
+         *     where each hash table is a row and the indexes of the *first* hash
+         *     table are used as the header values.
+         *  3. Pass nothing and use `setHeaders()` and `addRow()` or `setRows()`.
+         *
+         * @param array  $headers  Headers used in this table. Optional.
+         * @param array  $rows     The rows of data for this table. Optional.
+         * @param array  $footers  Footers used in this table. Optional.
+         */
+        public function __construct(array $headers = null, array $rows = null, array $footers = null)
+        {
+        }
+        public function resetTable()
+        {
+        }
+        /**
+         * Sets the renderer used by this table.
+         *
+         * @param table\Renderer  $renderer  The renderer to use for output.
+         * @see   table\Renderer
+         * @see   table\Ascii
+         * @see   table\Tabular
+         */
+        public function setRenderer(\cli\table\Renderer $renderer)
+        {
+        }
+        /**
+         * Loops through the row and sets the maximum width for each column.
+         *
+         * @param array  $row  The table row.
+         * @return array $row
+         */
+        protected function checkRow(array $row)
+        {
+        }
+        /**
+         * Output the table to `STDOUT` using `cli\line()`.
+         *
+         * If STDOUT is a pipe or redirected to a file, should output simple
+         * tab-separated text. Otherwise, renders table with ASCII table borders
+         *
+         * @uses cli\Shell::isPiped() Determine what format to output
+         *
+         * @see cli\Table::renderRow()
+         */
+        public function display()
+        {
+        }
+        /**
+         * Get the table lines to output.
+         *
+         * @see cli\Table::display()
+         * @see cli\Table::renderRow()
+         *
+         * @return array
+         */
+        public function getDisplayLines()
+        {
+        }
+        /**
+         * Sort the table by a column. Must be called before `cli\Table::display()`.
+         *
+         * @param int  $column  The index of the column to sort by.
+         */
+        public function sort($column)
+        {
+        }
+        /**
+         * Set the headers of the table.
+         *
+         * @param array  $headers  An array of strings containing column header names.
+         */
+        public function setHeaders(array $headers)
+        {
+        }
+        /**
+         * Set the footers of the table.
+         *
+         * @param array  $footers  An array of strings containing column footers names.
+         */
+        public function setFooters(array $footers)
+        {
+        }
+        /**
+         * Add a row to the table.
+         *
+         * @param array  $row  The row data.
+         * @see cli\Table::checkRow()
+         */
+        public function addRow(array $row)
+        {
+        }
+        /**
+         * Clears all previous rows and adds the given rows.
+         *
+         * @param array  $rows  A 2-dimensional array of row data.
+         * @see cli\Table::addRow()
+         */
+        public function setRows(array $rows)
+        {
+        }
+        public function countRows()
+        {
+        }
+        /**
+         * Set whether items in an Ascii table are pre-colorized.
+         *
+         * @param bool|array $precolorized A boolean to set all columns in the table as pre-colorized, or an array of booleans keyed by column index (number) to set individual columns as pre-colorized.
+         * @see cli\Ascii::setPreColorized()
+         */
+        public function setAsciiPreColorized($pre_colorized)
+        {
+        }
+        /**
+         * Is a column in an Ascii table pre-colorized?
+         *
+         * @param int $column Column index to check.
+         * @return bool True if whole Ascii table is marked as pre-colorized, or if the individual column is pre-colorized; else false.
+         * @see cli\Ascii::isPreColorized()
+         */
+        private function isAsciiPreColorized($column)
+        {
+        }
+    }
+    abstract class Memoize
+    {
+        protected $_memoCache = array();
+        public function __get($name)
+        {
+        }
+        protected function _unmemo($name)
+        {
+        }
+    }
+    /**
+     * Change the color of text.
+     *
+     * Reference: http://graphcomp.com/info/specs/ansi_col.html#colors
+     */
+    class Colors
+    {
+        protected static $_colors = array('color' => array('black' => 30, 'red' => 31, 'green' => 32, 'yellow' => 33, 'blue' => 34, 'magenta' => 35, 'cyan' => 36, 'white' => 37), 'style' => array('bright' => 1, 'dim' => 2, 'underline' => 4, 'blink' => 5, 'reverse' => 7, 'hidden' => 8), 'background' => array('black' => 40, 'red' => 41, 'green' => 42, 'yellow' => 43, 'blue' => 44, 'magenta' => 45, 'cyan' => 46, 'white' => 47));
+        protected static $_enabled = null;
+        protected static $_string_cache = array();
+        public static function enable($force = true)
+        {
+        }
+        public static function disable($force = true)
+        {
+        }
+        /**
+         * Check if we should colorize output based on local flags and shell type.
+         *
+         * Only check the shell type if `Colors::$_enabled` is null and `$colored` is null.
+         */
+        public static function shouldColorize($colored = null)
+        {
+        }
+        /**
+         * Set the color.
+         *
+         * @param string  $color  The name of the color or style to set.
+         * @return string
+         */
+        public static function color($color)
+        {
+        }
+        /**
+         * Colorize a string using helpful string formatters. If the `Streams::$out` points to a TTY coloring will be enabled,
+         * otherwise disabled. You can control this check with the `$colored` parameter.
+         *
+         * @param string   $string
+         * @param boolean  $colored  Force enable or disable the colorized output. If left as `null` the TTY will control coloring.
+         * @return string
+         */
+        public static function colorize($string, $colored = null)
+        {
+        }
+        /**
+         * Remove color information from a string.
+         *
+         * @param string $string A string with color information.
+         * @param int    $keep   Optional. If the 1 bit is set, color tokens (eg "%n") won't be stripped. If the 2 bit is set, color encodings (ANSI escapes) won't be stripped. Default 0.
+         * @return string A string with color information removed.
+         */
+        public static function decolorize($string, $keep = 0)
+        {
+        }
+        /**
+         * Cache the original, colorized, and decolorized versions of a string.
+         *
+         * @param string $passed The original string before colorization.
+         * @param string $colorized The string after running through self::colorize.
+         * @param string $deprecated Optional. Not used. Default null.
+         */
+        public static function cacheString($passed, $colorized, $deprecated = null)
+        {
+        }
+        /**
+         * Return the length of the string without color codes.
+         *
+         * @param string  $string  the string to measure
+         * @return int
+         */
+        public static function length($string)
+        {
+        }
+        /**
+         * Return the width (length in characters) of the string without color codes if enabled.
+         *
+         * @param string      $string        The string to measure.
+         * @param bool        $pre_colorized Optional. Set if the string is pre-colorized. Default false.
+         * @param string|bool $encoding      Optional. The encoding of the string. Default false.
+         * @return int
+         */
+        public static function width($string, $pre_colorized = false, $encoding = false)
+        {
+        }
+        /**
+         * Pad the string to a certain display length.
+         *
+         * @param string      $string        The string to pad.
+         * @param int         $length        The display length.
+         * @param bool        $pre_colorized Optional. Set if the string is pre-colorized. Default false.
+         * @param string|bool $encoding      Optional. The encoding of the string. Default false.
+         * @param int         $pad_type      Optional. Can be STR_PAD_RIGHT, STR_PAD_LEFT, or STR_PAD_BOTH. If pad_type is not specified it is assumed to be STR_PAD_RIGHT.
+         * @return string
+         */
+        public static function pad($string, $length, $pre_colorized = false, $encoding = false, $pad_type = STR_PAD_RIGHT)
+        {
+        }
+        /**
+         * Get the color mapping array.
+         *
+         * @return array Array of color tokens mapped to colors and styles.
+         */
+        public static function getColors()
+        {
+        }
+        /**
+         * Get the cached string values.
+         *
+         * @return array The cached string values.
+         */
+        public static function getStringCache()
+        {
+        }
+        /**
+         * Clear the string cache.
+         */
+        public static function clearStringCache()
+        {
+        }
+    }
+    class Streams
+    {
+        protected static $out = STDOUT;
+        protected static $in = STDIN;
+        protected static $err = STDERR;
+        static function _call($func, $args)
+        {
+        }
+        public static function isTty()
+        {
+        }
+        /**
+         * Handles rendering strings. If extra scalar arguments are given after the `$msg`
+         * the string will be rendered with `sprintf`. If the second argument is an `array`
+         * then each key in the array will be the placeholder name. Placeholders are of the
+         * format {:key}.
+         *
+         * @param string   $msg  The message to render.
+         * @param mixed    ...   Either scalar arguments or a single array argument.
+         * @return string  The rendered string.
+         */
+        public static function render($msg)
+        {
+        }
+        /**
+         * Shortcut for printing to `STDOUT`. The message and parameters are passed
+         * through `sprintf` before output.
+         *
+         * @param string  $msg  The message to output in `printf` format.
+         * @param mixed   ...   Either scalar arguments or a single array argument.
+         * @return void
+         * @see \cli\render()
+         */
+        public static function out($msg)
+        {
+        }
+        /**
+         * Pads `$msg` to the width of the shell before passing to `cli\out`.
+         *
+         * @param string  $msg  The message to pad and pass on.
+         * @param mixed   ...   Either scalar arguments or a single array argument.
+         * @return void
+         * @see cli\out()
+         */
+        public static function out_padded($msg)
+        {
+        }
+        /**
+         * Prints a message to `STDOUT` with a newline appended. See `\cli\out` for
+         * more documentation.
+         *
+         * @see cli\out()
+         */
+        public static function line($msg = '')
+        {
+        }
+        /**
+         * Shortcut for printing to `STDERR`. The message and parameters are passed
+         * through `sprintf` before output.
+         *
+         * @param string  $msg  The message to output in `printf` format. With no string,
+         *                      a newline is printed.
+         * @param mixed   ...   Either scalar arguments or a single array argument.
+         * @return void
+         */
+        public static function err($msg = '')
+        {
+        }
+        /**
+         * Takes input from `STDIN` in the given format. If an end of transmission
+         * character is sent (^D), an exception is thrown.
+         *
+         * @param string  $format  A valid input format. See `fscanf` for documentation.
+         *                         If none is given, all input up to the first newline
+         *                         is accepted.
+         * @param boolean $hide    If true will hide what the user types in.
+         * @return string  The input with whitespace trimmed.
+         * @throws \Exception  Thrown if ctrl-D (EOT) is sent as input.
+         */
+        public static function input($format = null, $hide = false)
+        {
+        }
+        /**
+         * Displays an input prompt. If no default value is provided the prompt will
+         * continue displaying until input is received.
+         *
+         * @param string      $question The question to ask the user.
+         * @param bool|string $default  A default value if the user provides no input.
+         * @param string      $marker   A string to append to the question and default value
+         *                              on display.
+         * @param boolean     $hide     Optionally hides what the user types in.
+         * @return string  The users input.
+         * @see cli\input()
+         */
+        public static function prompt($question, $default = null, $marker = ': ', $hide = false)
+        {
+        }
+        /**
+         * Presents a user with a multiple choice question, useful for 'yes/no' type
+         * questions (which this public static function defaults too).
+         *
+         * @param string  $question  The question to ask the user.
+         * @param string  $choice    A string of characters allowed as a response. Case is ignored.
+         * @param string  $default   The default choice. NULL if a default is not allowed.
+         * @return string  The users choice.
+         * @see cli\prompt()
+         */
+        public static function choose($question, $choice = 'yn', $default = 'n')
+        {
+        }
+        /**
+         * Displays an array of strings as a menu where a user can enter a number to
+         * choose an option. The array must be a single dimension with either strings
+         * or objects with a `__toString()` method.
+         *
+         * @param array   $items    The list of items the user can choose from.
+         * @param string  $default  The index of the default item.
+         * @param string  $title    The message displayed to the user when prompted.
+         * @return string  The index of the chosen item.
+         * @see cli\line()
+         * @see cli\input()
+         * @see cli\err()
+         */
+        public static function menu($items, $default = null, $title = 'Choose an item')
+        {
+        }
+        /**
+         * Sets one of the streams (input, output, or error) to a `stream` type resource.
+         *
+         * Valid $whichStream values are:
+         *    - 'in'   (default: STDIN)
+         *    - 'out'  (default: STDOUT)
+         *    - 'err'  (default: STDERR)
+         *
+         * Any custom streams will be closed for you on shutdown, so please don't close stream
+         * resources used with this method.
+         *
+         * @param string    $whichStream  The stream property to update
+         * @param resource  $stream       The new stream resource to use
+         * @return void
+         * @throws \Exception Thrown if $stream is not a resource of the 'stream' type.
+         */
+        public static function setStream($whichStream, $stream)
+        {
+        }
+    }
+    /**
+     * Parses command line arguments.
+     */
+    class Arguments implements \ArrayAccess
+    {
+        protected $_flags = array();
+        protected $_options = array();
+        protected $_strict = false;
+        protected $_input = array();
+        protected $_invalid = array();
+        protected $_parsed;
+        protected $_lexer;
+        /**
+         * Initializes the argument parser. If you wish to change the default behaviour
+         * you may pass an array of options as the first argument. Valid options are
+         * `'help'` and `'strict'`, each a boolean.
+         *
+         * `'help'` is `true` by default, `'strict'` is false by default.
+         *
+         * @param  array  $options  An array of options for this parser.
+         */
+        public function __construct($options = array())
+        {
+        }
+        /**
+         * Get the list of arguments found by the defined definitions.
+         *
+         * @return array
+         */
+        public function getArguments()
+        {
+        }
+        public function getHelpScreen()
+        {
+        }
+        /**
+         * Encodes the parsed arguments as JSON.
+         *
+         * @return string
+         */
+        public function asJSON()
+        {
+        }
+        /**
+         * Returns true if a given argument was parsed.
+         *
+         * @param mixed  $offset  An Argument object or the name of the argument.
+         * @return bool
+         */
+        public function offsetExists($offset)
+        {
+        }
+        /**
+         * Get the parsed argument's value.
+         *
+         * @param mixed  $offset  An Argument object or the name of the argument.
+         * @return mixed
+         */
+        public function offsetGet($offset)
+        {
+        }
+        /**
+         * Sets the value of a parsed argument.
+         *
+         * @param mixed  $offset  An Argument object or the name of the argument.
+         * @param mixed  $value   The value to set
+         */
+        public function offsetSet($offset, $value)
+        {
+        }
+        /**
+         * Unset a parsed argument.
+         *
+         * @param mixed  $offset  An Argument object or the name of the argument.
+         */
+        public function offsetUnset($offset)
+        {
+        }
+        /**
+         * Adds a flag (boolean argument) to the argument list.
+         *
+         * @param mixed  $flag  A string representing the flag, or an array of strings.
+         * @param array  $settings  An array of settings for this flag.
+         * @setting string  description  A description to be shown in --help.
+         * @setting bool    default  The default value for this flag.
+         * @setting bool    stackable  Whether the flag is repeatable to increase the value.
+         * @setting array   aliases  Other ways to trigger this flag.
+         * @return $this
+         */
+        public function addFlag($flag, $settings = array())
+        {
+        }
+        /**
+         * Add multiple flags at once. The input array should be keyed with the
+         * primary flag character, and the values should be the settings array
+         * used by {addFlag}.
+         *
+         * @param array  $flags  An array of flags to add
+         * @return $this
+         */
+        public function addFlags($flags)
+        {
+        }
+        /**
+         * Adds an option (string argument) to the argument list.
+         *
+         * @param mixed  $option  A string representing the option, or an array of strings.
+         * @param array  $settings  An array of settings for this option.
+         * @setting string  description  A description to be shown in --help.
+         * @setting bool    default  The default value for this option.
+         * @setting array   aliases  Other ways to trigger this option.
+         * @return $this
+         */
+        public function addOption($option, $settings = array())
+        {
+        }
+        /**
+         * Add multiple options at once. The input array should be keyed with the
+         * primary option string, and the values should be the settings array
+         * used by {addOption}.
+         *
+         * @param array  $options  An array of options to add
+         * @return $this
+         */
+        public function addOptions($options)
+        {
+        }
+        /**
+         * Enable or disable strict mode. If strict mode is active any invalid
+         * arguments found by the parser will throw `cli\arguments\InvalidArguments`.
+         *
+         * Even if strict is disabled, invalid arguments are logged and can be
+         * retrieved with `cli\Arguments::getInvalidArguments()`.
+         *
+         * @param bool  $strict  True to enable, false to disable.
+         * @return $this
+         */
+        public function setStrict($strict)
+        {
+        }
+        /**
+         * Get the list of invalid arguments the parser found.
+         *
+         * @return array
+         */
+        public function getInvalidArguments()
+        {
+        }
+        /**
+         * Get a flag by primary matcher or any defined aliases.
+         *
+         * @param mixed  $flag  Either a string representing the flag or an
+         *                      cli\arguments\Argument object.
+         * @return array
+         */
+        public function getFlag($flag)
+        {
+        }
+        public function getFlags()
+        {
+        }
+        public function hasFlags()
+        {
+        }
+        /**
+         * Returns true if the given argument is defined as a flag.
+         *
+         * @param mixed  $argument  Either a string representing the flag or an
+         *                          cli\arguments\Argument object.
+         * @return bool
+         */
+        public function isFlag($argument)
+        {
+        }
+        /**
+         * Returns true if the given flag is stackable.
+         *
+         * @param mixed  $flag  Either a string representing the flag or an
+         *                      cli\arguments\Argument object.
+         * @return bool
+         */
+        public function isStackable($flag)
+        {
+        }
+        /**
+         * Get an option by primary matcher or any defined aliases.
+         *
+         * @param mixed  $option Either a string representing the option or an
+         *                       cli\arguments\Argument object.
+         * @return array
+         */
+        public function getOption($option)
+        {
+        }
+        public function getOptions()
+        {
+        }
+        public function hasOptions()
+        {
+        }
+        /**
+         * Returns true if the given argument is defined as an option.
+         *
+         * @param mixed  $argument  Either a string representing the option or an
+         *                          cli\arguments\Argument object.
+         * @return bool
+         */
+        public function isOption($argument)
+        {
+        }
+        /**
+         * Parses the argument list with the given options. The returned argument list
+         * will use either the first long name given or the first name in the list
+         * if a long name is not given.
+         *
+         * @return array
+         * @throws arguments\InvalidArguments
+         */
+        public function parse()
+        {
+        }
+        /**
+         * This applies the default values, if any, of all of the
+         * flags and options, so that if there is a default value
+         * it will be available.
+         */
+        private function _applyDefaults()
+        {
+        }
+        private function _warn($message)
+        {
+        }
+        private function _parseFlag($argument)
+        {
+        }
+        private function _parseOption($option)
+        {
+        }
+    }
+    /**
+     * The `Tree` class is used to display data in a tree-like format.
+     */
+    class Tree
+    {
+        protected $_renderer;
+        protected $_data = array();
+        /**
+         * Sets the renderer used by this tree.
+         *
+         * @param tree\Renderer  $renderer  The renderer to use for output.
+         * @see   tree\Renderer
+         * @see   tree\Ascii
+         * @see   tree\Markdown
+         */
+        public function setRenderer(\cli\tree\Renderer $renderer)
+        {
+        }
+        /**
+         * Set the data.
+         * Format:
+         *     [
+         *         'Label' => [
+         *             'Thing' => ['Thing'],
+         *         ],
+         *         'Thing',
+         *     ]
+         * @param array $data
+         */
+        public function setData(array $data)
+        {
+        }
+        /**
+         * Render the tree and return it as a string.
+         *
+         * @return string|null
+         */
+        public function render()
+        {
+        }
+        /**
+         * Display the rendered tree
+         */
+        public function display()
+        {
+        }
+    }
+}
+namespace WP_CLI\I18n\Tests {
+    class IterableCodeExtractorTest extends \PHPUnit_Framework_TestCase
+    {
+        /** @var string A path files are located */
+        private static $base;
+        public function setUp()
+        {
+        }
+        public function test_can_include_files()
+        {
+        }
+        public function test_can_include_empty_array()
+        {
+        }
+        public function test_can_include_wildcard()
+        {
+        }
+        public function test_can_include_subdirectories()
+        {
+        }
+        public function test_can_include_only_php()
+        {
+        }
+        public function test_can_exclude_override_wildcard()
+        {
+        }
+        public function test_can_exclude_override_matching_directory()
+        {
+        }
+        public function test_can_not_exclude_partially_directory()
+        {
+        }
+        public function test_can_exclude_by_wildcard()
+        {
+        }
+        public function test_can_exclude_files()
+        {
+        }
+        public function test_can_override_exclude_by_include()
+        {
+        }
+        public function test_can_return_all_directory_files_sorted()
+        {
+        }
+        public function test_can_include_file_in_excluded_folder()
+        {
+        }
+        public function test_can_include_file_in_excluded_folder_with_leading_slash()
+        {
+        }
+        public function test_can_include_file_in_excluded_folder_by_wildcard()
+        {
+        }
+    }
+    class PotGeneratorTest extends \PHPUnit_Framework_TestCase
+    {
+        public function test_adds_correct_amount_of_plural_strings()
         {
         }
     }
