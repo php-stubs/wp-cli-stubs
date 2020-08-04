@@ -1,6 +1,6 @@
 {
     "name": "wp-cli/wp-cli-bundle",
-    "version": "0.0.0",
+    "version": "2.1.0",
     "require": {
         "php": "~7.1",
         "ext-curl": "*",

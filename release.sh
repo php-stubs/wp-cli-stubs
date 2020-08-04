@@ -2,19 +2,13 @@
 
 set -e
 
-for V in 2.1.0  2.2.0  2.3.0  2.4.0  2.4.1; do
+for V in 2.1.0  2.2.0  2.3.0  2.4.0; do
     echo "Releasing version ${V} ..."
 
     if git rev-parse "refs/tags/v${V}" >/dev/null 2>&1; then
         echo "Tag exists!"
         continue;
     fi
-
-    # Get wp-cli/wp-cli only
-    wget -nv -O "source/composer.lock" "https://github.com/wp-cli/wp-cli/raw/v${V}/composer.lock"
-    printf -v SED_EXP 's#\\("wp-cli/wp-cli"\\): "[0-9]\\+\\.[0-9]\\+\\.[0-9]\\+"#\\1: "%s"#' "${V}"
-    sed -i -e "$SED_EXP" source/wp-cli/composer.json
-    composer --working-dir=source/wp-cli/ install --no-interaction --no-suggest
 
     # Get all other packages from wp-cli-bundle
     wget -nv -O "source/composer.lock" "https://github.com/wp-cli/wp-cli-bundle/raw/v${V}/composer.lock"
