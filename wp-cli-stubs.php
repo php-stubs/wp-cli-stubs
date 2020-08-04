@@ -646,6 +646,33 @@ namespace WP_CLI {
         }
     }
     /**
+     * A Composer IO class so we can provide some level of interactivity from WP-CLI
+     */
+    class ComposerIO extends \Composer\IO\NullIO
+    {
+        /**
+         * {@inheritDoc}
+         */
+        public function isVerbose()
+        {
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public function write($messages, $newline = true, $verbosity = self::NORMAL)
+        {
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public function writeError($messages, $newline = true, $verbosity = self::NORMAL)
+        {
+        }
+        private static function output_clean_message($messages)
+        {
+        }
+    }
+    /**
      * Handles file- and runtime-based configuration values.
      *
      * @package WP_CLI
@@ -2361,6 +2388,21 @@ namespace WP_CLI {
         {
         }
         public function __call($method, $args)
+        {
+        }
+    }
+    /**
+     * A Composer Event subscriber so we can keep track of what's happening inside Composer
+     */
+    class PackageManagerEventSubscriber implements \Composer\EventDispatcher\EventSubscriberInterface
+    {
+        public static function getSubscribedEvents()
+        {
+        }
+        public static function pre_install(\Composer\Installer\PackageEvent $event)
+        {
+        }
+        public static function post_install(\Composer\Installer\PackageEvent $event)
         {
         }
     }
@@ -5018,50 +5060,6 @@ namespace {
          * @return array
          */
         private static function make_github_api_request($url, $args = array())
-        {
-        }
-    }
-}
-namespace WP_CLI {
-    /**
-     * A Composer Event subscriber so we can keep track of what's happening inside Composer
-     */
-    class PackageManagerEventSubscriber implements \Composer\EventDispatcher\EventSubscriberInterface
-    {
-        public static function getSubscribedEvents()
-        {
-        }
-        public static function pre_install(\Composer\Installer\PackageEvent $event)
-        {
-        }
-        public static function post_install(\Composer\Installer\PackageEvent $event)
-        {
-        }
-    }
-    /**
-     * A Composer IO class so we can provide some level of interactivity from WP-CLI
-     */
-    class ComposerIO extends \Composer\IO\NullIO
-    {
-        /**
-         * {@inheritDoc}
-         */
-        public function isVerbose()
-        {
-        }
-        /**
-         * {@inheritDoc}
-         */
-        public function write($messages, $newline = true, $verbosity = self::NORMAL)
-        {
-        }
-        /**
-         * {@inheritDoc}
-         */
-        public function writeError($messages, $newline = true, $verbosity = self::NORMAL)
-        {
-        }
-        private static function output_clean_message($messages)
         {
         }
     }
