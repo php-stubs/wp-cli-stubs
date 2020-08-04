@@ -1,29 +1,46 @@
-#!/bin/bash
-#
-# Generate WP-CLI stubs.
-#
+#!/usr/bin/env bash
 
-GENERATE_STUBS_COMMAND="vendor/bin/generate-stubs"
+HEADER=$'/**\n * Generated stub declarations for WP-CLI\n * @see https://wp-cli.org/\n * @see https://github.com/php-stubs/wp-cli-stubs\n */'
 
-# Check plugin
-if [ ! -r ./source/vendor/wp-cli/wp-cli/php/wp-cli.php ]; then
+FILE="wp-cli-stubs.php"
+FILE_PKGS="wp-cli-commands-stubs.php"
+
+set -e
+
+# test -f "$FILE"
+# test -f "$FILE_PKGS"
+
+# Check wp-cli
+if [ ! -r ./source/vendor/ ]; then
     cd ./source
     echo "WP CLI downloading in progress..." 1>&2
     composer update
     cd ../
 fi
 
-# Generate stubs
-if hash generate-stubs 2>/dev/null; then
-    GENERATE_STUBS_COMMAND="generate-stubs"
-elif hash generate-stubs.phar 2>/dev/null; then
-    GENERATE_STUBS_COMMAND="generate-stubs.phar"
-elif [ ! -x vendor/bin/generate-stubs ]; then
-    rm composer.json composer.lock
-    composer require --no-interaction --update-no-dev --prefer-dist --ignore-platform-reqs \
-        giacocorsiglia/stubs-generator
+# Download Stubs-generator
+if [ ! -r ./vendor/ ]; then
+    composer update
 fi
 
-"$GENERATE_STUBS_COMMAND" --finder=finder.php \ --functions --classes --interfaces --traits --out=wp-cli-stubs.php ./source
+# Exclude globals.
+"$(dirname "$0")/vendor/bin/generate-stubs" \
+    --force \
+    --finder=finder.php \
+    --header="$HEADER" \
+    --functions \
+    --classes \
+    --interfaces \
+    --traits \
+    --out="$FILE"
 
-"$GENERATE_STUBS_COMMAND" --finder=finder-packages.php \ --functions --classes --interfaces --traits --out=wp-cli-stubs-packages.php ./source
+# Packages.
+"$(dirname "$0")/vendor/bin/generate-stubs" \
+    --force \
+    --finder=finder-commands.php \
+    --header="$HEADER" \
+    --functions \
+    --classes \
+    --interfaces \
+    --traits \
+    --out="$FILE_PKGS"

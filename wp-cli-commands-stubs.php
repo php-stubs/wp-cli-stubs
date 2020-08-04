@@ -1,4 +1,9 @@
 <?php
+/**
+ * Generated stub declarations for WP-CLI
+ * @see https://wp-cli.org/
+ * @see https://github.com/php-stubs/wp-cli-stubs
+ */
 
 namespace {
     /**
@@ -22935,286 +22940,1166 @@ namespace {
         }
     }
 }
-namespace WP_CLI\Entity\Tests {
-    class RecursiveDataStructureTraverserTest extends \PHPUnit_Framework_TestCase
+/**
+ * PHP Command Line Tools
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this package in the file LICENSE.
+ *
+ * @author    James Logsdon <dwarf@girsbrain.org>
+ * @copyright 2010 James Logsdom (http://girsbrain.org)
+ * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
+ */
+namespace cli {
+    /**
+     * Handles rendering strings. If extra scalar arguments are given after the `$msg`
+     * the string will be rendered with `sprintf`. If the second argument is an `array`
+     * then each key in the array will be the placeholder name. Placeholders are of the
+     * format {:key}.
+     *
+     * @param string   $msg  The message to render.
+     * @param mixed    ...   Either scalar arguments or a single array argument.
+     * @return string  The rendered string.
+     */
+    function render($msg)
     {
-        /** @test */
-        public function it_can_get_a_top_level_array_value()
-        {
-        }
-        /** @test */
-        public function it_can_get_a_top_level_object_value()
-        {
-        }
-        /** @test */
-        public function it_can_get_a_nested_array_value()
-        {
-        }
-        /** @test */
-        public function it_can_get_a_nested_object_value()
-        {
-        }
-        /** @test */
-        public function it_can_set_a_nested_array_value()
-        {
-        }
-        /** @test */
-        public function it_can_set_a_nested_object_value()
-        {
-        }
-        /** @test */
-        public function it_can_update_an_integer_object_value()
-        {
-        }
-        /** @test */
-        public function it_can_delete_a_nested_array_value()
-        {
-        }
-        /** @test */
-        public function it_can_delete_a_nested_object_value()
-        {
-        }
-        /** @test */
-        public function it_can_insert_a_key_into_a_nested_array()
-        {
-        }
-        /** @test */
-        public function it_throws_an_exception_when_attempting_to_create_a_key_on_an_invalid_type()
-        {
-        }
+    }
+    /**
+     * Shortcut for printing to `STDOUT`. The message and parameters are passed
+     * through `sprintf` before output.
+     *
+     * @param string  $msg  The message to output in `printf` format.
+     * @param mixed   ...   Either scalar arguments or a single array argument.
+     * @return void
+     * @see \cli\render()
+     */
+    function out($msg)
+    {
+    }
+    /**
+     * Pads `$msg` to the width of the shell before passing to `cli\out`.
+     *
+     * @param string  $msg  The message to pad and pass on.
+     * @param mixed   ...   Either scalar arguments or a single array argument.
+     * @return void
+     * @see cli\out()
+     */
+    function out_padded($msg)
+    {
+    }
+    /**
+     * Prints a message to `STDOUT` with a newline appended. See `\cli\out` for
+     * more documentation.
+     *
+     * @see cli\out()
+     */
+    function line($msg = '')
+    {
+    }
+    /**
+     * Shortcut for printing to `STDERR`. The message and parameters are passed
+     * through `sprintf` before output.
+     *
+     * @param string  $msg  The message to output in `printf` format. With no string,
+     *                      a newline is printed.
+     * @param mixed   ...   Either scalar arguments or a single array argument.
+     * @return void
+     */
+    function err($msg = '')
+    {
+    }
+    /**
+     * Takes input from `STDIN` in the given format. If an end of transmission
+     * character is sent (^D), an exception is thrown.
+     *
+     * @param string  $format  A valid input format. See `fscanf` for documentation.
+     *                         If none is given, all input up to the first newline
+     *                         is accepted.
+     * @return string  The input with whitespace trimmed.
+     * @throws \Exception  Thrown if ctrl-D (EOT) is sent as input.
+     */
+    function input($format = null)
+    {
+    }
+    /**
+     * Displays an input prompt. If no default value is provided the prompt will
+     * continue displaying until input is received.
+     *
+     * @param string  $question The question to ask the user.
+     * @param string  $default  A default value if the user provides no input.
+     * @param string  $marker   A string to append to the question and default value on display.
+     * @param boolean $hide     If the user input should be hidden
+     * @return string  The users input.
+     * @see cli\input()
+     */
+    function prompt($question, $default = false, $marker = ': ', $hide = false)
+    {
+    }
+    /**
+     * Presents a user with a multiple choice question, useful for 'yes/no' type
+     * questions (which this function defaults too).
+     *
+     * @param string      $question   The question to ask the user.
+     * @param string      $choice
+     * @param string|null $default    The default choice. NULL if a default is not allowed.
+     * @internal param string $valid  A string of characters allowed as a response. Case
+     *                                is ignored.
+     * @return string  The users choice.
+     * @see      cli\prompt()
+     */
+    function choose($question, $choice = 'yn', $default = 'n')
+    {
+    }
+    /**
+     * Does the same as {@see choose()}, but always asks yes/no and returns a boolean
+     *
+     * @param string    $question  The question to ask the user.
+     * @param bool|null $default   The default choice, in a boolean format.
+     * @return bool
+     */
+    function confirm($question, $default = false)
+    {
+    }
+    /**
+     * Displays an array of strings as a menu where a user can enter a number to
+     * choose an option. The array must be a single dimension with either strings
+     * or objects with a `__toString()` method.
+     *
+     * @param array  $items   The list of items the user can choose from.
+     * @param string $default The index of the default item.
+     * @param string $title   The message displayed to the user when prompted.
+     * @return string  The index of the chosen item.
+     * @see cli\line()
+     * @see cli\input()
+     * @see cli\err()
+     */
+    function menu($items, $default = null, $title = 'Choose an item')
+    {
+    }
+    /**
+     * Attempts an encoding-safe way of getting string length. If intl extension or PCRE with '\X' or mb_string extension aren't
+     * available, falls back to basic strlen.
+     *
+     * @param  string      $str      The string to check.
+     * @param  string|bool $encoding Optional. The encoding of the string. Default false.
+     * @return int  Numeric value that represents the string's length
+     */
+    function safe_strlen($str, $encoding = false)
+    {
+    }
+    /**
+     * Attempts an encoding-safe way of getting a substring. If intl extension or PCRE with '\X' or mb_string extension aren't
+     * available, falls back to substr().
+     * 		
+     * @param  string        $str      The input string.
+     * @param  int           $start    The starting position of the substring.
+     * @param  int|bool|null $length   Optional, unless $is_width is set. Maximum length of the substring. Default false. Negative not supported.
+     * @param  int|bool      $is_width Optional. If set and encoding is UTF-8, $length (which must be specified) is interpreted as spacing width. Default false.
+     * @param  string|bool   $encoding Optional. The encoding of the string. Default false.
+     * @return bool|string  False if given unsupported args, otherwise substring of string specified by start and length parameters
+     */
+    function safe_substr($str, $start, $length = false, $is_width = false, $encoding = false)
+    {
+    }
+    /**
+     * Internal function used by `safe_substr()` to adjust for East Asian double-width chars.
+     *
+     * @return string
+     */
+    function _safe_substr_eaw($str, $length)
+    {
+    }
+    /**
+     * An encoding-safe way of padding string length for display
+     *
+     * @param  string      $string   The string to pad.
+     * @param  int         $length   The length to pad it to.
+     * @param  string|bool $encoding Optional. The encoding of the string. Default false.
+     * @return string
+     */
+    function safe_str_pad($string, $length, $encoding = false)
+    {
+    }
+    /**
+     * Get width of string, ie length in characters, taking into account multi-byte and mark characters for UTF-8, and multi-byte for non-UTF-8.
+     *
+     * @param  string      $string   The string to check.
+     * @param  string|bool $encoding Optional. The encoding of the string. Default false.
+     * @return int  The string's width.
+     */
+    function strwidth($string, $encoding = false)
+    {
+    }
+    /**
+     * Returns whether ICU is modern enough not to flake out.
+     *
+     * @return bool
+     */
+    function can_use_icu()
+    {
+    }
+    /**
+     * Returns whether PCRE Unicode extended grapheme cluster '\X' is available for use.
+     *
+     * @return bool
+     */
+    function can_use_pcre_x()
+    {
+    }
+    /**
+     * Get the regexs generated from Unicode data.
+     *
+     * @param string $idx Optional. Return a specific regex only. Default null.
+     * @return array|string  Returns keyed array if not given $idx or $idx doesn't exist, otherwise the specific regex string.
+     */
+    function get_unicode_regexs($idx = null)
+    {
     }
 }
-namespace WP_CLI\I18n\Tests {
-    class IterableCodeExtractorTest extends \PHPUnit_Framework_TestCase
+// Used by `wp server` to route requests.
+namespace WP_CLI\Router {
+    /**
+     * This is a copy of WordPress's add_filter() function.
+     *
+     * We duplicate it because WordPress is not loaded yet.
+     */
+    function add_filter($tag, $function_to_add, $priority = 10, $accepted_args = 1)
     {
-        /** @var string A path files are located */
-        private static $base;
-        public function setUp()
-        {
-        }
-        public function test_can_include_files()
-        {
-        }
-        public function test_can_include_empty_array()
-        {
-        }
-        public function test_can_include_wildcard()
-        {
-        }
-        public function test_can_include_subdirectories()
-        {
-        }
-        public function test_can_include_only_php()
-        {
-        }
-        public function test_can_exclude_override_wildcard()
-        {
-        }
-        public function test_can_exclude_override_matching_directory()
-        {
-        }
-        public function test_can_not_exclude_partially_directory()
-        {
-        }
-        public function test_can_exclude_by_wildcard()
-        {
-        }
-        public function test_can_exclude_files()
-        {
-        }
-        public function test_can_override_exclude_by_include()
-        {
-        }
-        public function test_can_return_all_directory_files_sorted()
-        {
-        }
-        public function test_can_include_file_in_excluded_folder()
-        {
-        }
-        public function test_can_include_file_in_excluded_folder_with_leading_slash()
-        {
-        }
-        public function test_can_include_file_in_excluded_folder_by_wildcard()
-        {
-        }
     }
-    class PotGeneratorTest extends \PHPUnit_Framework_TestCase
+    /**
+     * This is a copy of WordPress's _wp_filter_build_unique_id() function.
+     *
+     * We duplicate it because WordPress is not loaded yet.
+     */
+    function _wp_filter_build_unique_id($tag, $function, $priority)
     {
-        public function test_adds_correct_amount_of_plural_strings()
-        {
-        }
+    }
+    function _get_full_host($url)
+    {
+    }
+}
+namespace WP_CLI {
+    /**
+     * Get the list of ordered steps that need to be processed to bootstrap WP-CLI.
+     *
+     * Each entry is a fully qualified class name for a class implementing the
+     * `WP_CLI\Bootstrap\BootstrapStep` interface.
+     *
+     * @return string[]
+     */
+    function get_bootstrap_steps()
+    {
+    }
+    /**
+     * Register the classes needed for the bootstrap process.
+     *
+     * The Composer autoloader is not active yet at this point, so we need to use a
+     * custom autoloader to fetch the bootstrap classes in a flexible way.
+     */
+    function prepare_bootstrap()
+    {
+    }
+    /**
+     * Initialize and return the bootstrap state to pass from step to step.
+     *
+     * @return BootstrapState
+     */
+    function initialize_bootstrap_state()
+    {
+    }
+    /**
+     * Process the bootstrapping steps.
+     *
+     * Loops over each of the provided steps, instantiates it and then calls its
+     * `process()` method.
+     */
+    function bootstrap()
+    {
+    }
+}
+namespace WP_CLI\Dispatcher {
+    /**
+     * Get the path to a command, e.g. "core download"
+     *
+     * @param Subcommand|CompositeCommand $command
+     * @return string[]
+     */
+    function get_path($command)
+    {
+    }
+}
+// Utilities that depend on WordPress code.
+namespace WP_CLI\Utils {
+    function wp_not_installed()
+    {
+    }
+    // phpcs:disable WordPress.PHP.IniSet -- Intentional & correct usage.
+    function wp_debug_mode()
+    {
+    }
+    // phpcs:enable
+    function replace_wp_die_handler()
+    {
+    }
+    function wp_die_handler($message)
+    {
+    }
+    /**
+     * Clean HTML error message so suitable for text display.
+     */
+    function wp_clean_error_message($message)
+    {
+    }
+    function wp_redirect_handler($url)
+    {
+    }
+    function maybe_require($since, $path)
+    {
+    }
+    function get_upgrader($class)
+    {
+    }
+    /**
+     * Converts a plugin basename back into a friendly slug.
+     */
+    function get_plugin_name($basename)
+    {
+    }
+    function is_plugin_skipped($file)
+    {
+    }
+    function get_theme_name($path)
+    {
+    }
+    function is_theme_skipped($path)
+    {
+    }
+    /**
+     * Register the sidebar for unused widgets.
+     * Core does this in /wp-admin/widgets.php, which isn't helpful.
+     */
+    function wp_register_unused_sidebar()
+    {
+    }
+    /**
+     * Attempts to determine which object cache is being used.
+     *
+     * Note that the guesses made by this function are based on the WP_Object_Cache classes
+     * that define the 3rd party object cache extension. Changes to those classes could render
+     * problems with this function's ability to determine which object cache is being used.
+     *
+     * @return string
+     */
+    function wp_get_cache_type()
+    {
+    }
+    /**
+     * Clear WordPress internal object caches.
+     *
+     * In long-running scripts, the internal caches on `$wp_object_cache` and `$wpdb`
+     * can grow to consume gigabytes of memory. Periodically calling this utility
+     * can help with memory management.
+     *
+     * @access public
+     * @category System
+     * @deprecated 1.5.0
+     */
+    function wp_clear_object_cache()
+    {
+    }
+    /**
+     * Get a set of tables in the database.
+     *
+     * Interprets common command-line options into a resolved set of table names.
+     *
+     * @param array $args Provided table names, or tables with wildcards.
+     * @param array $assoc_args Optional flags for groups of tables (e.g. --network)
+     * @return array $tables
+     */
+    function wp_get_table_names($args, $assoc_args = array())
+    {
+    }
+    /**
+     * Failsafe use of the WordPress wp_strip_all_tags() function.
+     *
+     * Automatically falls back to strip_tags() function if the WP function is not
+     * available.
+     *
+     * @param string $string String to strip the tags from.
+     * @return string String devoid of tags.
+     */
+    function strip_tags($string)
+    {
+    }
+}
+// Utilities that do NOT depend on WordPress code.
+namespace WP_CLI\Utils {
+    function inside_phar()
+    {
+    }
+    // Files that need to be read by external programs have to be extracted from the Phar archive.
+    function extract_from_phar($path)
+    {
+    }
+    function load_dependencies()
+    {
+    }
+    function get_vendor_paths()
+    {
+    }
+    // Using require() directly inside a class grants access to private methods to the loaded code.
+    function load_file($path)
+    {
+    }
+    function load_command($name)
+    {
+    }
+    /**
+     * Like array_map(), except it returns a new iterator, instead of a modified array.
+     *
+     * Example:
+     *
+     *     $arr = array('Football', 'Socker');
+     *
+     *     $it = iterator_map($arr, 'strtolower', function($val) {
+     *       return str_replace('foo', 'bar', $val);
+     *     });
+     *
+     *     foreach ( $it as $val ) {
+     *       var_dump($val);
+     *     }
+     *
+     * @param array|object $it Either a plain array or another iterator.
+     * @param callback     $fn The function to apply to an element.
+     * @return object An iterator that applies the given callback(s).
+     */
+    function iterator_map($it, $fn)
+    {
+    }
+    /**
+     * Search for file by walking up the directory tree until the first file is found or until $stop_check($dir) returns true.
+     *
+     * @param string|array $files      The files (or file) to search for.
+     * @param string|null  $dir        The directory to start searching from; defaults to CWD.
+     * @param callable     $stop_check Function which is passed the current dir each time a directory level is traversed.
+     * @return null|string Null if the file was not found.
+     */
+    function find_file_upward($files, $dir = null, $stop_check = null)
+    {
+    }
+    function is_path_absolute($path)
+    {
+    }
+    /**
+     * Composes positional arguments into a command string.
+     *
+     * @param array $args Positional arguments to compose.
+     * @return string
+     */
+    function args_to_str($args)
+    {
+    }
+    /**
+     * Composes associative arguments into a command string.
+     *
+     * @param array $assoc_args Associative arguments to compose.
+     * @return string
+     */
+    function assoc_args_to_str($assoc_args)
+    {
+    }
+    /**
+     * Given a template string and an arbitrary number of arguments,
+     * returns the final command, with the parameters escaped.
+     */
+    function esc_cmd($cmd)
+    {
+    }
+    /**
+     * Gets path to WordPress configuration.
+     *
+     * @return string
+     */
+    function locate_wp_config()
+    {
+    }
+    function wp_version_compare($since, $operator)
+    {
+    }
+    /**
+     * Render a collection of items as an ASCII table, JSON, CSV, YAML, list of ids, or count.
+     *
+     * Given a collection of items with a consistent data structure:
+     *
+     * ```
+     * $items = array(
+     *     array(
+     *         'key'   => 'foo',
+     *         'value'  => 'bar',
+     *     )
+     * );
+     * ```
+     *
+     * Render `$items` as an ASCII table:
+     *
+     * ```
+     * WP_CLI\Utils\format_items( 'table', $items, array( 'key', 'value' ) );
+     *
+     * # +-----+-------+
+     * # | key | value |
+     * # +-----+-------+
+     * # | foo | bar   |
+     * # +-----+-------+
+     * ```
+     *
+     * Or render `$items` as YAML:
+     *
+     * ```
+     * WP_CLI\Utils\format_items( 'yaml', $items, array( 'key', 'value' ) );
+     *
+     * # ---
+     * # -
+     * #   key: foo
+     * #   value: bar
+     * ```
+     *
+     * @access public
+     * @category Output
+     *
+     * @param string       $format Format to use: 'table', 'json', 'csv', 'yaml', 'ids', 'count'.
+     * @param array        $items  An array of items to output.
+     * @param array|string $fields Named fields for each item of data. Can be array or comma-separated list.
+     * @return null
+     */
+    function format_items($format, $items, $fields)
+    {
+    }
+    /**
+     * Write data as CSV to a given file.
+     *
+     * @access public
+     *
+     * @param resource $fd      File descriptor.
+     * @param array    $rows    Array of rows to output.
+     * @param array    $headers List of CSV columns (optional).
+     */
+    function write_csv($fd, $rows, $headers = array())
+    {
+    }
+    /**
+     * Pick fields from an associative array or object.
+     *
+     * @param  array|object $item    Associative array or object to pick fields from.
+     * @param  array        $fields  List of fields to pick.
+     * @return array
+     */
+    function pick_fields($item, $fields)
+    {
+    }
+    /**
+     * Launch system's $EDITOR for the user to edit some text.
+     *
+     * @access public
+     * @category Input
+     *
+     * @param string $input Some form of text to edit (e.g. post content).
+     * @param string $title Title to display in the editor.
+     * @param string $ext   Extension to use with the temp file.
+     * @return string|bool  Edited text, if file is saved from editor; false, if no change to file.
+     */
+    function launch_editor_for_input($input, $title = 'WP-CLI', $ext = 'tmp')
+    {
+    }
+    /**
+     * @param string MySQL host string, as defined in wp-config.php.
+     *
+     * @return array
+     */
+    function mysql_host_to_cli_args($raw_host)
+    {
+    }
+    /**
+     * Run a MySQL command and optionally return the output.
+     *
+     * @since v2.5.0 Deprecated $descriptors argument.
+     *
+     * @param string $cmd           Command to run.
+     * @param array  $assoc_args    Associative array of arguments to use.
+     * @param mixed  $_             Deprecated. Former $descriptors argument.
+     * @param bool   $send_to_shell Optional. Whether to send STDOUT and STDERR
+     *                              immediately to the shell. Defaults to true.
+     *
+     * @return array {
+     *     Associative array containing STDOUT and STDERR output.
+     *
+     *     @type string $stdout    Output that was sent to STDOUT.
+     *     @type string $stderr    Output that was sent to STDERR.
+     *     @type int    $exit_code Exit code of the process.
+     * }
+     */
+    function run_mysql_command($cmd, $assoc_args, $_ = null, $send_to_shell = true)
+    {
+    }
+    /**
+     * Render PHP or other types of files using Mustache templates.
+     *
+     * IMPORTANT: Automatic HTML escaping is disabled!
+     */
+    function mustache_render($template_name, $data = array())
+    {
+    }
+    /**
+     * Create a progress bar to display percent completion of a given operation.
+     *
+     * Progress bar is written to STDOUT, and disabled when command is piped. Progress
+     * advances with `$progress->tick()`, and completes with `$progress->finish()`.
+     * Process bar also indicates elapsed time and expected total time.
+     *
+     * ```
+     * # `wp user generate` ticks progress bar each time a new user is created.
+     * #
+     * # $ wp user generate --count=500
+     * # Generating users  22 % [=======>                             ] 0:05 / 0:23
+     *
+     * $progress = \WP_CLI\Utils\make_progress_bar( 'Generating users', $count );
+     * for ( $i = 0; $i < $count; $i++ ) {
+     *     // uses wp_insert_user() to insert the user
+     *     $progress->tick();
+     * }
+     * $progress->finish();
+     * ```
+     *
+     * @access public
+     * @category Output
+     *
+     * @param string  $message  Text to display before the progress bar.
+     * @param integer $count    Total number of ticks to be performed.
+     * @param int     $interval Optional. The interval in milliseconds between updates. Default 100.
+     * @return cli\progress\Bar|WP_CLI\NoOp
+     */
+    function make_progress_bar($message, $count, $interval = 100)
+    {
+    }
+    /**
+     * Helper function to use wp_parse_url when available or fall back to PHP's
+     * parse_url if not.
+     *
+     * Additionally, this adds 'http://' to the URL if no scheme was found.
+     *
+     * @param string $url             The URL to parse.
+     * @param int    $component       Optional. The specific component to retrieve.
+     *                                Use one of the PHP predefined constants to
+     *                                specify which one. Defaults to -1 (= return
+     *                                all parts as an array).
+     * @param bool   $auto_add_scheme Optional. Automatically add an http:// scheme if
+     *                                none was found. Defaults to true.
+     * @return mixed False on parse failure; Array of URL components on success;
+     *               When a specific component has been requested: null if the
+     *               component doesn't exist in the given URL; a string or - in the
+     *               case of PHP_URL_PORT - integer when it does. See parse_url()'s
+     *               return values.
+     */
+    function parse_url($url, $component = -1, $auto_add_scheme = true)
+    {
+    }
+    /**
+     * Check if we're running in a Windows environment (cmd.exe).
+     *
+     * @return bool
+     */
+    function is_windows()
+    {
+    }
+    /**
+     * Replace magic constants in some PHP source code.
+     *
+     * Replaces the __FILE__ and __DIR__ magic constants with the values they are
+     * supposed to represent at runtime.
+     *
+     * @param string $source The PHP code to manipulate.
+     * @param string $path The path to use instead of the magic constants.
+     * @return string Adapted PHP code.
+     */
+    function replace_path_consts($source, $path)
+    {
+    }
+    /**
+     * Make a HTTP request to a remote URL.
+     *
+     * Wraps the Requests HTTP library to ensure every request includes a cert.
+     *
+     * ```
+     * # `wp core download` verifies the hash for a downloaded WordPress archive
+     *
+     * $md5_response = Utils\http_request( 'GET', $download_url . '.md5' );
+     * if ( 20 != substr( $md5_response->status_code, 0, 2 ) ) {
+     *      WP_CLI::error( "Couldn't access md5 hash for release (HTTP code {$response->status_code})" );
+     * }
+     * ```
+     *
+     * @access public
+     *
+     * @param string $method  HTTP method (GET, POST, DELETE, etc.).
+     * @param string $url     URL to make the HTTP request to.
+     * @param array  $headers Add specific headers to the request.
+     * @param array $options
+     * @return object
+     * @throws RuntimeException If the request failed.
+     * @throws WP_CLI\ExitException If the request failed and $halt_on_error is true.
+     */
+    function http_request($method, $url, $data = null, $headers = array(), $options = array())
+    {
+    }
+    /**
+     * Increments a version string using the "x.y.z-pre" format.
+     *
+     * Can increment the major, minor or patch number by one.
+     * If $new_version == "same" the version string is not changed.
+     * If $new_version is not a known keyword, it will be used as the new version string directly.
+     *
+     * @param string $current_version
+     * @param string $new_version
+     * @return string
+     */
+    function increment_version($current_version, $new_version)
+    {
+    }
+    /**
+     * Compare two version strings to get the named semantic version.
+     *
+     * @access public
+     *
+     * @param string $new_version
+     * @param string $original_version
+     * @return string $name 'major', 'minor', 'patch'
+     */
+    function get_named_sem_ver($new_version, $original_version)
+    {
+    }
+    /**
+     * Return the flag value or, if it's not set, the $default value.
+     *
+     * Because flags can be negated (e.g. --no-quiet to negate --quiet), this
+     * function provides a safer alternative to using
+     * `isset( $assoc_args['quiet'] )` or similar.
+     *
+     * @access public
+     * @category Input
+     *
+     * @param array  $assoc_args Arguments array.
+     * @param string $flag       Flag to get the value.
+     * @param mixed  $default    Default value for the flag. Default: NULL.
+     * @return mixed
+     */
+    function get_flag_value($assoc_args, $flag, $default = null)
+    {
+    }
+    /**
+     * Get the home directory.
+     *
+     * @access public
+     * @category System
+     *
+     * @return string
+     */
+    function get_home_dir()
+    {
+    }
+    /**
+     * Appends a trailing slash.
+     *
+     * @access public
+     * @category System
+     *
+     * @param string $string What to add the trailing slash to.
+     * @return string String with trailing slash added.
+     */
+    function trailingslashit($string)
+    {
+    }
+    /**
+     * Normalize a filesystem path.
+     *
+     * On Windows systems, replaces backslashes with forward slashes
+     * and forces upper-case drive letters.
+     * Allows for two leading slashes for Windows network shares, but
+     * ensures that all other duplicate slashes are reduced to a single one.
+     * Ensures upper-case drive letters on Windows systems.
+     *
+     * @access public
+     * @category System
+     *
+     * @param string $path Path to normalize.
+     * @return string Normalized path.
+     */
+    function normalize_path($path)
+    {
+    }
+    /**
+     * Convert Windows EOLs to *nix.
+     *
+     * @param string $str String to convert.
+     * @return string String with carriage return / newline pairs reduced to newlines.
+     */
+    function normalize_eols($str)
+    {
+    }
+    /**
+     * Get the system's temp directory. Warns user if it isn't writable.
+     *
+     * @access public
+     * @category System
+     *
+     * @return string
+     */
+    function get_temp_dir()
+    {
+    }
+    /**
+     * Parse a SSH url for its host, port, and path.
+     *
+     * Similar to parse_url(), but adds support for defined SSH aliases.
+     *
+     * ```
+     * host OR host/path/to/wordpress OR host:port/path/to/wordpress
+     * ```
+     *
+     * @access public
+     *
+     * @return mixed
+     */
+    function parse_ssh_url($url, $component = -1)
+    {
+    }
+    /**
+     * Report the results of the same operation against multiple resources.
+     *
+     * @access public
+     * @category Input
+     *
+     * @param string       $noun      Resource being affected (e.g. plugin).
+     * @param string       $verb      Type of action happening to the noun (e.g. activate).
+     * @param integer      $total     Total number of resource being affected.
+     * @param integer      $successes Number of successful operations.
+     * @param integer      $failures  Number of failures.
+     * @param null|integer $skips     Optional. Number of skipped operations. Default null (don't show skips).
+     */
+    function report_batch_operation_results($noun, $verb, $total, $successes, $failures, $skips = null)
+    {
+    }
+    /**
+     * Parse a string of command line arguments into an $argv-esqe variable.
+     *
+     * @access public
+     * @category Input
+     *
+     * @param string $arguments
+     * @return array
+     */
+    function parse_str_to_argv($arguments)
+    {
+    }
+    /**
+     * Locale-independent version of basename()
+     *
+     * @access public
+     *
+     * @param string $path
+     * @param string $suffix
+     * @return string
+     */
+    function basename($path, $suffix = '')
+    {
+    }
+    /**
+     * Checks whether the output of the current script is a TTY or a pipe / redirect
+     *
+     * Returns true if STDOUT output is being redirected to a pipe or a file; false is
+     * output is being sent directly to the terminal.
+     *
+     * If an env variable SHELL_PIPE exists, returned result depends on its
+     * value. Strings like 1, 0, yes, no, that validate to booleans are accepted.
+     *
+     * To enable ASCII formatting even when the shell is piped, use the
+     * ENV variable SHELL_PIPE=0.
+     *
+     * @access public
+     *
+     * @return bool
+     */
+    function isPiped()
+    {
+    }
+    /**
+     * Expand within paths to their matching paths.
+     *
+     * Has no effect on paths which do not use glob patterns.
+     *
+     * @param string|array $paths Single path as a string, or an array of paths.
+     * @param int          $flags Optional. Flags to pass to glob. Defaults to GLOB_BRACE.
+     * @return array Expanded paths.
+     */
+    function expand_globs($paths, $flags = 'default')
+    {
+    }
+    /**
+     * Simulate a `glob()` with the `GLOB_BRACE` flag set. For systems (eg Alpine Linux) built against a libc library (eg https://www.musl-libc.org/) that lacks it.
+     * Copied and adapted from Zend Framework's `Glob::fallbackGlob()` and Glob::nextBraceSub()`.
+     *
+     * Zend Framework (https://framework.zend.com/)
+     *
+     * @link      https://github.com/zendframework/zf2 for the canonical source repository
+     * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (https://www.zend.com)
+     * @license   https://framework.zend.com/license/new-bsd New BSD License
+     *
+     * @param string $pattern     Filename pattern.
+     * @param void   $dummy_flags Not used.
+     * @return array Array of paths.
+     */
+    function glob_brace($pattern, $dummy_flags = null)
+    {
+    }
+    /**
+     * Get the closest suggestion for a mis-typed target term amongst a list of
+     * options.
+     *
+     * Uses the Levenshtein algorithm to calculate the relative "distance" between
+     * terms.
+     *
+     * If the "distance" to the closest term is higher than the threshold, an empty
+     * string is returned.
+     *
+     * @param string $target    Target term to get a suggestion for.
+     * @param array  $options   Array with possible options.
+     * @param int    $threshold Threshold above which to return an empty string.
+     * @return string
+     */
+    function get_suggestion($target, array $options, $threshold = 2)
+    {
+    }
+    /**
+     * Get a Phar-safe version of a path.
+     *
+     * For paths inside a Phar, this strips the outer filesystem's location to
+     * reduce the path to what it needs to be within the Phar archive.
+     *
+     * Use the __FILE__ or __DIR__ constants as a starting point.
+     *
+     * @param string $path An absolute path that might be within a Phar.
+     * @return string A Phar-safe version of the path.
+     */
+    function phar_safe_path($path)
+    {
+    }
+    /**
+     * Maybe prefix command string with "/usr/bin/env".
+     * Removes (if there) if Windows, adds (if not there) if not.
+     *
+     * @param string $command
+     * @return string
+     */
+    function force_env_on_nix_systems($command)
+    {
+    }
+    /**
+     * Check that `proc_open()` and `proc_close()` haven't been disabled.
+     *
+     * @param string $context Optional. If set will appear in error message. Default null.
+     * @param bool   $return  Optional. If set will return false rather than error out. Default false.
+     * @return bool
+     */
+    function check_proc_available($context = null, $return = false)
+    {
+    }
+    /**
+     * Returns past tense of verb, with limited accuracy. Only regular verbs catered for, apart from "reset".
+     *
+     * @param string $verb Verb to return past tense of.
+     * @return string
+     */
+    function past_tense_verb($verb)
+    {
+    }
+    /**
+     * Get the path to the PHP binary used when executing WP-CLI.
+     *
+     * Environment values permit specific binaries to be indicated.
+     *
+     * @access public
+     * @category System
+     *
+     * @return string
+     */
+    function get_php_binary()
+    {
+    }
+    /**
+     * Windows compatible `proc_open()`.
+     * Works around bug in PHP, and also deals with *nix-like `ENV_VAR=blah cmd` environment variable prefixes.
+     *
+     * @access public
+     *
+     * @param string $cmd            Command to execute.
+     * @param array  $descriptorspec Indexed array of descriptor numbers and their values.
+     * @param array  &$pipes         Indexed array of file pointers that correspond to PHP's end of any pipes that are created.
+     * @param string $cwd            Initial working directory for the command.
+     * @param array  $env            Array of environment variables.
+     * @param array  $other_options  Array of additional options (Windows only).
+     * @return resource Command stripped of any environment variable settings.
+     */
+    function proc_open_compat($cmd, $descriptorspec, &$pipes, $cwd = null, $env = null, $other_options = null)
+    {
+    }
+    /**
+     * For use by `proc_open_compat()` only. Separated out for ease of testing. Windows only.
+     * Turns *nix-like `ENV_VAR=blah command` environment variable prefixes into stripped `cmd` with prefixed environment variables added to passed in environment array.
+     *
+     * @access private
+     *
+     * @param string $cmd Command to execute.
+     * @param array &$env Array of existing environment variables. Will be modified if any settings in command.
+     * @return string Command stripped of any environment variable settings.
+     */
+    function _proc_open_compat_win_env($cmd, &$env)
+    {
+    }
+    /**
+     * First half of escaping for LIKE special characters % and _ before preparing for MySQL.
+     *
+     * Use this only before wpdb::prepare() or esc_sql().  Reversing the order is very bad for security.
+     *
+     * Copied from core "wp-includes/wp-db.php". Avoids dependency on WP 4.4 wpdb.
+     *
+     * @access public
+     *
+     * @param string $text The raw text to be escaped. The input typed by the user should have no
+     *                     extra or deleted slashes.
+     * @return string Text in the form of a LIKE phrase. The output is not SQL safe. Call $wpdb::prepare()
+     *                or real_escape next.
+     */
+    function esc_like($text)
+    {
+    }
+    /**
+     * Escapes (backticks) MySQL identifiers (aka schema object names) - i.e. column names, table names, and database/index/alias/view etc names.
+     * See https://dev.mysql.com/doc/refman/5.5/en/identifiers.html
+     *
+     * @param  string|array $idents A single identifier or an array of identifiers.
+     * @return string|array An escaped string if given a string, or an array of escaped strings if given an array of strings.
+     */
+    function esc_sql_ident($idents)
+    {
+    }
+    /**
+     * Check whether a given string is a valid JSON representation.
+     *
+     * @param string $argument       String to evaluate.
+     * @param bool   $ignore_scalars Optional. Whether to ignore scalar values.
+     *                               Defaults to true.
+     * @return bool Whether the provided string is a valid JSON representation.
+     */
+    function is_json($argument, $ignore_scalars = true)
+    {
+    }
+    /**
+     * Parse known shell arrays included in the $assoc_args array.
+     *
+     * @param array $assoc_args      Associative array of arguments.
+     * @param array $array_arguments Array of argument keys that should receive an
+     *                               array through the shell.
+     * @return array
+     */
+    function parse_shell_arrays($assoc_args, $array_arguments)
+    {
+    }
+    /**
+     * Describe a callable as a string.
+     *
+     * @param callable $callable The callable to describe.
+     * @return string String description of the callable.
+     */
+    function describe_callable($callable)
+    {
+    }
+    /**
+     * Pluralizes a noun in a grammatically correct way.
+     *
+     * @param string   $noun  Noun to be pluralized. Needs to be in singular form.
+     * @param int|null $count Optional. Count of the nouns, to decide whether to
+     *                        pluralize. Will pluralize unconditionally if none
+     *                        provided.
+     * @return string Pluralized noun.
+     */
+    function pluralize($noun, $count = null)
+    {
+    }
+    /**
+     * Get the path to the mysql binary.
+     *
+     * @return string Path to the mysql binary, or an empty string if not found.
+     */
+    function get_mysql_binary_path()
+    {
+    }
+    /**
+     * Get the version of the MySQL database.
+     *
+     * @return string Version of the MySQL database, or an empty string if not
+     *                found.
+     */
+    function get_mysql_version()
+    {
+    }
+    /**
+     * Get the SQL modes of the MySQL session.
+     *
+     * @return string[] Array of SQL modes, or an empty array if they couldn't be
+     *                  read.
+     */
+    function get_sql_modes()
+    {
     }
 }
 namespace {
-    class ComposerJsonTest extends \PHPUnit_Framework_TestCase
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Renaming breaks Phar compat.
+    function wp_export($args = array())
     {
-        private $logger = \null;
-        private $prev_logger = \null;
-        private $prev_capture_exit = \null;
-        private $temp_dir = \null;
-        public function setUp()
-        {
-        }
-        public function tearDown()
-        {
-        }
-        public function test_create_default_composer_json()
-        {
-        }
-        public function test_get_composer_json_path()
-        {
-        }
-        public function test_get_composer_json_path_backup_decoded()
-        {
-        }
-        private function mac_safe_path($path)
-        {
-        }
     }
-    // WP_CLI
-    class JsonManipulatorTest extends \PHPUnit_Framework_TestCase
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound,WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid -- Renaming breaks Phar compat.
+    function _wp_export_build_IN_condition($column_name, $values, $format = '%s')
     {
-        /**
-         * @dataProvider linkProvider
-         */
-        public function testAddLink($json, $type, $package, $constraint, $expected)
-        {
-        }
-        public function linkProvider()
-        {
-        }
-        /**
-         * @dataProvider providerAddLinkAndSortPackages
-         */
-        public function testAddLinkAndSortPackages($json, $type, $package, $constraint, $sortPackages, $expected)
-        {
-        }
-        public function providerAddLinkAndSortPackages()
-        {
-        }
-        /**
-         * @dataProvider removeSubNodeProvider
-         */
-        public function testRemoveSubNode($json, $name, $expected, $expectedContent = \null)
-        {
-        }
-        public function removeSubNodeProvider()
-        {
-        }
-        public function testRemoveSubNodeFromRequire()
-        {
-        }
-        public function testAddSubNodeInRequire()
-        {
-        }
-        public function testAddExtraWithPackage()
-        {
-        }
-        public function testAddRepositoryCanInitializeEmptyRepositories()
-        {
-        }
-        public function testAddRepositoryCanInitializeFromScratch()
-        {
-        }
-        public function testAddRepositoryCanAdd()
-        {
-        }
-        public function testAddRepositoryCanOverrideDeepRepos()
-        {
-        }
-        public function testAddConfigSettingEscapes()
-        {
-        }
-        public function testAddConfigSettingWorksFromScratch()
-        {
-        }
-        public function testAddConfigSettingCanAdd()
-        {
-        }
-        public function testAddConfigSettingCanOverwrite()
-        {
-        }
-        public function testAddConfigSettingCanOverwriteNumbers()
-        {
-        }
-        public function testAddConfigSettingCanOverwriteArrays()
-        {
-        }
-        public function testAddConfigSettingCanAddSubKeyInEmptyConfig()
-        {
-        }
-        public function testAddConfigSettingCanAddSubKeyInEmptyVal()
-        {
-        }
-        public function testAddConfigSettingCanAddSubKeyInHash()
-        {
-        }
-        public function testAddRootSettingDoesNotBreakDots()
-        {
-        }
-        public function testRemoveConfigSettingCanRemoveSubKeyInHash()
-        {
-        }
-        public function testRemoveConfigSettingCanRemoveSubKeyInHashWithSiblings()
-        {
-        }
-        public function testAddMainKey()
-        {
-        }
-        public function testAddMainKeyWithContentHavingDollarSignFollowedByDigit()
-        {
-        }
-        public function testAddMainKeyWithContentHavingDollarSignFollowedByDigit2()
-        {
-        }
-        public function testUpdateMainKey()
-        {
-        }
-        public function testUpdateMainKey2()
-        {
-        }
-        public function testUpdateMainKey3()
-        {
-        }
-        public function testUpdateMainKeyWithContentHavingDollarSignFollowedByDigit()
-        {
-        }
-        public function testRemoveMainKey()
-        {
-        }
-        public function testIndentDetection()
-        {
-        }
-        public function testRemoveMainKeyAtEndOfFile()
-        {
-        }
-        // WP_CLI: begin caseInsensitive.
-        /**
-         * @dataProvider providerAddLinkCaseInsensitive
-         */
-        public function testAddLinkCaseInsensitive($json, $type, $package, $constraint, $sortPackages, $expected)
-        {
-        }
-        public function providerAddLinkCaseInsensitive()
-        {
-        }
-        /**
-         * @dataProvider providerAddSubNodeCase
-         */
-        public function testAddSubNodeCase($json, $mainNode, $name, $caseInsensitive, $expected)
-        {
-        }
-        public function providerAddSubNodeCase()
-        {
-        }
-        /**
-         * @dataProvider providerRemoveSubNodeCaseInsensitive
-         */
-        public function testRemoveSubNodeCaseInsensitive($json, $mainNode, $name, $expected, $expectedContent = \null)
-        {
-        }
-        public function providerRemoveSubNodeCaseInsensitive()
-        {
-        }
+    }
+    /**
+     * Parses YAML to array.
+     * @param string $string YAML string.
+     * @return array
+     */
+    function spyc_load($string)
+    {
+    }
+    /**
+     * Parses YAML to array.
+     * @param string $file Path to YAML file.
+     * @return array
+     */
+    function spyc_load_file($file)
+    {
+    }
+    /**
+     * Dumps array to YAML.
+     * @param array $data Array.
+     * @return string
+     */
+    function spyc_dump($data)
+    {
+    }
+    function php5to4($src, $dest)
+    {
+    }
+    function test_notify(\cli\Notify $notify, $cycle = 1000000, $sleep = \null)
+    {
+    }
+    function test_notify_msg(\cli\Notify $notify, $cycle = 1000000, $sleep = \null)
+    {
     }
 }

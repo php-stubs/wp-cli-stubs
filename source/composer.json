@@ -8,12 +8,9 @@
     "homepage": "https://wp-cli.org",
     "license": "MIT",
     "require": {
-        "php": ">=7.1",
-        "ext-gettext": "*",
-        "ext-hash": "*",
+        "php": ">=5.6",
         "ext-json": "*",
-        "ext-mbstring": "*",
-        "ext-openssl": "*",
+        "ext-curl": "*",
         "wp-cli/cache-command": "^2",
         "wp-cli/checksum-command": "^2",
         "wp-cli/config-command": "^2",
@@ -58,5 +55,5 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true,
+    "prefer-stable": true
 }
