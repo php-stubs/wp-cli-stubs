@@ -1396,7 +1396,8 @@ namespace WP_CLI {
         {
         }
         /**
-         * Copy files from source directory to destination directory. Source directory must exist.
+         * Copy files from source directory to destination directory. Source
+         * directory must exist.
          *
          * @param string $source
          * @param string $dest
@@ -1405,7 +1406,8 @@ namespace WP_CLI {
         {
         }
         /**
-         * Delete all files and directories recursively from directory. Directory must exist.
+         * Delete all files and directories recursively from directory. Directory
+         * must exist.
          *
          * @param string $dir
          */
@@ -1416,8 +1418,9 @@ namespace WP_CLI {
          * Return formatted ZipArchive error message from error code.
          *
          * @param int $error_code
-         * @return string|int The error message corresponding to the specified code, if found;
-         * Other wise the same error code, unmodified.
+         * @return string|int The error message corresponding to the specified
+         *                    code, if found; Other wise the same error code,
+         *                    unmodified.
          */
         public static function zip_error_msg($error_code)
         {
@@ -1427,9 +1430,38 @@ namespace WP_CLI {
          *
          * @param Processrun $process_run
          * @return string|int The error message of the process, if available;
-         * otherwise the return code.
+         *                    otherwise the return code.
          */
         public static function tar_error_msg($process_run)
+        {
+        }
+        /**
+         * Return the first subfolder within a given path.
+         *
+         * Falls back to the provided path if no subfolder was detected.
+         *
+         * @param string $path Path to find the first subfolder in.
+         * @return string First subfolder, or same as $path if none found.
+         */
+        private static function get_first_subfolder($path)
+        {
+        }
+        /**
+         * Ensure directory exists.
+         *
+         * @param string $dir Directory to ensure the existence of.
+         * @return bool Whether the existence could be asserted.
+         */
+        private static function ensure_dir_exists($dir)
+        {
+        }
+        /**
+         * Check whether a path is relative-
+         *
+         * @param string $path Path to check.
+         * @return bool Whether the path is relative.
+         */
+        private static function path_is_relative($path)
         {
         }
     }
@@ -2343,7 +2375,7 @@ namespace WP_CLI {
         /**
          * Run the command.
          *
-         * @return ProcessRun
+         * @return \WP_CLI\ProcessRun
          */
         public function run()
         {
@@ -2351,7 +2383,7 @@ namespace WP_CLI {
         /**
          * Run the command, but throw an Exception on error.
          *
-         * @return ProcessRun
+         * @return \WP_CLI\ProcessRun
          */
         public function run_check()
         {
@@ -2360,7 +2392,7 @@ namespace WP_CLI {
          * Run the command, but throw an Exception on error.
          * Same as `run_check()` above, but checks the correct stderr.
          *
-         * @return ProcessRun
+         * @return \WP_CLI\ProcessRun
          */
         public function run_check_stderr()
         {
@@ -3490,7 +3522,7 @@ namespace {
          * @param string $command External process to launch.
          * @param boolean $exit_on_error Whether to exit if the command returns an elevated return code.
          * @param boolean $return_detailed Whether to return an exit status (default) or detailed execution results.
-         * @return int|ProcessRun The command exit status, or a ProcessRun object for full details.
+         * @return int|\WP_CLI\ProcessRun The command exit status, or a ProcessRun object for full details.
          */
         public static function launch($command, $exit_on_error = \true, $return_detailed = \false)
         {
@@ -3514,7 +3546,7 @@ namespace {
          * @param bool $exit_on_error Whether to exit if the command returns an elevated return code.
          * @param bool $return_detailed Whether to return an exit status (default) or detailed execution results.
          * @param array $runtime_args Override one or more global args (path,url,user,allow-root)
-         * @return int|ProcessRun The command exit status, or a ProcessRun instance
+         * @return int|\WP_CLI\ProcessRun The command exit status, or a ProcessRun instance
          */
         public static function launch_self($command, $args = array(), $assoc_args = array(), $exit_on_error = \true, $return_detailed = \false, $runtime_args = array())
         {

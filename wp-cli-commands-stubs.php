@@ -9445,7 +9445,7 @@ namespace {
         private static function get_filename_template($filename_format)
         {
         }
-        private static function load_export_api()
+        public static function load_export_api()
         {
         }
         private function validate_args($args)
@@ -9765,18 +9765,6 @@ namespace {
         {
         }
     }
-    class WP_Export_Stdout_Writer extends \WP_Export_Base_Writer
-    {
-        public function __construct($formatter, $writer_args)
-        {
-        }
-        public function export()
-        {
-        }
-        protected function write($xml)
-        {
-        }
-    }
     class WP_Export_Term_Exception extends \RuntimeException
     {
     }
@@ -9789,7 +9777,7 @@ namespace {
         public function __construct($export)
         {
         }
-        public function before_posts()
+        public function before_posts($requested_sections = [])
         {
         }
         public function posts()
@@ -12669,6 +12657,7 @@ namespace {
          *
          * [--skip-copy]
          * : If set, media files (local only) are imported to the library but not moved on disk.
+         * File names will not be run through wp_unique_filename() with this set.
          *
          * [--preserve-filetime]
          * : Use the file modified time as the post published & modified dates.
@@ -12837,6 +12826,76 @@ namespace {
          * @return array $image_sizes The image sizes
          */
         private function get_registered_image_sizes()
+        {
+        }
+        /**
+         * Fix image orientation for one or more attachments.
+         *
+         * ## OPTIONS
+         *
+         * [<attachment-id>...]
+         * : One or more IDs of the attachments to regenerate.
+         *
+         * [--dry-run]
+         * : Check images needing orientation without performing the operation.
+         *
+         * ## EXAMPLES
+         *
+         *     # Fix orientation for all images.
+         *     $ wp media fix-orientation
+         *     1/3 Fixing orientation for "Landscape_4" (ID 62).
+         *     2/3 Fixing orientation for "Landscape_3" (ID 61).
+         *     3/3 Fixing orientation for "Landscape_2" (ID 60).
+         *     Success: Fixed 3 of 3 images.
+         *
+         *     # Fix orientation dry run.
+         *     $ wp media fix-orientation 63 -dry run
+         *     1/1 "Portrait_6" (ID 63) will be affected.
+         *     Success: 1 of 1 image will be affected.
+         *
+         *     # Fix orientation for specific images.
+         *     $ wp media fix-orientation 63
+         *     1/1 Fixing orientation for "Portrait_6" (ID 63).
+         *     Success: Fixed 1 of 1 images.
+         *
+         * @subcommand fix-orientation
+         */
+        public function fix_orientation($args, $assoc_args)
+        {
+        }
+        /**
+         * Perform orientation fix on attachments.
+         *
+         * @param int    $id        Attachment Id.
+         * @param string $progress  Current progress string.
+         * @param int    $successes Count of success in current operation.
+         * @param int    $errors    Count of errors in current operation.
+         * @param bool   $dry_run   Is this a dry run?
+         */
+        private function process_orientation_fix($id, $progress, &$successes, &$errors, $dry_run)
+        {
+        }
+        /**
+         * Perform image rotate operations on the image.
+         *
+         * @param int    $id             Attachment Id.
+         * @param array  $metadata       Attachment Metadata.
+         * @param array  $image_meta     `image_meta` information for the attachment.
+         * @param string $full_size_path Path to original image.
+         *
+         * @return bool Whether the image rotation operation succeeded.
+         */
+        private function flip_rotate_image($id, $metadata, $image_meta, $full_size_path)
+        {
+        }
+        /**
+         * Return array of operations to be done for provided orientation value.
+         *
+         * @param int $orientation EXIF orientation value.
+         *
+         * @return array
+         */
+        private function calculate_transformation($orientation)
         {
         }
     }
@@ -14571,7 +14630,7 @@ namespace {
          *
          * [--skip-tables=<tables>]
          * : Do not perform the replacement on specific tables. Use commas to
-         * specify multiple tables.
+         * specify multiple tables. Wildcards are supported, e.g. `'wp_*options'` or `'wp_post*'`.
          *
          * [--skip-columns=<columns>]
          * : Do not perform the replacement on specific columns. Use commas to
@@ -14875,7 +14934,7 @@ namespace {
          *     # Run on port 80 (for multisite)
          *     $ wp server --host=localhost.localdomain --port=80
          *     PHP 5.6.9 Development Server started at Tue May 24 01:30:06 2016
-         *     Listening on http://localhost1.localdomain1:8080
+         *     Listening on http://localhost1.localdomain1:80
          *     Document root is /
          *     Press Ctrl-C to quit.
          *

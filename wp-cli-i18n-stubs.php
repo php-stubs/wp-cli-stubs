@@ -88,6 +88,15 @@ trait IterableCodeExtractor
     public static function getFilesFromDirectory($dir, array $include = [], array $exclude = [], $extensions = [])
     {
     }
+    /**
+     * Trim leading slash from a path.
+     *
+     * @param string $path Path to trim.
+     * @return string Trimmed path.
+     */
+    private static function trim_leading_slash($path)
+    {
+    }
 }
 namespace Gettext\Generators;
 
@@ -320,6 +329,16 @@ class JsFunctionsScanner extends \Gettext\Utils\FunctionsScanner
      * @return string
      */
     protected static function prepareArgument($argument)
+    {
+    }
+    /**
+     * Decodes a string with an argument.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    protected static function convertString($value)
     {
     }
 }
@@ -1558,6 +1577,14 @@ class VueJs extends \Gettext\Extractors\JsCode implements \Gettext\Extractors\Ex
      * @throws \Exception
      */
     private static function getTemplateTranslations(\DOMElement $dom, \Gettext\Translations $translations, array $options, $lineOffset = 0)
+    {
+    }
+    /**
+     * @param array $options
+     * @param DOMElement $dom
+     * @param Translations $translations
+     */
+    private static function getTagTranslations(array $options, \DOMElement $dom, \Gettext\Translations $translations)
     {
     }
     /**
