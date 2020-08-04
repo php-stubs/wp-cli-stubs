@@ -4,11 +4,13 @@ HEADER=$'/**\n * Generated stub declarations for WP-CLI\n * @see https://wp-cli.
 
 FILE="wp-cli-stubs.php"
 FILE_PKGS="wp-cli-commands-stubs.php"
+FILE_PKGS_I18n="wp-cli-i18n-commands-stubs.php"
 
 set -e
 
-# test -f "$FILE"
-# test -f "$FILE_PKGS"
+test -f "$FILE"
+test -f "$FILE_PKGS"
+test -f "$FILE_PKGS_I18n"
 
 # Check wp-cli
 if [ ! -r ./source/vendor/ ]; then
@@ -44,3 +46,14 @@ fi
     --interfaces \
     --traits \
     --out="$FILE_PKGS"
+
+# Packages.
+"$(dirname "$0")/vendor/bin/generate-stubs" \
+    --force \
+    --finder=finder-commands-i18n.php \
+    --header="$HEADER" \
+    --functions \
+    --classes \
+    --interfaces \
+    --traits \
+    --out="$FILE_PKGS_I18n"
