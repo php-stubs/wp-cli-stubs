@@ -6,5 +6,6 @@ return \StubsGenerator\Finder::create()
     ->notPath('CommandNamespace')
     ->notPath('WP_Export_Oxymel.php')
     ->notPath('BlockExtractor.php')
+    ->notPath('JedGenerator.php')
     ->sortByName()
 ;

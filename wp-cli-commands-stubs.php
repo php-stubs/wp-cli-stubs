@@ -11692,30 +11692,6 @@ namespace WP_CLI\I18n {
         {
         }
     }
-    /**
-     * Jed file generator.
-     *
-     * Adds some more meta data to JED translation files than the default generator.
-     */
-    class JedGenerator extends \Gettext\Generators\Jed
-    {
-        /**
-         * {@parentDoc}.
-         */
-        public static function toString(\Gettext\Translations $translations, array $options = [])
-        {
-        }
-        /**
-         * Generates an array with all translations.
-         *
-         * @param Translations $translations
-         *
-         * @return array
-         */
-        public static function buildMessages(\Gettext\Translations $translations)
-        {
-        }
-    }
     final class JsCodeExtractor extends \Gettext\Extractors\JsCode
     {
         use \WP_CLI\I18n\IterableCodeExtractor;
