@@ -1,11 +1,10 @@
 {
-    "name": "wp-cli/wp-cli",
-    "version": "2.1.0",
     "require": {
         "php": "~7.1",
         "ext-curl": "*",
         "ext-gettext": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "wp-cli/wp-cli": "2.1.0"
     },
     "minimum-stability": "stable"
 }

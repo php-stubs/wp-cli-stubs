@@ -11,7 +11,8 @@ set -e
 test -f "$FILE"
 test -f "$FILE_PKGS"
 test -f "$FILE_I18N"
-test -d "source/vendor/wp-cli/wp-cli"
+test -d "source/wp-cli/vendor/wp-cli/wp-cli"
+test -d "source/vendor/wp-cli"
 
 # Download dependencies
 if [ ! -d vendor ]; then

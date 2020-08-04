@@ -2,3 +2,5 @@
 /composer.lock
 /source/vendor/
 /source/composer.lock
+/source/wp-cli/vendor/
+/source/wp-cli/composer.lock
