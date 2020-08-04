@@ -2524,12 +2524,9 @@ namespace WP_CLI {
         /**
          * Get the path to the global configuration YAML file.
          *
-         * @param bool $create_config_file Optional. If a config file doesn't exist,
-         *                                 should it be created? Defaults to false.
-         *
          * @return string|false
          */
-        public function get_global_config_path($create_config_file = false)
+        public function get_global_config_path()
         {
         }
         /**
@@ -2647,12 +2644,9 @@ namespace WP_CLI {
         /**
          * Returns wp-config.php code, skipping the loading of wp-settings.php
          *
-         * @param string $wp_config_file_path Optional. Config file path. If left empty, it tries to
-         * locate the wp-config.php file automatically.
-         *
          * @return string
          */
-        public function get_wp_config_code($wp_config_path = '')
+        public function get_wp_config_code()
         {
         }
         /**
@@ -3456,8 +3450,8 @@ namespace {
          * @access public
          * @category Output
          *
-         * @param string|WP_Error|Exception  $message Message to write to STDERR.
-         * @param boolean|integer            $exit    True defaults to exit(1).
+         * @param string|WP_Error  $message Message to write to STDERR.
+         * @param boolean|integer  $exit    True defaults to exit(1).
          * @return null
          */
         public static function error($message, $exit = \true)
@@ -3543,11 +3537,9 @@ namespace {
         {
         }
         /**
-         * Convert a WP_Error or Exception into a string
+         * Convert a wp_error into a string
          *
          * @param mixed $errors
-         * @throws \InvalidArgumentException
-         *
          * @return string
          */
         public static function error_to_string($errors)
@@ -3938,15 +3930,12 @@ namespace {
         /**
          * Get config path and aliases data based on config type.
          *
-         * @param string $config             Type of config to get data from.
-         * @param string $alias              Alias to be used for Add/Update/Delete.
-         * @param bool   $create_config_file Optional. If a config file doesn't exist,
-         *                                   should it be created? Defaults to false.
+         * @param string $config Type of config to get data from.
+         * @param string $alias  Alias to be used for Add/Update/Delete.
          *
          * @return array Config Path and Aliases in it.
-         * @throws \WP_CLI\ExitException
          */
-        private function get_aliases_data($config, $alias, $create_config_file = \false)
+        private function get_aliases_data($config, $alias)
         {
         }
         /**
@@ -4467,6 +4456,110 @@ namespace WP_CLI\Dispatcher {
     {
     }
 }
+// Utilities that depend on WordPress code.
+namespace WP_CLI\Utils {
+    function wp_not_installed()
+    {
+    }
+    // phpcs:disable WordPress.PHP.IniSet -- Intentional & correct usage.
+    function wp_debug_mode()
+    {
+    }
+    // phpcs:enable
+    function replace_wp_die_handler()
+    {
+    }
+    function wp_die_handler($message)
+    {
+    }
+    /**
+     * Clean HTML error message so suitable for text display.
+     */
+    function wp_clean_error_message($message)
+    {
+    }
+    function wp_redirect_handler($url)
+    {
+    }
+    function maybe_require($since, $path)
+    {
+    }
+    function get_upgrader($class)
+    {
+    }
+    /**
+     * Converts a plugin basename back into a friendly slug.
+     */
+    function get_plugin_name($basename)
+    {
+    }
+    function is_plugin_skipped($file)
+    {
+    }
+    function get_theme_name($path)
+    {
+    }
+    function is_theme_skipped($path)
+    {
+    }
+    /**
+     * Register the sidebar for unused widgets.
+     * Core does this in /wp-admin/widgets.php, which isn't helpful.
+     */
+    function wp_register_unused_sidebar()
+    {
+    }
+    /**
+     * Attempts to determine which object cache is being used.
+     *
+     * Note that the guesses made by this function are based on the WP_Object_Cache classes
+     * that define the 3rd party object cache extension. Changes to those classes could render
+     * problems with this function's ability to determine which object cache is being used.
+     *
+     * @return string
+     */
+    function wp_get_cache_type()
+    {
+    }
+    /**
+     * Clear WordPress internal object caches.
+     *
+     * In long-running scripts, the internal caches on `$wp_object_cache` and `$wpdb`
+     * can grow to consume gigabytes of memory. Periodically calling this utility
+     * can help with memory management.
+     *
+     * @access public
+     * @category System
+     * @deprecated 1.5.0
+     */
+    function wp_clear_object_cache()
+    {
+    }
+    /**
+     * Get a set of tables in the database.
+     *
+     * Interprets common command-line options into a resolved set of table names.
+     *
+     * @param array $args Provided table names, or tables with wildcards.
+     * @param array $assoc_args Optional flags for groups of tables (e.g. --network)
+     * @return array $tables
+     */
+    function wp_get_table_names($args, $assoc_args = array())
+    {
+    }
+    /**
+     * Failsafe use of the WordPress wp_strip_all_tags() function.
+     *
+     * Automatically falls back to strip_tags() function if the WP function is not
+     * available.
+     *
+     * @param string $string String to strip the tags from.
+     * @return string String devoid of tags.
+     */
+    function strip_tags($string)
+    {
+    }
+}
 // Utilities that do NOT depend on WordPress code.
 namespace WP_CLI\Utils {
     function inside_phar()
@@ -4504,8 +4597,8 @@ namespace WP_CLI\Utils {
      *       var_dump($val);
      *     }
      *
-     * @param array|object $it Either a plain array or another iterator.
-     * @param callback     $fn The function to apply to an element.
+     * @param array|object Either a plain array or another iterator.
+     * @param callback     The function to apply to an element.
      * @return object An iterator that applies the given callback(s).
      */
     function iterator_map($it, $fn)
@@ -4513,10 +4606,9 @@ namespace WP_CLI\Utils {
     }
     /**
      * Search for file by walking up the directory tree until the first file is found or until $stop_check($dir) returns true.
-     *
-     * @param string|array $files      The files (or file) to search for.
-     * @param string|null  $dir        The directory to start searching from; defaults to CWD.
-     * @param callable     $stop_check Function which is passed the current dir each time a directory level is traversed.
+     * @param string|array The files (or file) to search for.
+     * @param string|null  The directory to start searching from; defaults to CWD.
+     * @param callable     Function which is passed the current dir each time a directory level is traversed.
      * @return null|string Null if the file was not found.
      */
     function find_file_upward($files, $dir = null, $stop_check = null)
@@ -4528,7 +4620,7 @@ namespace WP_CLI\Utils {
     /**
      * Composes positional arguments into a command string.
      *
-     * @param array $args Positional arguments to compose.
+     * @param array
      * @return string
      */
     function args_to_str($args)
@@ -4537,7 +4629,7 @@ namespace WP_CLI\Utils {
     /**
      * Composes associative arguments into a command string.
      *
-     * @param array $assoc_args Associative arguments to compose.
+     * @param array
      * @return string
      */
     function assoc_args_to_str($assoc_args)
@@ -4601,9 +4693,9 @@ namespace WP_CLI\Utils {
      * @access public
      * @category Output
      *
-     * @param string       $format Format to use: 'table', 'json', 'csv', 'yaml', 'ids', 'count'.
-     * @param array        $items  An array of items to output.
-     * @param array|string $fields Named fields for each item of data. Can be array or comma-separated list.
+     * @param string        $format     Format to use: 'table', 'json', 'csv', 'yaml', 'ids', 'count'
+     * @param array         $items      An array of items to output.
+     * @param array|string  $fields     Named fields for each item of data. Can be array or comma-separated list.
      * @return null
      */
     function format_items($format, $items, $fields)
@@ -4614,9 +4706,9 @@ namespace WP_CLI\Utils {
      *
      * @access public
      *
-     * @param resource $fd      File descriptor.
-     * @param array    $rows    Array of rows to output.
-     * @param array    $headers List of CSV columns (optional).
+     * @param resource $fd         File descriptor
+     * @param array    $rows       Array of rows to output
+     * @param array    $headers    List of CSV columns (optional)
      */
     function write_csv($fd, $rows, $headers = array())
     {
@@ -4624,8 +4716,8 @@ namespace WP_CLI\Utils {
     /**
      * Pick fields from an associative array or object.
      *
-     * @param  array|object $item    Associative array or object to pick fields from.
-     * @param  array        $fields  List of fields to pick.
+     * @param  array|object Associative array or object to pick fields from.
+     * @param  array List of fields to pick.
      * @return array
      */
     function pick_fields($item, $fields)
@@ -4637,42 +4729,23 @@ namespace WP_CLI\Utils {
      * @access public
      * @category Input
      *
-     * @param string $input Some form of text to edit (e.g. post content).
-     * @param string $title Title to display in the editor.
-     * @param string $ext   Extension to use with the temp file.
-     * @return string|bool  Edited text, if file is saved from editor; false, if no change to file.
+     * @param string  $content  Some form of text to edit (e.g. post content).
+     * @param string  $title    Title to display in the editor.
+     * @param string  $ext      Extension to use with the temp file.
+     * @return string|bool       Edited text, if file is saved from editor; false, if no change to file.
      */
     function launch_editor_for_input($input, $title = 'WP-CLI', $ext = 'tmp')
     {
     }
     /**
-     * @param string MySQL host string, as defined in wp-config.php.
+     * @param string MySQL host string, as defined in wp-config.php
      *
      * @return array
      */
     function mysql_host_to_cli_args($raw_host)
     {
     }
-    /**
-     * Run a MySQL command and optionally return the output.
-     *
-     * @since v2.5.0 Deprecated $descriptors argument.
-     *
-     * @param string $cmd           Command to run.
-     * @param array  $assoc_args    Associative array of arguments to use.
-     * @param mixed  $_             Deprecated. Former $descriptors argument.
-     * @param bool   $send_to_shell Optional. Whether to send STDOUT and STDERR
-     *                              immediately to the shell. Defaults to true.
-     *
-     * @return array {
-     *     Associative array containing STDOUT and STDERR output.
-     *
-     *     @type string $stdout    Output that was sent to STDOUT.
-     *     @type string $stderr    Output that was sent to STDERR.
-     *     @type int    $exit_code Exit code of the process.
-     * }
-     */
-    function run_mysql_command($cmd, $assoc_args, $_ = null, $send_to_shell = true)
+    function run_mysql_command($cmd, $assoc_args, $descriptors = null)
     {
     }
     /**
@@ -4721,13 +4794,13 @@ namespace WP_CLI\Utils {
      *
      * Additionally, this adds 'http://' to the URL if no scheme was found.
      *
-     * @param string $url             The URL to parse.
-     * @param int    $component       Optional. The specific component to retrieve.
-     *                                Use one of the PHP predefined constants to
-     *                                specify which one. Defaults to -1 (= return
-     *                                all parts as an array).
-     * @param bool   $auto_add_scheme Optional. Automatically add an http:// scheme if
-     *                                none was found. Defaults to true.
+     * @param string $url           The URL to parse.
+     * @param int $component        Optional. The specific component to retrieve.
+     *                              Use one of the PHP predefined constants to
+     *                              specify which one. Defaults to -1 (= return
+     *                              all parts as an array).
+     * @param bool $auto_add_scheme Optional. Automatically add an http:// scheme if
+     *                              none was found. Defaults to true.
      * @return mixed False on parse failure; Array of URL components on success;
      *               When a specific component has been requested: null if the
      *               component doesn't exist in the given URL; a string or - in the
@@ -4748,11 +4821,8 @@ namespace WP_CLI\Utils {
     /**
      * Replace magic constants in some PHP source code.
      *
-     * Replaces the __FILE__ and __DIR__ magic constants with the values they are
-     * supposed to represent at runtime.
-     *
      * @param string $source The PHP code to manipulate.
-     * @param string $path The path to use instead of the magic constants.
+     * @param string $path The path to use instead of the magic constants
      * @return string Adapted PHP code.
      */
     function replace_path_consts($source, $path)
@@ -4774,9 +4844,9 @@ namespace WP_CLI\Utils {
      *
      * @access public
      *
-     * @param string $method  HTTP method (GET, POST, DELETE, etc.).
-     * @param string $url     URL to make the HTTP request to.
-     * @param array  $headers Add specific headers to the request.
+     * @param string $method    HTTP method (GET, POST, DELETE, etc.)
+     * @param string $url       URL to make the HTTP request to.
+     * @param array $headers    Add specific headers to the request.
      * @param array $options
      * @return object
      * @throws RuntimeException If the request failed.
@@ -4821,9 +4891,9 @@ namespace WP_CLI\Utils {
      * @access public
      * @category Input
      *
-     * @param array  $assoc_args Arguments array.
-     * @param string $flag       Flag to get the value.
-     * @param mixed  $default    Default value for the flag. Default: NULL.
+     * @param array  $assoc_args  Arguments array.
+     * @param string $flag        Flag to get the value.
+     * @param mixed  $default     Default value for the flag. Default: NULL
      * @return mixed
      */
     function get_flag_value($assoc_args, $flag, $default = null)
@@ -4912,8 +4982,8 @@ namespace WP_CLI\Utils {
      * @access public
      * @category Input
      *
-     * @param string       $noun      Resource being affected (e.g. plugin).
-     * @param string       $verb      Type of action happening to the noun (e.g. activate).
+     * @param string       $noun      Resource being affected (e.g. plugin)
+     * @param string       $verb      Type of action happening to the noun (e.g. activate)
      * @param integer      $total     Total number of resource being affected.
      * @param integer      $successes Number of successful operations.
      * @param integer      $failures  Number of failures.
@@ -4981,11 +5051,11 @@ namespace WP_CLI\Utils {
      * Simulate a `glob()` with the `GLOB_BRACE` flag set. For systems (eg Alpine Linux) built against a libc library (eg https://www.musl-libc.org/) that lacks it.
      * Copied and adapted from Zend Framework's `Glob::fallbackGlob()` and Glob::nextBraceSub()`.
      *
-     * Zend Framework (https://framework.zend.com/)
+     * Zend Framework (http://framework.zend.com/)
      *
-     * @link      https://github.com/zendframework/zf2 for the canonical source repository
-     * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (https://www.zend.com)
-     * @license   https://framework.zend.com/license/new-bsd New BSD License
+     * @link      http://github.com/zendframework/zf2 for the canonical source repository
+     * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+     * @license   http://framework.zend.com/license/new-bsd New BSD License
      *
      * @param string $pattern     Filename pattern.
      * @param void   $dummy_flags Not used.
@@ -5024,6 +5094,19 @@ namespace WP_CLI\Utils {
      * @return string A Phar-safe version of the path.
      */
     function phar_safe_path($path)
+    {
+    }
+    /**
+     * Check whether a given Command object is part of the bundled set of
+     * commands.
+     *
+     * This function accepts both a fully qualified class name as a string as
+     * well as an object that extends `WP_CLI\Dispatcher\CompositeCommand`.
+     *
+     * @param \WP_CLI\Dispatcher\CompositeCommand|string $command
+     * @return bool
+     */
+    function is_bundled_command($command)
     {
     }
     /**
@@ -5074,7 +5157,7 @@ namespace WP_CLI\Utils {
      *
      * @access public
      *
-     * @param string $cmd            Command to execute.
+     * @param string $command        Command to execute.
      * @param array  $descriptorspec Indexed array of descriptor numbers and their values.
      * @param array  &$pipes         Indexed array of file pointers that correspond to PHP's end of any pipes that are created.
      * @param string $cwd            Initial working directory for the command.
@@ -5091,7 +5174,7 @@ namespace WP_CLI\Utils {
      *
      * @access private
      *
-     * @param string $cmd Command to execute.
+     * @param string $command Command to execute.
      * @param array &$env Array of existing environment variables. Will be modified if any settings in command.
      * @return string Command stripped of any environment variable settings.
      */
@@ -5166,32 +5249,6 @@ namespace WP_CLI\Utils {
      * @return string Pluralized noun.
      */
     function pluralize($noun, $count = null)
-    {
-    }
-    /**
-     * Get the path to the mysql binary.
-     *
-     * @return string Path to the mysql binary, or an empty string if not found.
-     */
-    function get_mysql_binary_path()
-    {
-    }
-    /**
-     * Get the version of the MySQL database.
-     *
-     * @return string Version of the MySQL database, or an empty string if not
-     *                found.
-     */
-    function get_mysql_version()
-    {
-    }
-    /**
-     * Get the SQL modes of the MySQL session.
-     *
-     * @return string[] Array of SQL modes, or an empty array if they couldn't be
-     *                  read.
-     */
-    function get_sql_modes()
     {
     }
 }

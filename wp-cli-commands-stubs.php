@@ -2338,15 +2338,6 @@ namespace {
     class DB_Command extends \WP_CLI_Command
     {
         /**
-         * A list of incompatible SQL modes.
-         *
-         * Copied over from WordPress Core code.
-         * @see https://github.com/WordPress/wordpress-develop/blob/5.4.0/src/wp-includes/wp-db.php#L559-L572
-         *
-         * @var string[] Array of SQL mode names that are incompatible with WordPress.
-         */
-        protected $sql_incompatible_modes = ['NO_ZERO_DATE', 'ONLY_FULL_GROUP_BY', 'STRICT_TRANS_TABLES', 'STRICT_ALL_TABLES', 'TRADITIONAL', 'ANSI'];
-        /**
          * Creates a new database.
          *
          * Runs `CREATE_DATABASE` SQL statement using `DB_HOST`, `DB_NAME`,
@@ -2576,7 +2567,7 @@ namespace {
          *
          * @alias connect
          */
-        public function cli($_, $assoc_args)
+        public function cli($args, $assoc_args)
         {
         }
         /**
@@ -3136,36 +3127,10 @@ namespace {
         private static function get_create_query()
         {
         }
-        /**
-         * Run a single query via the 'mysql' binary.
-         *
-         * This includes the necessary setup to make sure the queries behave similar
-         * to what WPDB produces.
-         *
-         * @param string $query      Query to execute.
-         * @param array  $assoc_args Optional. Associative array of arguments.
-         */
-        protected function run_query($query, $assoc_args = [])
+        protected function run_query($query, $assoc_args = array())
         {
         }
-        /**
-         * Run a MySQL command and optionally return the output.
-         *
-         * @param string $cmd           Command to run.
-         * @param array  $assoc_args    Optional. Associative array of arguments to
-         *                              use.
-         * @param bool   $send_to_shell Optional. Whether to send STDOUT and STDERR
-         *                              immediately to the shell. Defaults to true.
-         *
-         * @return array {
-         *     Associative array containing STDOUT and STDERR output.
-         *
-         *     @type string $stdout    Output that was sent to STDOUT.
-         *     @type string $stderr    Output that was sent to STDERR.
-         *     @type int    $exit_code Exit code of the process.
-         * }
-         */
-        private static function run($cmd, $assoc_args = [], $send_to_shell = \true)
+        private static function run($cmd, $assoc_args = array(), $descriptors = \null)
         {
         }
         /**
@@ -3190,7 +3155,7 @@ namespace {
          * Determines whether a column is considered text or not.
          *
          * @param string Column type.
-         * @return bool True if text column, false otherwise.
+         * @bool True if text column, false otherwise.
          */
         private static function is_text_col($type)
         {
@@ -3231,33 +3196,6 @@ namespace {
          * @return string Either the '--no-defaults' flag for use in the command or an empty string.
          */
         protected function get_defaults_flag_string(&$assoc_args)
-        {
-        }
-        /**
-         * Get the query to change the current SQL mode, and ensure its WordPress compatibility.
-         *
-         * If no modes are passed, it will ensure the current MySQL server modes are
-         * compatible.
-         *
-         * Copied and adapted from WordPress Core code.
-         *
-         * @see https://github.com/WordPress/wordpress-develop/blob/5.4.0/src/wp-includes/wp-db.php#L817-L880
-         *
-         * @param array $assoc_args The associative argument array passed to the command.
-         * @param array $modes      Optional. A list of SQL modes to set.
-         * @return string Query string to use for setting the SQL modes to a
-         *                compatible state.
-         */
-        protected function get_sql_mode_query($assoc_args, $modes = [])
-        {
-        }
-        /**
-         * Get the list of current SQL modes.
-         *
-         * @param array $assoc_args The associative argument array passed to the command.
-         * @return string[] Array of SQL modes.
-         */
-        protected function get_current_sql_modes($assoc_args)
         {
         }
     }
@@ -6661,12 +6599,6 @@ namespace {
         {
         }
         /**
-         * Delete all links, link_category terms, and related cache.
-         */
-        private function empty_links()
-        {
-        }
-        /**
          * Insert default terms.
          */
         private function insert_default_terms()
@@ -6711,7 +6643,7 @@ namespace {
          * ## EXAMPLES
          *
          *     $ wp site empty
-         *     Are you sure you want to empty the site at http://www.example.com of all posts, links, comments, and terms? [y/n] y
+         *     Are you sure you want to empty the site at http://www.example.com of all posts, comments, and terms? [y/n] y
          *     Success: The site at 'http://www.example.com' was emptied.
          *
          * @subcommand empty
@@ -8684,9 +8616,6 @@ namespace {
          * <user_pass>
          * : A string that contains the plain text password for the user.
          *
-         * [--escape-chars]
-         * : Escape password with `wp_slash()` to mimic the same behavior as `wp-login.php`.
-         *
          * ## EXAMPLES
          *
          *     # Check whether given credentials are valid; exit status 0 if valid, otherwise 1
@@ -8701,7 +8630,7 @@ namespace {
          *
          * @subcommand check-password
          */
-        public function check_password($args, $assoc_args)
+        public function check_password($args)
         {
         }
     }
@@ -9660,6 +9589,99 @@ namespace {
         {
         }
         protected function write($xml)
+        {
+        }
+    }
+    class Oxymel
+    {
+        private $xml;
+        private $dom;
+        private $current_element;
+        private $last_inserted;
+        private $go_deep_on_next_element = 0;
+        private $go_up_on_next_element = 0;
+        private $nesting_level = 0;
+        private $contains_nesting_level = 0;
+        private $indentation = '  ';
+        public function __construct()
+        {
+        }
+        public function to_string()
+        {
+        }
+        public function __call($name, $args)
+        {
+        }
+        public function __get($name)
+        {
+        }
+        public function contains()
+        {
+        }
+        public function end()
+        {
+        }
+        public function tag($name, $content_or_attributes = \null, $attributes = array())
+        {
+        }
+        public function cdata($text)
+        {
+        }
+        public function text($text)
+        {
+        }
+        public function comment($text)
+        {
+        }
+        public function xml()
+        {
+        }
+        public function oxymel(\Oxymel $other)
+        {
+        }
+        public function raw($raw_xml)
+        {
+        }
+        private function add_element_to_dom($element)
+        {
+        }
+        private function move_current_element_deep()
+        {
+        }
+        private function move_current_element_up()
+        {
+        }
+        private function get_content_and_attributes_from_tag_args($content_or_attributes, array $attributes)
+        {
+        }
+        private function init_new_dom()
+        {
+        }
+        private function xml_from_dom()
+        {
+        }
+        private function create_element($name, $content, $attributes)
+        {
+        }
+        private function add_opening_tag_from_element($element)
+        {
+        }
+        private function add_closing_tag_from_tag_name($name)
+        {
+        }
+        private function indent($string, $level)
+        {
+        }
+    }
+    class WP_Export_Oxymel extends \Oxymel
+    {
+        public function optional($tag_name, $contents)
+        {
+        }
+        public function optional_cdata($tag_name, $contents)
+        {
+        }
+        public function cdata($text)
         {
         }
     }
@@ -12507,118 +12529,6 @@ namespace WP_CLI {
         }
     }
 }
-namespace WP_CLI\MaintenanceMode {
-    /**
-     * Activates, deactivates or checks the status of the maintenance mode of a site.
-     *
-     * ## EXAMPLES
-     *
-     *     # Activate Maintenance mode.
-     *     $ wp maintenance-mode activate
-     *     Enabling Maintenance mode...
-     *     Success: Activated Maintenance mode.
-     *
-     *     # Deactivate Maintenance mode.
-     *     $ wp maintenance-mode deactivate
-     *     Disabling Maintenance mode...
-     *     Success: Deactivated Maintenance mode.
-     *
-     *     # Display Maintenance mode status.
-     *     $ wp maintenance-mode status
-     *     Maintenance mode is active.
-     *
-     *     # Get Maintenance mode status for scripting purpose.
-     *     $ wp maintenance-mode is-active
-     *     $ echo $?
-     *     1
-     *
-     * @when    after_wp_load
-     * @package wp-cli
-     */
-    class MaintenanceModeCommand extends \WP_CLI_Command
-    {
-        /**
-         * Instance of WP_Upgrader.
-         *
-         * @var WP_Upgrader
-         */
-        private $upgrader;
-        /**
-         * Instantiate a MaintenanceModeCommand object.
-         */
-        public function __construct()
-        {
-        }
-        /**
-         * Activates maintenance mode.
-         *
-         * [--force]
-         * : Force maintenance mode activation operation.
-         *
-         * ## EXAMPLES
-         *
-         *     $ wp maintenance-mode activate
-         *     Enabling Maintenance mode...
-         *     Success: Activated Maintenance mode.
-         */
-        public function activate($_, $assoc_args)
-        {
-        }
-        /**
-         * Deactivates maintenance mode.
-         *
-         * ## EXAMPLES
-         *
-         *     $ wp maintenance-mode deactivate
-         *     Disabling Maintenance mode...
-         *     Success: Deactivated Maintenance mode.
-         */
-        public function deactivate()
-        {
-        }
-        /**
-         * Displays maintenance mode status.
-         *
-         * ## EXAMPLES
-         *
-         *     $ wp maintenance-mode status
-         *     Maintenance mode is active.
-         */
-        public function status()
-        {
-        }
-        /**
-         * Detects maintenance mode status.
-         *
-         * ## EXAMPLES
-         *
-         *     $ wp maintenance-mode is-active
-         *     $ echo $?
-         *     1
-         *
-         * @subcommand is-active
-         */
-        public function is_active()
-        {
-        }
-        /**
-         * Returns status of maintenance mode.
-         *
-         * @return bool
-         */
-        private function get_maintenance_mode_status()
-        {
-        }
-        /**
-         * Initializes WP_Filesystem.
-         *
-         * @return WP_Filesystem_Base
-         */
-        protected function init_wp_filesystem()
-        {
-        }
-    }
-}
 namespace {
     /**
      * Imports files as attachments, regenerates thumbnails, or lists registered image sizes.
@@ -13002,397 +12912,6 @@ namespace {
         {
         }
     }
-}
-namespace Mustangostang {
-    /**
-     * Spyc -- A Simple PHP YAML Class
-     * @version 0.6.2
-     * @author Vlad Andersen <vlad.andersen@gmail.com>
-     * @author Chris Wanstrath <chris@ozmm.org>
-     * @link https://github.com/mustangostang/spyc/
-     * @copyright Copyright 2005-2006 Chris Wanstrath, 2006-2011 Vlad Andersen
-     * @license http://www.opensource.org/licenses/mit-license.php MIT License
-     * @package Spyc
-     */
-    /**
-     * The Simple PHP YAML Class.
-     *
-     * This class can be used to read a YAML file and convert its contents
-     * into a PHP array.  It currently supports a very limited subsection of
-     * the YAML spec.
-     *
-     * Usage:
-     * <code>
-     *   $Spyc  = new Spyc;
-     *   $array = $Spyc->load($file);
-     * </code>
-     * or:
-     * <code>
-     *   $array = Spyc::YAMLLoad($file);
-     * </code>
-     * or:
-     * <code>
-     *   $array = spyc_load_file($file);
-     * </code>
-     * @package Spyc
-     */
-    class Spyc
-    {
-        // SETTINGS
-        const REMPTY = "\0\0\0\0\0";
-        /**
-         * Setting this to true will force YAMLDump to enclose any string value in
-         * quotes.  False by default.
-         *
-         * @var bool
-         */
-        public $setting_dump_force_quotes = false;
-        /**
-         * Setting this to true will forse YAMLLoad to use syck_load function when
-         * possible. False by default.
-         * @var bool
-         */
-        public $setting_use_syck_is_possible = false;
-        /**#@+
-         * @access private
-         * @var mixed
-         */
-        private $_dumpIndent;
-        private $_dumpWordWrap;
-        private $_containsGroupAnchor = false;
-        private $_containsGroupAlias = false;
-        private $path;
-        private $result;
-        private $LiteralPlaceHolder = '___YAML_Literal_Block___';
-        private $SavedGroups = array();
-        private $indent;
-        /**
-         * Path modifier that should be applied after adding current element.
-         * @var array
-         */
-        private $delayedPath = array();
-        /**#@+
-         * @access public
-         * @var mixed
-         */
-        public $_nodeId;
-        /**
-         * Load a valid YAML string to Spyc.
-         * @param string $input
-         * @return array
-         */
-        public function load($input)
-        {
-        }
-        /**
-         * Load a valid YAML file to Spyc.
-         * @param string $file
-         * @return array
-         */
-        public function loadFile($file)
-        {
-        }
-        /**
-         * Load YAML into a PHP array statically
-         *
-         * The load method, when supplied with a YAML stream (string or file),
-         * will do its best to convert YAML in a file into a PHP array.  Pretty
-         * simple.
-         *  Usage:
-         *  <code>
-         *   $array = Spyc::YAMLLoad('lucky.yaml');
-         *   print_r($array);
-         *  </code>
-         * @access public
-         * @return array
-         * @param string $input Path of YAML file or string containing YAML
-         */
-        public static function YAMLLoad($input)
-        {
-        }
-        /**
-         * Load a string of YAML into a PHP array statically
-         *
-         * The load method, when supplied with a YAML string, will do its best
-         * to convert YAML in a string into a PHP array.  Pretty simple.
-         *
-         * Note: use this function if you don't want files from the file system
-         * loaded and processed as YAML.  This is of interest to people concerned
-         * about security whose input is from a string.
-         *
-         *  Usage:
-         *  <code>
-         *   $array = Spyc::YAMLLoadString("---\n0: hello world\n");
-         *   print_r($array);
-         *  </code>
-         * @access public
-         * @return array
-         * @param string $input String containing YAML
-         */
-        public static function YAMLLoadString($input)
-        {
-        }
-        /**
-         * Dump YAML from PHP array statically
-         *
-         * The dump method, when supplied with an array, will do its best
-         * to convert the array into friendly YAML.  Pretty simple.  Feel free to
-         * save the returned string as nothing.yaml and pass it around.
-         *
-         * Oh, and you can decide how big the indent is and what the wordwrap
-         * for folding is.  Pretty cool -- just pass in 'false' for either if
-         * you want to use the default.
-         *
-         * Indent's default is 2 spaces, wordwrap's default is 40 characters.  And
-         * you can turn off wordwrap by passing in 0.
-         *
-         * @access public
-         * @return string
-         * @param array|\stdClass $array PHP array
-         * @param int $indent Pass in false to use the default, which is 2
-         * @param int $wordwrap Pass in 0 for no wordwrap, false for default (40)
-         * @param bool $no_opening_dashes Do not start YAML file with "---\n"
-         */
-        public static function YAMLDump($array, $indent = false, $wordwrap = false, $no_opening_dashes = false)
-        {
-        }
-        /**
-         * Dump PHP array to YAML
-         *
-         * The dump method, when supplied with an array, will do its best
-         * to convert the array into friendly YAML.  Pretty simple.  Feel free to
-         * save the returned string as tasteful.yaml and pass it around.
-         *
-         * Oh, and you can decide how big the indent is and what the wordwrap
-         * for folding is.  Pretty cool -- just pass in 'false' for either if
-         * you want to use the default.
-         *
-         * Indent's default is 2 spaces, wordwrap's default is 40 characters.  And
-         * you can turn off wordwrap by passing in 0.
-         *
-         * @access public
-         * @return string
-         * @param array $array PHP array
-         * @param int $indent Pass in false to use the default, which is 2
-         * @param int $wordwrap Pass in 0 for no wordwrap, false for default (40)
-         */
-        public function dump($array, $indent = false, $wordwrap = false, $no_opening_dashes = false)
-        {
-        }
-        /**
-         * Attempts to convert a key / value array item to YAML
-         * @access private
-         * @return string
-         * @param $key The name of the key
-         * @param $value The value of the item
-         * @param $indent The indent of the current node
-         */
-        private function _yamlize($key, $value, $indent, $previous_key = -1, $first_key = 0, $source_array = null)
-        {
-        }
-        /**
-         * Attempts to convert an array to YAML
-         * @access private
-         * @return string
-         * @param $array The array you want to convert
-         * @param $indent The indent of the current level
-         */
-        private function _yamlizeArray($array, $indent)
-        {
-        }
-        /**
-         * Returns YAML from a key and a value
-         * @access private
-         * @return string
-         * @param $key The name of the key
-         * @param $value The value of the item
-         * @param $indent The indent of the current node
-         */
-        private function _dumpNode($key, $value, $indent, $previous_key = -1, $first_key = 0, $source_array = null)
-        {
-        }
-        /**
-         * Creates a literal block for dumping
-         * @access private
-         * @return string
-         * @param $value
-         * @param $indent int The value of the indent
-         */
-        private function _doLiteralBlock($value, $indent)
-        {
-        }
-        /**
-         * Folds a string of text, if necessary
-         * @access private
-         * @return string
-         * @param $value The string you wish to fold
-         */
-        private function _doFolding($value, $indent)
-        {
-        }
-        private function isTrueWord($value)
-        {
-        }
-        private function isFalseWord($value)
-        {
-        }
-        private function isNullWord($value)
-        {
-        }
-        private function isTranslationWord($value)
-        {
-        }
-        /**
-         * Coerce a string into a native type
-         * Reference: http://yaml.org/type/bool.html
-         * TODO: Use only words from the YAML spec.
-         * @access private
-         * @param $value The value to coerce
-         */
-        private function coerceValue(&$value)
-        {
-        }
-        /**
-         * Given a set of words, perform the appropriate translations on them to
-         * match the YAML 1.1 specification for type coercing.
-         * @param $words The words to translate
-         * @access private
-         */
-        private static function getTranslations(array $words)
-        {
-        }
-        // LOADING FUNCTIONS
-        private function _load($input)
-        {
-        }
-        private function _loadString($input)
-        {
-        }
-        private function loadWithSource($Source)
-        {
-        }
-        private function loadFromSource($input)
-        {
-        }
-        private function loadFromString($input)
-        {
-        }
-        /**
-         * Parses YAML code and returns an array for a node
-         * @access private
-         * @return array
-         * @param string $line A line from the YAML file
-         */
-        private function _parseLine($line)
-        {
-        }
-        /**
-         * Finds the type of the passed value, returns the value as the new type.
-         * @access private
-         * @param string $value
-         * @return mixed
-         */
-        private function _toType($value)
-        {
-        }
-        /**
-         * Used in inlines to check for more inlines or quoted strings
-         * @access private
-         * @return array
-         */
-        private function _inlineEscape($inline)
-        {
-        }
-        private function literalBlockContinues($line, $lineIndent)
-        {
-        }
-        private function referenceContentsByAlias($alias)
-        {
-        }
-        private function addArrayInline($array, $indent)
-        {
-        }
-        private function addArray($incoming_data, $incoming_indent)
-        {
-        }
-        private static function startsLiteralBlock($line)
-        {
-        }
-        private static function greedilyNeedNextLine($line)
-        {
-        }
-        private function addLiteralLine($literalBlock, $line, $literalBlockStyle, $indent = -1)
-        {
-        }
-        function revertLiteralPlaceHolder($lineArray, $literalBlock)
-        {
-        }
-        private static function stripIndent($line, $indent = -1)
-        {
-        }
-        private function getParentPathByIndent($indent)
-        {
-        }
-        private function clearBiggerPathValues($indent)
-        {
-        }
-        private static function isComment($line)
-        {
-        }
-        private static function isEmpty($line)
-        {
-        }
-        private function isArrayElement($line)
-        {
-        }
-        private function isHashElement($line)
-        {
-        }
-        private function isLiteral($line)
-        {
-        }
-        private static function unquote($value)
-        {
-        }
-        private function startsMappedSequence($line)
-        {
-        }
-        private function returnMappedSequence($line)
-        {
-        }
-        private function checkKeysInValue($value)
-        {
-        }
-        private function returnMappedValue($line)
-        {
-        }
-        private function startsMappedValue($line)
-        {
-        }
-        private function isPlainArray($line)
-        {
-        }
-        private function returnPlainArray($line)
-        {
-        }
-        private function returnKeyValuePair($line)
-        {
-        }
-        private function returnArrayElement($line)
-        {
-        }
-        private function nodeContainsGroup($line)
-        {
-        }
-        private function addGroup($line, $group)
-        {
-        }
-        private function stripGroup($line, $group)
-        {
-        }
-    }
-}
-namespace {
     /**
      * Lists, installs, and removes WP-CLI packages.
      *
@@ -13572,9 +13091,6 @@ namespace {
          *
          *     # Install a package hosted at a git URL.
          *     $ wp package install git@github.com:runcommand/hook.git
-         *
-         *     # Install a package hosted at a GitLab.com URL.
-         *     $ wp package install https://gitlab.com/foo/wp-cli-bar-command.git
          *
          *     # Install a package in a .zip file.
          *     $ wp package install google-sitemap-generator-cli.zip
@@ -13831,33 +13347,13 @@ namespace {
         {
         }
         /**
-         * Checks that `$package_name` matches the name in composer.json at Github.com, and return corrected value if not.
+         * Checks that `$package_name` matches the name in the repo composer.json, and return corrected value if not.
          *
          * @string $package_name Package name to check.
          * @string $version Optional. Package version. Default 'master'.
          * @string Package name, possibly changed to match that in repo.
          */
-        private function check_github_package_name($package_name, $version = '')
-        {
-        }
-        /**
-         * Checks that `$package_name` matches the name in composer.json at the corresponding upstream repository, and return corrected value if not.
-         *
-         * @string $package_name Package name to check.
-         * @string $version Optional. Package version. Default 'master'.
-         * @string Package name, possibly changed to match that in repo.
-         */
-        private function check_git_package_name($package_name, $url = '', $version = '')
-        {
-        }
-        /**
-         * Checks that `$package_name` matches the name in composer.json at GitLab.com, and return corrected value if not.
-         *
-         * @string $package_name Package name to check.
-         * @string $version Optional. Package version. Default 'master'.
-         * @string Package name, possibly changed to match that in repo.
-         */
-        private function check_gitlab_package_name($package_name, $version = '')
+        private function check_git_package_name($package_name, $version = '')
         {
         }
         /**
@@ -16012,163 +15508,7 @@ namespace {
         {
         }
     }
-    /**
-     * Transforms a wp-config.php file.
-     */
-    class WPConfigTransformer
+    class OxymelException extends \Exception
     {
-        /**
-         * Append to end of file
-         */
-        const ANCHOR_EOF = 'EOF';
-        /**
-         * Path to the wp-config.php file.
-         *
-         * @var string
-         */
-        protected $wp_config_path;
-        /**
-         * Original source of the wp-config.php file.
-         *
-         * @var string
-         */
-        protected $wp_config_src;
-        /**
-         * Array of parsed configs.
-         *
-         * @var array
-         */
-        protected $wp_configs = array();
-        /**
-         * Instantiates the class with a valid wp-config.php.
-         *
-         * @throws Exception If the wp-config.php file is missing.
-         * @throws Exception If the wp-config.php file is not writable.
-         *
-         * @param string $wp_config_path Path to a wp-config.php file.
-         */
-        public function __construct($wp_config_path)
-        {
-        }
-        /**
-         * Checks if a config exists in the wp-config.php file.
-         *
-         * @throws Exception If the wp-config.php file is empty.
-         * @throws Exception If the requested config type is invalid.
-         *
-         * @param string $type Config type (constant or variable).
-         * @param string $name Config name.
-         *
-         * @return bool
-         */
-        public function exists($type, $name)
-        {
-        }
-        /**
-         * Get the value of a config in the wp-config.php file.
-         *
-         * @throws Exception If the wp-config.php file is empty.
-         * @throws Exception If the requested config type is invalid.
-         *
-         * @param string $type Config type (constant or variable).
-         * @param string $name Config name.
-         *
-         * @return array
-         */
-        public function get_value($type, $name)
-        {
-        }
-        /**
-         * Adds a config to the wp-config.php file.
-         *
-         * @throws Exception If the config value provided is not a string.
-         * @throws Exception If the config placement anchor could not be located.
-         *
-         * @param string $type    Config type (constant or variable).
-         * @param string $name    Config name.
-         * @param string $value   Config value.
-         * @param array  $options (optional) Array of special behavior options.
-         *
-         * @return bool
-         */
-        public function add($type, $name, $value, array $options = array())
-        {
-        }
-        /**
-         * Updates an existing config in the wp-config.php file.
-         *
-         * @throws Exception If the config value provided is not a string.
-         *
-         * @param string $type    Config type (constant or variable).
-         * @param string $name    Config name.
-         * @param string $value   Config value.
-         * @param array  $options (optional) Array of special behavior options.
-         *
-         * @return bool
-         */
-        public function update($type, $name, $value, array $options = array())
-        {
-        }
-        /**
-         * Removes a config from the wp-config.php file.
-         *
-         * @param string $type Config type (constant or variable).
-         * @param string $name Config name.
-         *
-         * @return bool
-         */
-        public function remove($type, $name)
-        {
-        }
-        /**
-         * Applies formatting to a config value.
-         *
-         * @throws Exception When a raw value is requested for an empty string.
-         *
-         * @param string $value Config value.
-         * @param bool   $raw   Display value in raw format without quotes.
-         *
-         * @return mixed
-         */
-        protected function format_value($value, $raw)
-        {
-        }
-        /**
-         * Normalizes the source output for a name/value pair.
-         *
-         * @throws Exception If the requested config type does not support normalization.
-         *
-         * @param string $type  Config type (constant or variable).
-         * @param string $name  Config name.
-         * @param mixed  $value Config value.
-         *
-         * @return string
-         */
-        protected function normalize($type, $name, $value)
-        {
-        }
-        /**
-         * Parses the source of a wp-config.php file.
-         *
-         * @param string $src Config file source.
-         *
-         * @return array
-         */
-        protected function parse_wp_config($src)
-        {
-        }
-        /**
-         * Saves new contents to the wp-config.php file.
-         *
-         * @throws Exception If the config file content provided is empty.
-         * @throws Exception If there is a failure when saving the wp-config.php file.
-         *
-         * @param string $contents New config contents.
-         *
-         * @return bool
-         */
-        protected function save($contents)
-        {
-        }
     }
 }

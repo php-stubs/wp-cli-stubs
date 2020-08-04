@@ -38,4 +38,4 @@ script:
   - |
     git diff --exit-code
   - |
-    php -r 'require "vendor/php-stubs/wordpress-stubs/wordpress-stubs.php"; require "wp-cli-stubs.php";require "wp-cli-commands-stubs.php";require "wp-cli-i18n-stubs.php";'
+    php -r 'require "vendor/php-stubs/wordpress-stubs/wordpress-stubs.php"; require "wp-cli-stubs.php"; require "wp-cli-commands-stubs.php"; require "wp-cli-i18n-stubs.php";'

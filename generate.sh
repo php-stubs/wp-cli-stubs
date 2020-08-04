@@ -11,17 +11,10 @@ set -e
 test -f "$FILE"
 test -f "$FILE_PKGS"
 test -f "$FILE_I18N"
+test -d "source/vendor/wp-cli/wp-cli"
 
-# Check wp-cli
-if [ ! -r ./source/vendor/ ]; then
-    cd ./source
-    echo "WP CLI downloading in progress..." 1>&2
-    composer update
-    cd ../
-fi
-
-# Download Stubs-generator
-if [ ! -r ./vendor/ ]; then
+# Download dependencies
+if [ ! -d vendor ]; then
     composer update
 fi
 

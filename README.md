@@ -19,7 +19,7 @@ Require this package as a development dependency with [Composer](https://getcomp
 composer require --dev php-stubs/wp-cli-stubs
 ```
 
-Alternatively you may download `wpcli-stubs.php` directly.
+Alternatively you may download `wp-cli-stubs.php` directly.
 
 ### Usage in PHPStan
 
@@ -27,7 +27,7 @@ Include all stubs in PHPStan configuration file.
 
 ```yaml
 parameters:
-    autoload_files:
+    scanFiles:
         - %rootDir%/../../php-stubs/wordpress-stubs/wordpress-stubs.php
         - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php
         - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-commands-stubs.php
