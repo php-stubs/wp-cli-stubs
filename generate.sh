@@ -23,4 +23,7 @@ elif [ ! -x vendor/bin/generate-stubs ]; then
     composer require --no-interaction --update-no-dev --prefer-dist --ignore-platform-reqs \
         giacocorsiglia/stubs-generator
 fi
+
 "$GENERATE_STUBS_COMMAND" --finder=finder.php \ --functions --classes --interfaces --traits --out=wp-cli-stubs.php ./source
+
+"$GENERATE_STUBS_COMMAND" --finder=finder-packages.php \ --functions --classes --interfaces --traits --out=wp-cli-stubs-packages.php ./source

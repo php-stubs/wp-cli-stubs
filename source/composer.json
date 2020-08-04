@@ -8,7 +8,12 @@
     "homepage": "https://wp-cli.org",
     "license": "MIT",
     "require": {
-        "php": ">=5.6",
+        "php": ">=7.1",
+        "ext-gettext": "*",
+        "ext-hash": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-openssl": "*",
         "wp-cli/cache-command": "^2",
         "wp-cli/checksum-command": "^2",
         "wp-cli/config-command": "^2",
@@ -40,20 +45,12 @@
         "roave/security-advisories": "dev-master",
         "wp-cli/wp-cli-tests": "^2.1"
     },
-    "suggest": {
-        "psy/psysh": "Enhanced `wp shell` functionality"
-    },
     "config": {
         "platform": {
             "php": "5.6"
         },
         "process-timeout": 7200,
         "sort-packages": true
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.5.x-dev"
-        }
     },
     "autoload-dev": {
         "psr-4": {
@@ -62,24 +59,4 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "scripts": {
-        "behat": "run-behat-tests",
-        "behat-rerun": "rerun-behat-tests",
-        "lint": "run-linter-tests",
-        "phpcs": "run-phpcs-tests",
-        "phpunit": "run-php-unit-tests",
-        "placeholder": "value",
-        "prepare-tests": "install-package-tests",
-        "test": [
-            "@lint",
-            "@phpcs",
-            "@phpunit",
-            "@behat"
-        ]
-    },
-    "support": {
-        "issues": "https://github.com/wp-cli/wp-cli-bundle/issues",
-        "source": "https://github.com/wp-cli/wp-cli-bundle",
-        "docs": "https://make.wordpress.org/cli/handbook/"
-    }
 }
