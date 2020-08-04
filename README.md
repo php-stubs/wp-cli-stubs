@@ -1,6 +1,6 @@
-# WooCommerce Stubs
+# WP-CLI Stubs
 
-[![Build Status](https://travis-ci.com/php-stubs/wpcli-stubs.svg?branch=master)](https://travis-ci.com/php-stubs/wpcli-stubs)
+[![Build Status](https://travis-ci.com/php-stubs/wp-cli-stubs.svg?branch=master)](https://travis-ci.com/php-stubs/wp-cli-stubs)
 
 This package provides stub declarations for [WP-CLI](https://wp-cli.org/) functions, classes and interfaces.
 These stubs can help plugin and theme developers leverage static analysis tools like [PHPStan](https://github.com/phpstan/phpstan), which is not able to parse WooCommerce as it is not clean OOP code.
@@ -29,5 +29,7 @@ Include all stubs in PHPStan configuration file.
 parameters:
     autoload_files:
         - %rootDir%/../../php-stubs/wordpress-stubs/wordpress-stubs.php
-        - %rootDir%/../../php-stubs/wpcli-stubs/wpcli-stubs.php
+        - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php
+        - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-commands-stubs.php
+        - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-i18n-stubs.php
 ```
