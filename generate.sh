@@ -19,7 +19,7 @@ if [ ! -d vendor ]; then
     composer update
 fi
 
-# Exclude globals.
+# wp-cli/wp-cli
 "$(dirname "$0")/vendor/bin/generate-stubs" \
     --force \
     --finder=finder.php \
@@ -30,7 +30,7 @@ fi
     --traits \
     --out="$FILE"
 
-# Packages.
+# Commands
 "$(dirname "$0")/vendor/bin/generate-stubs" \
     --force \
     --finder=finder-commands.php \
@@ -41,7 +41,7 @@ fi
     --traits \
     --out="$FILE_PKGS"
 
-# Packages.
+# wp-cli/i18n-command
 "$(dirname "$0")/vendor/bin/generate-stubs" \
     --force \
     --finder=finder-i18n.php \
