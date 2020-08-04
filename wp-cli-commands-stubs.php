@@ -1454,6 +1454,9 @@ namespace {
          *
          * ## OPTIONS
          *
+         * [<download-url>]
+         * : Download directly from a provided URL instead of fetching the URL from the wordpress.org servers.
+         *
          * [--path=<path>]
          * : Specify the path in which to install WordPress. Defaults to current
          * directory.
@@ -1462,7 +1465,7 @@ namespace {
          * : Select which language you want to download.
          *
          * [--version=<version>]
-         * : Select which version you want to download. Accepts a version number, 'latest' or 'nightly'
+         * : Select which version you want to download. Accepts a version number, 'latest' or 'nightly'.
          *
          * [--skip-content]
          * : Download WP without the default themes and plugins.
@@ -5920,7 +5923,7 @@ namespace {
          *     Generating posts  100% [================================================] 0:01 / 0:04
          *
          *     # Generate posts with fetched content.
-         *     $ curl http://loripsum.net/api/5 | wp post generate --post_content --count=10
+         *     $ curl -N http://loripsum.net/api/5 | wp post generate --post_content --count=10
          *       % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
          *                                      Dload  Upload   Total   Spent    Left  Speed
          *     100  2509  100  2509    0     0    616      0  0:00:04  0:00:04 --:--:--   616
@@ -8488,7 +8491,7 @@ namespace {
          *     $ wp user reset-password admin editor
          *     Reset password for admin.
          *     Reset password for editor.
-         *     Success: Passwords reset.
+         *     Success: Passwords reset for 2 users.
          *
          * @subcommand reset-password
          */
@@ -9891,6 +9894,8 @@ namespace WP_CLI {
         protected $upgrade_refresh;
         protected $upgrade_transient;
         protected $chained_command = false;
+        // Invalid version message.
+        const INVALID_VERSION_MESSAGE = 'version higher than expected';
         public function __construct()
         {
         }
@@ -10644,6 +10649,7 @@ namespace {
          * * update_id
          * * title
          * * description
+         * * file
          *
          * ## EXAMPLES
          *
@@ -11519,6 +11525,18 @@ namespace WP_CLI\Fetchers {
          * @return object|false
          */
         public function get($name)
+        {
+        }
+        /**
+         * Find and return the key in $existing_themes that matches $name with
+         * a case insensitive string comparison.
+         *
+         * @param string $name Name of theme received by command.
+         * @param array  $existing_themes Key/value pair of existing themes, key is
+         *                                a case sensitive name.
+         * @return string|boolean Case sensitive name if match found, otherwise false.
+         */
+        private function find_inexact_match($name, $existing_themes)
         {
         }
     }
@@ -12898,6 +12916,20 @@ namespace {
         private function calculate_transformation($orientation)
         {
         }
+        /**
+         * Add compatibility indirection to get_attached_file().
+         *
+         * In WordPress 5.3, behavior changed to account for automatic resizing of
+         * big image files.
+         *
+         * @see https://core.trac.wordpress.org/ticket/47873
+         *
+         * @param int $attachment_id ID of the attachment to get the filepath for.
+         * @return string|false Filepath of the attachment, or false if not found.
+         */
+        private function get_attached_file($attachment_id)
+        {
+        }
     }
     /**
      * Lists, installs, and removes WP-CLI packages.
@@ -14265,7 +14297,7 @@ namespace {
          *
          * * `plugin-slug.php` is the main PHP plugin file.
          * * `readme.txt` is the readme file for the plugin.
-         * * `package.json` needed by NPM holds various metadata relevant to the project. Packages: `grunt`, `grunt-wp-i18n` and `grunt-wp-readme-to-markdown`.
+         * * `package.json` needed by NPM holds various metadata relevant to the project. Packages: `grunt`, `grunt-wp-i18n` and `grunt-wp-readme-to-markdown`. Scripts: `start`, `readme`, `i18n`.
          * * `Gruntfile.js` is the JS file containing Grunt tasks. Tasks: `i18n` containing `addtextdomain` and `makepot`, `readme` containing `wp_readme_to_markdown`.
          * * `.editorconfig` is the configuration file for Editor.
          * * `.gitignore` tells which files (or patterns) git should ignore.

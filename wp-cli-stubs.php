@@ -594,6 +594,36 @@ namespace WP_CLI\Bootstrap {
         }
     }
 }
+namespace WP_CLI\Compat\Min_PHP_5_6 {
+    trait FeedbackMethodTrait
+    {
+        /**
+         * @param string $string
+         * @param mixed  ...$args Optional text replacements.
+         *
+         */
+        public function feedback($string, ...$args)
+        {
+        }
+    }
+}
+namespace WP_CLI\Compat {
+    trait FeedbackMethodTrait
+    {
+        use \WP_CLI\Compat\Min_PHP_5_6\FeedbackMethodTrait;
+    }
+}
+namespace WP_CLI\Compat\Min_PHP_5_4 {
+    trait FeedbackMethodTrait
+    {
+        /**
+         * @param string $string
+         */
+        public function feedback($string)
+        {
+        }
+    }
+}
 namespace WP_CLI {
     class Completions
     {
@@ -1712,8 +1742,8 @@ namespace WP_CLI {
         /**
          * Display multiple items according to the output arguments.
          *
-         * @param array      $items
-         * @param bool|array $ascii_pre_colorized Optional. A boolean or an array of booleans to pass to `format()` if items in the table are pre-colorized. Default false.
+         * @param array|\Iterator $items               The items to display.
+         * @param bool|array      $ascii_pre_colorized Optional. A boolean or an array of booleans to pass to `format()` if items in the table are pre-colorized. Default false.
          */
         public function display_items($items, $ascii_pre_colorized = false)
         {
@@ -1958,9 +1988,10 @@ namespace WP_CLI\Iterators {
     /**
      * Allows incrementally reading and parsing lines from a CSV file.
      */
-    class CSV implements \Iterator
+    class CSV implements \Countable, \Iterator
     {
         const ROW_SIZE = 4096;
+        private $filename;
         private $file_pointer;
         private $delimiter;
         private $columns;
@@ -1979,6 +2010,9 @@ namespace WP_CLI\Iterators {
         {
         }
         public function next()
+        {
+        }
+        public function count()
         {
         }
         public function valid()
@@ -2890,6 +2924,7 @@ namespace WP_CLI {
      */
     class UpgraderSkin extends \WP_Upgrader_Skin
     {
+        use \WP_CLI\Compat\FeedbackMethodTrait;
         public $api;
         public function header()
         {
@@ -2906,7 +2941,13 @@ namespace WP_CLI {
         public function error($error)
         {
         }
-        public function feedback($string)
+        /**
+         * Process the feedback collected through the compat indirection.
+         *
+         * @param string $string String to use as feedback message.
+         * @param array $args Array of additional arguments to process.
+         */
+        public function process_feedback($string, $args)
         {
         }
     }
@@ -3691,7 +3732,7 @@ namespace {
      *     ssh: dev@somedeve.env:12345/home/dev/
      *
      *     # Add alias.
-     *     $ wp cli alias add prod --set-ssh=login@host --set-path=/path/to/wordpress/install/ --set-user=wpcli
+     *     $ wp cli alias add @prod --set-ssh=login@host --set-path=/path/to/wordpress/install/ --set-user=wpcli
      *     Success: Added '@prod' alias.
      *
      *     # Update alias.
@@ -3708,7 +3749,7 @@ namespace {
     class CLI_Alias_Command extends \WP_CLI_Command
     {
         /**
-         * List available WP-CLI aliases.
+         * Lists available WP-CLI aliases.
          *
          * ## OPTIONS
          *
@@ -3976,7 +4017,7 @@ namespace {
     class CLI_Cache_Command extends \WP_CLI_Command
     {
         /**
-         * Clear the internal cache.
+         * Clears the internal cache.
          *
          * ## EXAMPLES
          *
@@ -3989,7 +4030,7 @@ namespace {
         {
         }
         /**
-         * Prune the internal cache.
+         * Prunes the internal cache.
          *
          * Removes all cached files except for the newest version of each one.
          *
@@ -4005,7 +4046,7 @@ namespace {
         }
     }
     /**
-     * Review current WP-CLI info, check for updates, or see defined aliases.
+     * Reviews current WP-CLI info, checks for updates, or views defined aliases.
      *
      * ## EXAMPLES
      *
@@ -4036,7 +4077,7 @@ namespace {
         {
         }
         /**
-         * Print WP-CLI version.
+         * Prints WP-CLI version.
          *
          * ## EXAMPLES
          *
@@ -4048,7 +4089,7 @@ namespace {
         {
         }
         /**
-         * Print various details about the WP-CLI environment.
+         * Prints various details about the WP-CLI environment.
          *
          * Helpful for diagnostic purposes, this command shares:
          *
@@ -4095,7 +4136,7 @@ namespace {
         {
         }
         /**
-         * Check to see if there is a newer version of WP-CLI available.
+         * Checks to see if there is a newer version of WP-CLI available.
          *
          * Queries the Github releases API. Returns available versions if there are
          * updates available, or success message if using the latest release.
@@ -4149,7 +4190,7 @@ namespace {
         {
         }
         /**
-         * Update WP-CLI to the latest release.
+         * Updates WP-CLI to the latest release.
          *
          * Default behavior is to check the releases API for the newest stable
          * version, and prompt if one is available.
@@ -4202,7 +4243,7 @@ namespace {
         {
         }
         /**
-         * Dump the list of global parameters, as JSON or in var_export format.
+         * Dumps the list of global parameters, as JSON or in var_export format.
          *
          * ## OPTIONS
          *
@@ -4241,7 +4282,7 @@ namespace {
         {
         }
         /**
-         * Dump the list of installed commands, as JSON.
+         * Dumps the list of installed commands, as JSON.
          *
          * ## EXAMPLES
          *
@@ -4255,7 +4296,7 @@ namespace {
         {
         }
         /**
-         * Generate tab completion strings.
+         * Generates tab completion strings.
          *
          * ## OPTIONS
          *
@@ -4315,7 +4356,7 @@ namespace {
     class Help_Command extends \WP_CLI_Command
     {
         /**
-         * Get help on WP-CLI, or on a specific command.
+         * Gets help on WP-CLI, or on a specific command.
          *
          * ## OPTIONS
          *
@@ -4742,7 +4783,7 @@ namespace WP_CLI\Utils {
      * @param string  $message  Text to display before the progress bar.
      * @param integer $count    Total number of ticks to be performed.
      * @param int     $interval Optional. The interval in milliseconds between updates. Default 100.
-     * @return \cli\progress\Bar|WP_CLI\NoOp
+     * @return cli\progress\Bar|WP_CLI\NoOp
      */
     function make_progress_bar($message, $count, $interval = 100)
     {
@@ -4782,6 +4823,7 @@ namespace WP_CLI\Utils {
      *
      * @param string $source The PHP code to manipulate.
      * @param string $path The path to use instead of the magic constants
+     * @return string Adapted PHP code.
      */
     function replace_path_consts($source, $path)
     {
@@ -4807,6 +4849,8 @@ namespace WP_CLI\Utils {
      * @param array $headers    Add specific headers to the request.
      * @param array $options
      * @return object
+     * @throws RuntimeException If the request failed.
+     * @throws WP_CLI\ExitException If the request failed and $halt_on_error is true.
      */
     function http_request($method, $url, $data = null, $headers = array(), $options = array())
     {

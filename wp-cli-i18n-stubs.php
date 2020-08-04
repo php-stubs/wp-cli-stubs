@@ -147,7 +147,7 @@ class Jed extends \Gettext\Generators\Generator implements \Gettext\Generators\G
      *
      * @return array
      */
-    private static function buildMessages(\Gettext\Translations $translations)
+    protected static function buildMessages(\Gettext\Translations $translations)
     {
     }
 }
@@ -198,6 +198,27 @@ interface ExtractorInterface
      */
     public static function fromString($string, \Gettext\Translations $translations, array $options = []);
 }
+interface ExtractorMultiInterface
+{
+    /**
+     * Parses a string and append the translations found in the Translations instance.
+     * Allows scanning for multiple domains at a time (each Translation has to have a different domain)
+     *
+     * @param string $string
+     * @param Translations[] $translations
+     * @param array $options
+     */
+    public static function fromStringMultiple($string, array $translations, array $options = []);
+    /**
+     * Parses a string and append the translations found in the Translations instance.
+     * Allows scanning for multiple domains at a time (each Translation has to have a different domain)
+     *
+     * @param $file
+     * @param Translations[] $translations
+     * @param array $options
+     */
+    public static function fromFileMultiple($file, array $translations, array $options = []);
+}
 abstract class Extractor implements \Gettext\Extractors\ExtractorInterface
 {
     /**
@@ -230,14 +251,29 @@ abstract class Extractor implements \Gettext\Extractors\ExtractorInterface
 /**
  * Class to get gettext strings from javascript files.
  */
-class JsCode extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\ExtractorInterface
+class JsCode extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\ExtractorInterface, \Gettext\Extractors\ExtractorMultiInterface
 {
     public static $options = ['constants' => [], 'functions' => ['gettext' => 'gettext', '__' => 'gettext', 'ngettext' => 'ngettext', 'n__' => 'ngettext', 'pgettext' => 'pgettext', 'p__' => 'pgettext', 'dgettext' => 'dgettext', 'd__' => 'dgettext', 'dngettext' => 'dngettext', 'dn__' => 'dngettext', 'dpgettext' => 'dpgettext', 'dp__' => 'dpgettext', 'npgettext' => 'npgettext', 'np__' => 'npgettext', 'dnpgettext' => 'dnpgettext', 'dnp__' => 'dnpgettext', 'noop' => 'noop', 'noop__' => 'noop']];
+    protected static $functionsScannerClass = 'Gettext\\Utils\\JsFunctionsScanner';
     /**
-     * {@inheritdoc}
-     * @throws \Exception
+     * @inheritdoc
+     * @throws Exception
      */
     public static function fromString($string, \Gettext\Translations $translations, array $options = [])
+    {
+    }
+    /**
+     * @inheritDoc
+     * @throws Exception
+     */
+    public static function fromStringMultiple($string, array $translations, array $options = [])
+    {
+    }
+    /**
+     * @inheritDoc
+     * @throws Exception
+     */
+    public static function fromFileMultiple($file, array $translations, array $options = [])
     {
     }
 }
@@ -247,10 +283,17 @@ final class JsCodeExtractor extends \Gettext\Extractors\JsCode
 {
     use \WP_CLI\I18n\IterableCodeExtractor;
     public static $options = ['extractComments' => ['translators', 'Translators'], 'constants' => [], 'functions' => ['__' => 'text_domain', '_x' => 'text_context_domain', '_n' => 'single_plural_number_domain', '_nx' => 'single_plural_number_context_domain']];
+    protected static $functionsScannerClass = 'WP_CLI\\I18n\\JsFunctionsScanner';
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public static function fromString($string, \Gettext\Translations $translations, array $options = [])
+    {
+    }
+    /**
+     * @inheritDoc
+     */
+    public static function fromStringMultiple($string, array $translations, array $options = [])
     {
     }
 }
@@ -269,11 +312,24 @@ abstract class FunctionsScanner
     /**
      * Search for specific functions and create translations.
      *
-     * @param Translations $translations The translations instance where save the values
+     * You can pass multiple translation with different domains and value found will be sorted respectively.
+     *
+     * @param Translations|Translations[] $translations Multiple domain translations instances where to save the values
      * @param array $options The extractor options
      * @throws Exception
      */
-    public function saveGettextFunctions(\Gettext\Translations $translations, array $options)
+    public function saveGettextFunctions($translations, array $options)
+    {
+    }
+    /**
+     * Deconstruct arguments to translation values
+     *
+     * @param $function
+     * @param $args
+     * @return array|null
+     * @throws Exception
+     */
+    protected function deconstructArgs($function, $args)
     {
     }
 }
@@ -369,7 +425,7 @@ final class JsFunctionsScanner extends \Gettext\Utils\JsFunctionsScanner
     /**
      * {@inheritdoc}
      */
-    public function saveGettextFunctions(\Gettext\Translations $translations, array $options)
+    public function saveGettextFunctions($translations, array $options)
     {
     }
     /**
@@ -756,7 +812,7 @@ class MakePotCommand extends \WP_CLI_Command
      *
      * @return string|false Version number on success, false otherwise.
      */
-    private function get_wp_version()
+    protected function get_wp_version()
     {
     }
     /**
@@ -819,7 +875,7 @@ namespace Gettext\Extractors;
 /**
  * Class to get gettext strings from php files returning arrays.
  */
-class PhpCode extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\ExtractorInterface
+class PhpCode extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\ExtractorInterface, \Gettext\Extractors\ExtractorMultiInterface
 {
     public static $options = [
         // - false: to not extract comments
@@ -830,10 +886,25 @@ class PhpCode extends \Gettext\Extractors\Extractor implements \Gettext\Extracto
         'constants' => [],
         'functions' => ['gettext' => 'gettext', '__' => 'gettext', 'ngettext' => 'ngettext', 'n__' => 'ngettext', 'pgettext' => 'pgettext', 'p__' => 'pgettext', 'dgettext' => 'dgettext', 'd__' => 'dgettext', 'dngettext' => 'dngettext', 'dn__' => 'dngettext', 'dpgettext' => 'dpgettext', 'dp__' => 'dpgettext', 'npgettext' => 'npgettext', 'np__' => 'npgettext', 'dnpgettext' => 'dnpgettext', 'dnp__' => 'dnpgettext', 'noop' => 'noop', 'noop__' => 'noop'],
     ];
+    protected static $functionsScannerClass = 'Gettext\\Utils\\PhpFunctionsScanner';
     /**
      * {@inheritdoc}
+     * @throws Exception
      */
     public static function fromString($string, \Gettext\Translations $translations, array $options = [])
+    {
+    }
+    /**
+     * @inheritDoc
+     * @throws Exception
+     */
+    public static function fromStringMultiple($string, array $translations, array $options = [])
+    {
+    }
+    /**
+     * @inheritDoc
+     */
+    public static function fromFileMultiple($file, array $translations, array $options = [])
     {
     }
     /**
@@ -846,8 +917,12 @@ class PhpCode extends \Gettext\Extractors\Extractor implements \Gettext\Extracto
     public static function convertString($value)
     {
     }
-    //http://php.net/manual/en/function.chr.php#118804
-    private static function unicodeChar($dec)
+    /**
+     * @param $dec
+     * @return string|null
+     * @see http://php.net/manual/en/function.chr.php#118804
+     */
+    protected static function unicodeChar($dec)
     {
     }
 }
@@ -880,6 +955,7 @@ final class PhpCodeExtractor extends \Gettext\Extractors\PhpCode
         '__ngettext' => 'single_plural_number_domain',
         '__ngettext_noop' => 'single_plural_domain',
     ]];
+    protected static $functionsScannerClass = 'WP_CLI\\I18n\\PhpFunctionsScanner';
     /**
      * {@inheritdoc}
      */
@@ -952,7 +1028,7 @@ class PhpFunctionsScanner extends \Gettext\Utils\PhpFunctionsScanner
     /**
      * {@inheritdoc}
      */
-    public function saveGettextFunctions(\Gettext\Translations $translations, array $options)
+    public function saveGettextFunctions($translations, array $options)
     {
     }
 }
@@ -974,7 +1050,7 @@ class Po extends \Gettext\Generators\Generator implements \Gettext\Generators\Ge
      *
      * @return string
      */
-    private static function multilineQuote($string)
+    protected static function multilineQuote($string)
     {
     }
     /**
@@ -984,7 +1060,7 @@ class Po extends \Gettext\Generators\Generator implements \Gettext\Generators\Ge
      * @param string $name
      * @param string $value
      */
-    private static function addLines(array &$lines, $name, $value)
+    protected static function addLines(array &$lines, $name, $value)
     {
     }
     /**
@@ -1032,7 +1108,7 @@ class PotGenerator extends \Gettext\Generators\Po
      *
      * @return string[]
      */
-    private static function multilineQuote($string)
+    protected static function multilineQuote($string)
     {
     }
     /**
@@ -1042,7 +1118,7 @@ class PotGenerator extends \Gettext\Generators\Po
      * @param string $name   Name of the line, e.g. msgstr or msgid_plural.
      * @param string $value  The line to add.
      */
-    private static function addLines(array &$lines, $name, $value)
+    protected static function addLines(array &$lines, $name, $value)
     {
     }
 }
@@ -1199,7 +1275,7 @@ trait HeadersExtractorTrait
      *
      * @return array
      */
-    private static function extractHeaders($headers, \Gettext\Translations $translations)
+    protected static function extractHeaders($headers, \Gettext\Translations $translations)
     {
     }
     /**
@@ -1210,7 +1286,7 @@ trait HeadersExtractorTrait
      *
      * @return bool
      */
-    private static function isHeaderDefinition($line)
+    protected static function isHeaderDefinition($line)
     {
     }
     /**
@@ -1229,13 +1305,13 @@ trait HeadersExtractorTrait
  */
 trait CsvTrait
 {
-    private static $csvEscapeChar;
+    protected static $csvEscapeChar;
     /**
      * Check whether support the escape_char argument to fgetcsv/fputcsv or not
      *
      * @return bool
      */
-    private static function supportsCsvEscapeChar()
+    protected static function supportsCsvEscapeChar()
     {
     }
     /**
@@ -1244,7 +1320,7 @@ trait CsvTrait
      *
      * @return array
      */
-    private static function fgetcsv($handle, $options)
+    protected static function fgetcsv($handle, $options)
     {
     }
     /**
@@ -1254,7 +1330,7 @@ trait CsvTrait
      *
      * @return bool|int
      */
-    private static function fputcsv($handle, $fields, $options)
+    protected static function fputcsv($handle, $fields, $options)
     {
     }
 }
@@ -1325,7 +1401,7 @@ trait HeadersGeneratorTrait
      *
      * @return string
      */
-    private static function generateHeaders(\Gettext\Translations $translations)
+    protected static function generateHeaders(\Gettext\Translations $translations)
     {
     }
 }
@@ -1346,7 +1422,7 @@ trait MultidimensionalArrayTrait
      *
      * @return array
      */
-    private static function toArray(\Gettext\Translations $translations, $includeHeaders, $forceArray = false)
+    protected static function toArray(\Gettext\Translations $translations, $includeHeaders, $forceArray = false)
     {
     }
     /**
@@ -1355,7 +1431,7 @@ trait MultidimensionalArrayTrait
      * @param array        $messages
      * @param Translations $translations
      */
-    private static function fromArray(array $messages, \Gettext\Translations $translations)
+    protected static function fromArray(array $messages, \Gettext\Translations $translations)
     {
     }
 }
@@ -1391,7 +1467,7 @@ trait DictionaryTrait
      *
      * @return array
      */
-    private static function toArray(\Gettext\Translations $translations, $includeHeaders)
+    protected static function toArray(\Gettext\Translations $translations, $includeHeaders)
     {
     }
     /**
@@ -1400,7 +1476,7 @@ trait DictionaryTrait
      * @param array        $messages
      * @param Translations $translations
      */
-    private static function fromArray(array $messages, \Gettext\Translations $translations)
+    protected static function fromArray(array $messages, \Gettext\Translations $translations)
     {
     }
 }
@@ -1427,6 +1503,7 @@ class Mo extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\Ex
     const MAGIC1 = -1794895138;
     const MAGIC2 = -569244523;
     const MAGIC3 = 2500072158;
+    protected static $stringReaderClass = 'Gettext\\Utils\\StringReader';
     /**
      * {@inheritdoc}
      */
@@ -1437,7 +1514,7 @@ class Mo extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\Ex
      * @param StringReader $stream
      * @param string       $byteOrder
      */
-    private static function readInt(\Gettext\Utils\StringReader $stream, $byteOrder)
+    protected static function readInt(\Gettext\Utils\StringReader $stream, $byteOrder)
     {
     }
     /**
@@ -1445,7 +1522,7 @@ class Mo extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\Ex
      * @param string       $byteOrder
      * @param int          $count
      */
-    private static function readIntArray(\Gettext\Utils\StringReader $stream, $byteOrder, $count)
+    protected static function readIntArray(\Gettext\Utils\StringReader $stream, $byteOrder, $count)
     {
     }
 }
@@ -1491,7 +1568,7 @@ class Po extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\Ex
      *
      * @return string
      */
-    private static function fixMultiLines($line, array $lines, &$i)
+    protected static function fixMultiLines($line, array $lines, &$i)
     {
     }
     /**
@@ -1522,20 +1599,36 @@ class Twig extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\
      *
      * @return Twig_Environment
      */
-    private static function createTwig()
+    protected static function createTwig()
     {
     }
 }
 /**
  * Class to get gettext strings from VueJS template files.
  */
-class VueJs extends \Gettext\Extractors\JsCode implements \Gettext\Extractors\ExtractorInterface
+class VueJs extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\ExtractorInterface, \Gettext\Extractors\ExtractorMultiInterface
 {
+    public static $options = ['constants' => [], 'functions' => ['gettext' => 'gettext', '__' => 'gettext', 'ngettext' => 'ngettext', 'n__' => 'ngettext', 'pgettext' => 'pgettext', 'p__' => 'pgettext', 'dgettext' => 'dgettext', 'd__' => 'dgettext', 'dngettext' => 'dngettext', 'dn__' => 'dngettext', 'dpgettext' => 'dpgettext', 'dp__' => 'dpgettext', 'npgettext' => 'npgettext', 'np__' => 'npgettext', 'dnpgettext' => 'dnpgettext', 'dnp__' => 'dnpgettext', 'noop' => 'noop', 'noop__' => 'noop']];
+    protected static $functionsScannerClass = 'Gettext\\Utils\\JsFunctionsScanner';
+    /**
+     * @inheritDoc
+     * @throws Exception
+     */
+    public static function fromFileMultiple($file, array $translations, array $options = [])
+    {
+    }
     /**
      * @inheritdoc
-     * @throws \Exception
+     * @throws Exception
      */
     public static function fromString($string, \Gettext\Translations $translations, array $options = [])
+    {
+    }
+    /**
+     * @inheritDoc
+     * @throws Exception
+     */
+    public static function fromStringMultiple($string, array $translations, array $options = [])
     {
     }
     /**
@@ -1545,46 +1638,46 @@ class VueJs extends \Gettext\Extractors\JsCode implements \Gettext\Extractors\Ex
      * @param $string
      * @return bool|string
      */
-    private static function extractScriptTag($string)
+    protected static function extractScriptTag($string)
     {
     }
     /**
      * @param string $html
      * @return DOMDocument
      */
-    private static function convertHtmlToDom($html)
+    protected static function convertHtmlToDom($html)
     {
     }
     /**
      * Extract translations from script part
      *
      * @param string $scriptContents Only script tag contents, not the whole template
-     * @param Translations $translations
+     * @param Translations|Translations[] $translations One or multiple domain Translation objects
      * @param array $options
      * @param int $lineOffset Number of lines the script is offset in the vue template file
-     * @throws \Exception
+     * @throws Exception
      */
-    private static function getScriptTranslationsFromString($scriptContents, \Gettext\Translations $translations, array $options = [], $lineOffset = 0)
+    protected static function getScriptTranslationsFromString($scriptContents, $translations, array $options = [], $lineOffset = 0)
     {
     }
     /**
      * Parse template to extract all translations (element content and dynamic element attributes)
      *
-     * @param DOMElement $dom
-     * @param Translations $translations
+     * @param DOMNode $dom
+     * @param Translations|Translations[] $translations One or multiple domain Translation objects
      * @param array $options
      * @param int $lineOffset Line number where the template part starts in the vue file
-     * @throws \Exception
+     * @throws Exception
      */
-    private static function getTemplateTranslations(\DOMElement $dom, \Gettext\Translations $translations, array $options, $lineOffset = 0)
+    protected static function getTemplateTranslations(\DOMNode $dom, $translations, array $options, $lineOffset = 0)
     {
     }
     /**
      * @param array $options
-     * @param DOMElement $dom
-     * @param Translations $translations
+     * @param DOMNode $dom
+     * @param Translations|Translations[] $translations
      */
-    private static function getTagTranslations(array $options, \DOMElement $dom, \Gettext\Translations $translations)
+    protected static function getTagTranslations(array $options, \DOMNode $dom, $translations)
     {
     }
     /**
@@ -1592,21 +1685,21 @@ class VueJs extends \Gettext\Extractors\JsCode implements \Gettext\Extractors\Ex
      * For example: <span :title="__('extract this')"> skip element content </span>
      *
      * @param array $options
-     * @param DOMElement $dom
+     * @param DOMNode $dom
      * @return string JS code
      */
-    private static function getTemplateAttributeFakeJs(array $options, \DOMElement $dom)
+    protected static function getTemplateAttributeFakeJs(array $options, \DOMNode $dom)
     {
     }
     /**
      * Loop DOM element recursively and parse out all dynamic vue attributes which are basically JS expressions
      *
      * @param array $attributePrefixes List of attribute prefixes we parse as JS (may contain translations)
-     * @param DOMElement $dom
+     * @param DOMNode $dom
      * @param array $expressionByLine [lineNumber => [jsExpression, ..], ..]
      * @return array [lineNumber => [jsExpression, ..], ..]
      */
-    private static function getVueAttributeExpressions(array $attributePrefixes, \DOMElement $dom, array &$expressionByLine = [])
+    protected static function getVueAttributeExpressions(array $attributePrefixes, \DOMNode $dom, array &$expressionByLine = [])
     {
     }
     /**
@@ -1616,17 +1709,17 @@ class VueJs extends \Gettext\Extractors\JsCode implements \Gettext\Extractors\Ex
      * @param string[] $attributePrefixes
      * @return bool
      */
-    private static function isAttributeMatching($attributeName, $attributePrefixes)
+    protected static function isAttributeMatching($attributeName, $attributePrefixes)
     {
     }
     /**
      * Extract JS expressions from within template elements (excluding attributes)
      * For example: <span :title="skip attributes"> {{__("extract element content")}} </span>
      *
-     * @param DOMElement $dom
+     * @param DOMNode $dom
      * @return string JS code
      */
-    private static function getTemplateFakeJs(\DOMElement $dom)
+    protected static function getTemplateFakeJs(\DOMNode $dom)
     {
     }
     /**
@@ -1635,7 +1728,7 @@ class VueJs extends \Gettext\Extractors\JsCode implements \Gettext\Extractors\Ex
      * @param string $line
      * @return string[]
      */
-    private static function parseOneTemplateLine($line)
+    protected static function parseOneTemplateLine($line)
     {
     }
 }
@@ -1644,6 +1737,7 @@ class VueJs extends \Gettext\Extractors\JsCode implements \Gettext\Extractors\Ex
  */
 class Xliff extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\ExtractorInterface
 {
+    public static $options = ['unitid_as_id' => false];
     /**
      * {@inheritdoc}
      */
@@ -1763,13 +1857,24 @@ class PhpArray extends \Gettext\Generators\Generator implements \Gettext\Generat
 }
 class Xliff extends \Gettext\Generators\Generator implements \Gettext\Generators\GeneratorInterface
 {
+    const UNIT_ID_REGEXP = '/^XLIFF_UNIT_ID: (.*)$/';
     /**
      * {@inheritdoc}
      */
     public static function toString(\Gettext\Translations $translations, array $options = [])
     {
     }
-    private static function createTextNode(\DOMDocument $dom, $name, $string)
+    protected static function createTextNode(\DOMDocument $dom, $name, $string)
+    {
+    }
+    /**
+     * Gets the translation's unit ID, if one is available.
+     *
+     * @param Translation $translation
+     *
+     * @return string|null
+     */
+    public static function getUnitID(\Gettext\Translation $translation)
     {
     }
 }
@@ -1898,7 +2003,7 @@ class GettextTranslator extends \Gettext\BaseTranslator implements \Gettext\Tran
 /**
  * Static class with merge contants.
  */
-class Merge
+final class Merge
 {
     const ADD = 1;
     const REMOVE = 2;
@@ -1994,6 +2099,7 @@ class Merge
  */
 class Translation
 {
+    protected $id;
     protected $context;
     protected $original;
     protected $translation = '';
@@ -2016,6 +2122,19 @@ class Translation
     {
     }
     /**
+     * Create a new instance of a Translation object.
+     *
+     * This is a factory method that will work even when Translation is extended.
+     *
+     * @param string $context  The context of the translation
+     * @param string $original The original string
+     * @param string $plural   The original plural string
+     * @return static New Translation instance
+     */
+    public static function create($context, $original, $plural = '')
+    {
+    }
+    /**
      * Construct.
      *
      * @param string $context  The context of the translation
@@ -2034,6 +2153,16 @@ class Translation
      * @return Translation
      */
     public function getClone($context = null, $original = null)
+    {
+    }
+    /**
+     * Sets the id of this translation.
+     * @warning The use of this function to set a custom ID will prevent
+     *  Translations::find from matching this translation.
+     *
+     * @param string $id
+     */
+    public function setId($id)
     {
     }
     /**
@@ -2440,11 +2569,12 @@ class Translations extends \ArrayObject
     const HEADER_PLURAL = 'Plural-Forms';
     const HEADER_DOMAIN = 'X-Domain';
     public static $options = ['defaultHeaders' => ['Project-Id-Version' => '', 'Report-Msgid-Bugs-To' => '', 'Last-Translator' => '', 'Language-Team' => '', 'MIME-Version' => '1.0', 'Content-Type' => 'text/plain; charset=UTF-8', 'Content-Transfer-Encoding' => '8bit'], 'headersSorting' => false, 'defaultDateHeaders' => ['POT-Creation-Date', 'PO-Revision-Date']];
-    private $headers;
+    protected $headers;
+    protected $translationClass;
     /**
      * @see ArrayObject::__construct()
      */
-    public function __construct($input = [], $flags = 0, $iterator_class = 'ArrayIterator')
+    public function __construct($input = [], $flags = 0, $iterator_class = 'ArrayIterator', $translationClass = 'Gettext\\Translation')
     {
     }
     /**
@@ -2610,6 +2740,7 @@ class Translations extends \ArrayObject
      *
      * @param string|Translation $context  The context of the translation or a translation instance
      * @param string             $original The original string
+     * @warning Translations with custom identifiers (e.g. XLIFF unit IDs) cannot be found using this function.
      *
      * @return Translation|false
      */
@@ -2647,18 +2778,29 @@ class Translations extends \ArrayObject
     public function mergeWith(\Gettext\Translations $translations, $options = \Gettext\Merge::DEFAULTS)
     {
     }
+    /**
+     * Create a new instance of a Translation object.
+     *
+     * @param string $context  The context of the translation
+     * @param string $original The original string
+     * @param string $plural   The original plural string
+     * @return Translation New Translation instance
+     */
+    public function createNewTranslation($context, $original, $plural = '')
+    {
+    }
 }
 class Translator extends \Gettext\BaseTranslator implements \Gettext\TranslatorInterface
 {
-    private $domain;
-    private $dictionary = [];
-    private $plurals = [];
+    protected $domain;
+    protected $dictionary = [];
+    protected $plurals = [];
     /**
      * Loads translation from a Translations instance, a file on an array.
      *
      * @param Translations|string|array $translations
      *
-     * @return self
+     * @return static
      */
     public function loadTranslations($translations)
     {
@@ -2668,7 +2810,7 @@ class Translator extends \Gettext\BaseTranslator implements \Gettext\TranslatorI
      *
      * @param string $domain
      *
-     * @return self
+     * @return static
      */
     public function defaultDomain($domain)
     {
@@ -2831,7 +2973,7 @@ class ParsedComment
      * @param string $value The PHP comment string.
      * @param int $line The line where the comment starts.
      *
-     * @return self The parsed comment.
+     * @return static The parsed comment.
      */
     public static function create($value, $line)
     {
