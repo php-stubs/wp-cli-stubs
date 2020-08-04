@@ -4416,6 +4416,549 @@ namespace {
         {
         }
     }
+    /**
+     * Basic class
+     *
+     * ## EXAMPLES
+     *
+     *     # Foo.
+     *     $ wp foo
+     */
+    class CommandFactoryTests_Get_Doc_Comment_1_Command_Win extends \WP_CLI_Command
+    {
+        /**
+         * Command1 method
+         *
+         * ## OPTIONS
+         *
+         * ## EXAMPLES
+         *
+         *     $ wp foo command1 public
+         */
+        function command1()
+        {
+        }
+        /**
+         * Command2 function
+         *
+         * ## OPTIONS
+         *
+         * [--path=<path>]
+         *
+         * ## EXAMPLES
+         *
+         *     $ wp foo command2 --path=/**a/**b/**c/**
+         */
+        protected static final function command2()
+        {
+        }
+        /**
+        	 * Command3 function
+        	 *
+        	 * ## OPTIONS
+        	 *
+        	 * [--path=<path>]
+        	 *
+        	 * ## EXAMPLES
+        	 *
+        	 *     $ wp foo command3 --path=/**a/**b/**c/**
+        	 function*/
+        public function command3($function)
+        {
+        }
+        function command4()
+        {
+        }
+    }
+    /**
+     * Basic class
+     *
+     * ## EXAMPLES
+     *
+     *     # Foo.
+     *     $ wp foo --final abstract
+     class*/
+    abstract class CommandFactoryTests_Get_Doc_Comment_2_Command_Win extends \WP_CLI_Command
+    {
+        function command1()
+        {
+        }
+    }
+    /**
+     * Basic class
+     *
+     * ## EXAMPLES
+     *
+     *     # Foo.
+     *     $ wp foo
+     */
+    class CommandFactoryTests_Get_Doc_Comment_1_Command extends \WP_CLI_Command
+    {
+        /**
+         * Command1 method
+         *
+         * ## OPTIONS
+         *
+         * ## EXAMPLES
+         *
+         *     $ wp foo command1 public
+         */
+        function command1()
+        {
+        }
+        /**
+         * Command2 function
+         *
+         * ## OPTIONS
+         *
+         * [--path=<path>]
+         *
+         * ## EXAMPLES
+         *
+         *     $ wp foo command2 --path=/**a/**b/**c/**
+         */
+        protected static final function command2()
+        {
+        }
+        /**
+        	 * Command3 function
+        	 *
+        	 * ## OPTIONS
+        	 *
+        	 * [--path=<path>]
+        	 *
+        	 * ## EXAMPLES
+        	 *
+        	 *     $ wp foo command3 --path=/**a/**b/**c/**
+        	 function*/
+        public function command3($function)
+        {
+        }
+        function command4()
+        {
+        }
+    }
+    /**
+     * Basic class
+     *
+     * ## EXAMPLES
+     *
+     *     # Foo.
+     *     $ wp foo --final abstract
+     class*/
+    abstract class CommandFactoryTests_Get_Doc_Comment_2_Command extends \WP_CLI_Command
+    {
+        function command1()
+        {
+        }
+    }
+    class ArgValidationTests extends \PHPUnit_Framework_TestCase
+    {
+        public function testMissingPositional()
+        {
+        }
+        public function testRepeatingPositional()
+        {
+        }
+        public function testUnknownAssocEmpty()
+        {
+        }
+        public function testUnknownAssoc()
+        {
+        }
+        public function testMissingAssoc()
+        {
+        }
+        public function testAssocWithOptionalValue()
+        {
+        }
+    }
+    class CommandFactoryTests extends \PHPUnit_Framework_TestCase
+    {
+        /**
+         * @dataProvider dataProviderExtractLastDocComment
+         */
+        public function testExtractLastDocComment($content, $expected)
+        {
+        }
+        /**
+         * @dataProvider dataProviderExtractLastDocComment
+         */
+        public function testExtractLastDocCommentWin($content, $expected)
+        {
+        }
+        public function dataProviderExtractLastDocComment()
+        {
+        }
+        public function testGetDocComment()
+        {
+        }
+        public function testGetDocCommentWin()
+        {
+        }
+    }
+    class ConfiguratorTest extends \PHPUnit_Framework_TestCase
+    {
+        public function testExtractAssoc()
+        {
+        }
+        public function testExtractAssocNoValue()
+        {
+        }
+        public function testExtractAssocGlobalLocal()
+        {
+        }
+        public function testExtractAssocDoubleDashInValue()
+        {
+        }
+    }
+    class DocParserTests extends \PHPUnit_Framework_TestCase
+    {
+        public function test_empty()
+        {
+        }
+        public function test_only_tags()
+        {
+        }
+        public function test_no_longdesc()
+        {
+        }
+        public function test_complete()
+        {
+        }
+        public function test_desc_parses_yaml()
+        {
+        }
+        public function test_desc_doesnt_parse_far_params_yaml()
+        {
+        }
+        public function test_desc_doesnt_parse_far_args_yaml()
+        {
+        }
+    }
+    class Extractor_Test extends \PHPUnit_Framework_TestCase
+    {
+        public static $copy_overwrite_files_prefix = 'wp-cli-test-utils-copy-overwrite-files-';
+        public static $expected_wp = array('index1.php', 'license2.php', 'wp-admin/', 'wp-admin/about3.php', 'wp-admin/includes/', 'wp-admin/includes/file4.php', 'wp-admin/widgets5.php', 'wp-config6.php', 'wp-includes/', 'wp-includes/file7.php', 'xmlrpc8.php');
+        public static $logger = \null;
+        public static $prev_logger = \null;
+        public function setUp()
+        {
+        }
+        public function tearDown()
+        {
+        }
+        public function test_rmdir()
+        {
+        }
+        public function test_err_rmdir()
+        {
+        }
+        public function test_copy_overwrite_files()
+        {
+        }
+        public function test_err_copy_overwrite_files()
+        {
+        }
+        public function test_extract_tarball()
+        {
+        }
+        public function test_err_extract_tarball()
+        {
+        }
+        public function test_extract_zip()
+        {
+        }
+        public function test_err_extract_zip()
+        {
+        }
+        public function test_err_extract()
+        {
+        }
+        private function create_test_directory_structure()
+        {
+        }
+        private function recursive_scandir($dir, $prefix_dir = '')
+        {
+        }
+    }
+    class FileCacheTest extends \PHPUnit_Framework_TestCase
+    {
+        /**
+         * Test get_root() deals with backslashed directory.
+         */
+        public function testGetRoot()
+        {
+        }
+        public function test_ensure_dir_exists()
+        {
+        }
+        public function test_export()
+        {
+        }
+    }
+    class HelpTest extends \PHPUnit_Framework_TestCase
+    {
+        public function test_parse_reference_links()
+        {
+        }
+    }
+    class InflectorTest extends \PHPUnit_Framework_TestCase
+    {
+        /** @dataProvider dataProviderPluralize */
+        public function testPluralize($singular, $expected)
+        {
+        }
+        public function dataProviderPluralize()
+        {
+        }
+        /** @dataProvider dataProviderSingularize */
+        public function testSingularize($singular, $expected)
+        {
+        }
+        public function dataProviderSingularize()
+        {
+        }
+    }
+    // phpcs:disable Generic.Files.OneObjectStructurePerFile.MultipleFound -- Ignoring test doubles.
+    // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Ignoring test doubles.
+    class MockRegularLogger extends \WP_CLI\Loggers\Regular
+    {
+        protected function get_runner()
+        {
+        }
+        protected function write($handle, $str)
+        {
+        }
+    }
+    class MockQuietLogger extends \WP_CLI\Loggers\Quiet
+    {
+        protected function get_runner()
+        {
+        }
+    }
+    class LoggingTests extends \PHPUnit_Framework_TestCase
+    {
+        public function testLogDebug()
+        {
+        }
+        public function testLogEscaping()
+        {
+        }
+        public function testExecutionLogger()
+        {
+        }
+    }
+    class ProcessTests extends \PHPUnit_Framework_TestCase
+    {
+        /**
+         * @dataProvider data_process_env
+         */
+        public function test_process_env($cmd_prefix, $env, $expected_env_vars, $expected_out)
+        {
+        }
+        public function data_process_env()
+        {
+        }
+    }
+    class SynopsisParserTest extends \PHPUnit_Framework_TestCase
+    {
+        public function testEmpty()
+        {
+        }
+        public function testPositional()
+        {
+        }
+        public function testFlag()
+        {
+        }
+        public function testGeneric()
+        {
+        }
+        public function testAssoc()
+        {
+        }
+        public function testInvalidAssoc()
+        {
+        }
+        public function testRepeating()
+        {
+        }
+        public function testCombined()
+        {
+        }
+        public function testAllowedValueCharacters()
+        {
+        }
+        public function testRender()
+        {
+        }
+        public function testParseThenRender()
+        {
+        }
+        public function testParseThenRenderNumeric()
+        {
+        }
+    }
+    class UtilsTest extends \PHPUnit_Framework_TestCase
+    {
+        public function testIncrementVersion()
+        {
+        }
+        public function testGetSemVer()
+        {
+        }
+        public function testGetSemVerWP()
+        {
+        }
+        public function testParseSSHUrl()
+        {
+        }
+        public function parseStrToArgvData()
+        {
+        }
+        /** @dataProvider parseStrToArgvData */
+        public function testParseStrToArgv($expected, $parseable_string)
+        {
+        }
+        public function testAssocArgsToString()
+        {
+        }
+        public function testMysqlHostToCLIArgs()
+        {
+        }
+        public function testForceEnvOnNixSystems()
+        {
+        }
+        public function testGetHomeDir()
+        {
+        }
+        public function testTrailingslashit()
+        {
+        }
+        /**
+         * @dataProvider dataNormalizePath
+         */
+        public function testNormalizePath($path, $expected)
+        {
+        }
+        public function dataNormalizePath()
+        {
+        }
+        public function testNormalizeEols()
+        {
+        }
+        public function testGetTempDir()
+        {
+        }
+        public function testHttpRequestBadAddress()
+        {
+        }
+        public function testHttpRequestBadCAcert()
+        {
+        }
+        /**
+         * @dataProvider dataPastTenseVerb
+         */
+        public function testPastTenseVerb($verb, $expected)
+        {
+        }
+        public function dataPastTenseVerb()
+        {
+        }
+        /**
+         * @dataProvider dataExpandGlobs
+         */
+        public function testExpandGlobs($path, $expected)
+        {
+        }
+        public function dataExpandGlobs()
+        {
+        }
+        /**
+         * @dataProvider dataReportBatchOperationResults
+         */
+        public function testReportBatchOperationResults($stdout, $stderr, $noun, $verb, $total, $successes, $failures, $skips)
+        {
+        }
+        public function dataReportBatchOperationResults()
+        {
+        }
+        public function testGetPHPBinary()
+        {
+        }
+        /**
+         * @dataProvider dataProcOpenCompatWinEnv
+         */
+        public function testProcOpenCompatWinEnv($cmd, $env, $expected_cmd, $expected_env)
+        {
+        }
+        public function dataProcOpenCompatWinEnv()
+        {
+        }
+        /**
+         * Copied from core "tests/phpunit/tests/db.php" (adapted to not use `$wpdb`).
+         */
+        public function test_esc_like()
+        {
+        }
+        /** @dataProvider dataIsJson */
+        public function testIsJson($argument, $ignore_scalars, $expected)
+        {
+        }
+        public function dataIsJson()
+        {
+        }
+        /** @dataProvider dataParseShellArray */
+        public function testParseShellArray($assoc_args, $array_arguments, $expected)
+        {
+        }
+        public function dataParseShellArray()
+        {
+        }
+        /** @dataProvider dataPluralize */
+        public function testPluralize($singular, $count, $expected)
+        {
+        }
+        public function dataPluralize()
+        {
+        }
+        /** @dataProvider dataPickFields */
+        public function testPickFields($data, $fields, $expected)
+        {
+        }
+        public function dataPickFields()
+        {
+        }
+        /** @dataProvider dataParseUrl */
+        public function testParseUrl($url, $component, $auto_add_scheme, $expected)
+        {
+        }
+        public function dataParseUrl()
+        {
+        }
+        public function testReplacePathConstsAddSlashes()
+        {
+        }
+    }
+    class WP_CLI_Test extends \PHPUnit_Framework_TestCase
+    {
+        public function testGetPHPBinary()
+        {
+        }
+        public function testErrorToString()
+        {
+        }
+    }
+    class WPVersionCompareTest extends \PHPUnit_Framework_TestCase
+    {
+        /**
+         * Test basic functionality
+         */
+        public function testBasic()
+        {
+        }
+    }
     class Contrib_List_Command
     {
         /**
@@ -5402,6 +5945,32 @@ namespace WP_CLI\Utils {
      *                  read.
      */
     function get_sql_modes()
+    {
+    }
+}
+namespace {
+    /**
+     * foo
+     */
+    function commandfactorytests_get_doc_comment_func_1_win($function = \blah)
+    {
+    }
+    /**
+     * bar
+     function*/
+    function commandfactorytests_get_doc_comment_func_2_win($function = \blah)
+    {
+    }
+    /**
+     * foo
+     */
+    function commandfactorytests_get_doc_comment_func_1($function = \blah)
+    {
+    }
+    /**
+     * bar
+     function*/
+    function commandfactorytests_get_doc_comment_func_2($function = \blah)
     {
     }
 }
