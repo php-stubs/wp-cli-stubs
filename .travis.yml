@@ -1,0 +1,35 @@
+# https://docs.travis-ci.com/user/reference/overview/#linux
+dist: bionic
+
+language: php
+
+cache:
+  directories:
+    - "$HOME/.composer/cache"
+
+php:
+  # giacocorsiglia/stubs-generator does not support PHP 7.0
+  - "7.1"
+  - "7.2"
+  - "7.3"
+  - "7.4"
+
+before_install:
+  - |
+    phpenv config-rm xdebug.ini
+  - |
+    composer validate --strict
+
+install:
+  - |
+    composer install --no-interaction --no-suggest
+#  - |
+#    composer run-script post-install-cmd
+
+script:
+  - |
+    bash -x ./generate.sh
+  - |
+    git diff --exit-code
+  - |
+    php -r 'require "vendor/php-stubs/wordpress-stubs/wordpress-stubs.php"; require "wp-cli-stubs.php";'
