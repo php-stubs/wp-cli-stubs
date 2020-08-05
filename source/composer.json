@@ -1,34 +1,11 @@
 {
-    "name": "wp-cli/wp-cli-bundle-stubs",
-    "description": "WP-CLI bundle package with default commands.",
+    "name": "wp-cli/wp-cli-bundle",
+    "version": "2.4.0",
     "require": {
-        "php": ">=5.6",
+        "php": "~7.1",
         "ext-curl": "*",
-        "ext-json": "*",
-        "wp-cli/wp-cli-bundle": "^2.4"
+        "ext-gettext": "*",
+        "ext-json": "*"
     },
-    "extra": {
-        "installer-paths": {
-            "{$name}/": [
-                "type:wp-cli-package"
-            ]
-        }
-    },
-    "require-dev": {
-        "roave/security-advisories": "dev-master"
-    },
-    "config": {
-        "platform": {
-            "php": "5.6"
-        },
-        "process-timeout": 7200,
-        "sort-packages": true
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "WP_CLI\\Maintenance\\": "utils/maintenance"
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    "minimum-stability": "stable"
 }

@@ -5,75 +5,37 @@
  * @see https://github.com/php-stubs/wp-cli-stubs
  */
 
-namespace Gettext\Extractors;
-
-interface ExtractorInterface
-{
-    /**
-     * Extract the translations from a file.
-     *
-     * @param array|string $file         A path of a file or files
-     * @param Translations $translations The translations instance to append the new translations.
-     * @param array        $options
-     */
-    public static function fromFile($file, \Gettext\Translations $translations, array $options = []);
-    /**
-     * Parses a string and append the translations found in the Translations instance.
-     *
-     * @param string       $string
-     * @param Translations $translations
-     * @param array        $options
-     */
-    public static function fromString($string, \Gettext\Translations $translations, array $options = []);
-}
-abstract class Extractor implements \Gettext\Extractors\ExtractorInterface
-{
-    /**
-     * {@inheritdoc}
-     */
-    public static function fromFile($file, \Gettext\Translations $translations, array $options = [])
-    {
-    }
-    /**
-     * Checks and returns all files.
-     *
-     * @param string|array $file The file/s
-     *
-     * @return array The file paths
-     */
-    protected static function getFiles($file)
-    {
-    }
-    /**
-     * Reads and returns the content of a file.
-     *
-     * @param string $file
-     *
-     * @return string
-     */
-    protected static function readFile($file)
-    {
-    }
-}
 namespace WP_CLI\I18n;
 
+/**
+ * Provides internationalization tools for WordPress projects.
+ *
+ * ## EXAMPLES
+ *
+ *     # Create a POT file for the WordPress plugin/theme in the current directory
+ *     $ wp i18n make-pot . languages/my-plugin.pot
+ *
+ * @when before_wp_load
+ */
+class CommandNamespace extends \WP_CLI\Dispatcher\CommandNamespace
+{
+}
 trait IterableCodeExtractor
 {
     private static $dir = '';
     /**
      * Extract the translations from a file.
      *
-     * @param array|string $file_or_files A path of a file or files
-     * @param Translations $translations  The translations instance to append the new translations.
+     * @param array|string $file         A path of a file or files
+     * @param Translations $translations The translations instance to append the new translations.
      * @param array        $options      {
      *     Optional. An array of options passed down to static::fromString()
      *
-     *     @type bool  $wpExtractTemplates Extract 'Template Name' headers in theme files. Default 'false'.
-     *     @type array $restrictFileNames  Skip all files which are not included in this array.
+     *     @type bool $wpExtractTemplates Extract 'Template Name' headers in theme files. Default 'false'.
      * }
      * @return null
      */
-    public static function fromFile($file_or_files, \Gettext\Translations $translations, array $options = [])
+    public static function fromFile($file, \Gettext\Translations $translations, array $options = [])
     {
     }
     /**
@@ -133,16 +95,6 @@ trait IterableCodeExtractor
      * @return string Trimmed path.
      */
     private static function trim_leading_slash($path)
-    {
-    }
-}
-final class BlockExtractor extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\ExtractorInterface
-{
-    use \WP_CLI\I18n\IterableCodeExtractor;
-    /**
-     * @inheritdoc
-     */
-    public static function fromString($string, \Gettext\Translations $translations, array $options = [])
     {
     }
 }
@@ -227,6 +179,25 @@ class JedGenerator extends \Gettext\Generators\Jed
 }
 namespace Gettext\Extractors;
 
+interface ExtractorInterface
+{
+    /**
+     * Extract the translations from a file.
+     *
+     * @param array|string $file         A path of a file or files
+     * @param Translations $translations The translations instance to append the new translations.
+     * @param array        $options
+     */
+    public static function fromFile($file, \Gettext\Translations $translations, array $options = []);
+    /**
+     * Parses a string and append the translations found in the Translations instance.
+     *
+     * @param string       $string
+     * @param Translations $translations
+     * @param array        $options
+     */
+    public static function fromString($string, \Gettext\Translations $translations, array $options = []);
+}
 interface ExtractorMultiInterface
 {
     /**
@@ -247,6 +218,35 @@ interface ExtractorMultiInterface
      * @param array $options
      */
     public static function fromFileMultiple($file, array $translations, array $options = []);
+}
+abstract class Extractor implements \Gettext\Extractors\ExtractorInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    public static function fromFile($file, \Gettext\Translations $translations, array $options = [])
+    {
+    }
+    /**
+     * Checks and returns all files.
+     *
+     * @param string|array $file The file/s
+     *
+     * @return array The file paths
+     */
+    protected static function getFiles($file)
+    {
+    }
+    /**
+     * Reads and returns the content of a file.
+     *
+     * @param string $file
+     *
+     * @return string
+     */
+    protected static function readFile($file)
+    {
+    }
 }
 /**
  * Class to get gettext strings from javascript files.
@@ -531,27 +531,6 @@ class MakeJsonCommand extends \WP_CLI_Command
     {
     }
 }
-class MakeMoCommand extends \WP_CLI_Command
-{
-    /**
-     * Create MO files from PO files.
-     *
-     * ## OPTIONS
-     *
-     * <source>
-     * : Path to an existing PO file or a directory containing multiple PO files.
-     *
-     * [<destination>]
-     * : Path to the destination directory for the resulting MO files. Defaults to the source directory.
-     *
-     * @when before_wp_load
-     *
-     * @throws WP_CLI\ExitException
-     */
-    public function __invoke($args, $assoc_args)
-    {
-    }
-}
 class MakePotCommand extends \WP_CLI_Command
 {
     /**
@@ -590,14 +569,6 @@ class MakePotCommand extends \WP_CLI_Command
      * @var bool
      */
     protected $skip_js = false;
-    /**
-     * @var bool
-     */
-    protected $skip_php = false;
-    /**
-     * @var bool
-     */
-    protected $skip_block_json = false;
     /**
      * @var bool
      */
@@ -720,12 +691,6 @@ class MakePotCommand extends \WP_CLI_Command
      *
      * [--skip-js]
      * : Skips JavaScript string extraction. Useful when this is done in another build step, e.g. through Babel.
-     *
-     * [--skip-php]
-     * : Skips PHP string extraction.
-     *
-     * [--skip-block-json]
-     * : Skips string extraction from block.json files.
      *
      * [--skip-audit]
      * : Skips string audit where it tries to find possible mistakes in translatable strings. Useful when running in an
@@ -970,16 +935,13 @@ final class PhpCodeExtractor extends \Gettext\Extractors\PhpCode
         '__' => 'text_domain',
         'esc_attr__' => 'text_domain',
         'esc_html__' => 'text_domain',
-        'esc_xml__' => 'text_domain',
         '_e' => 'text_domain',
         'esc_attr_e' => 'text_domain',
         'esc_html_e' => 'text_domain',
-        'esc_xml_e' => 'text_domain',
         '_x' => 'text_context_domain',
         '_ex' => 'text_context_domain',
         'esc_attr_x' => 'text_context_domain',
         'esc_html_x' => 'text_context_domain',
-        'esc_xml_x' => 'text_context_domain',
         '_n' => 'single_plural_number_domain',
         '_nx' => 'single_plural_number_context_domain',
         '_n_noop' => 'single_plural_domain',

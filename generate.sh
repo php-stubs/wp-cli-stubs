@@ -11,21 +11,14 @@ set -e
 test -f "$FILE"
 test -f "$FILE_PKGS"
 test -f "$FILE_I18N"
+test -d "source/vendor/wp-cli"
 
-# Check wp-cli
-if [ ! -r ./source/vendor/ ]; then
-    cd ./source
-    echo "WP CLI downloading in progress..." 1>&2
-    composer update
-    cd ../
+# Download dependencies
+if [ ! -d vendor ]; then
+    composer update --no-interaction --no-suggest
 fi
 
-# Download Stubs-generator
-if [ ! -r ./vendor/ ]; then
-    composer update
-fi
-
-# Exclude globals.
+# wp-cli/wp-cli
 "$(dirname "$0")/vendor/bin/generate-stubs" \
     --force \
     --finder=finder.php \
@@ -36,7 +29,7 @@ fi
     --traits \
     --out="$FILE"
 
-# Packages.
+# Commands
 "$(dirname "$0")/vendor/bin/generate-stubs" \
     --force \
     --finder=finder-commands.php \
@@ -47,7 +40,7 @@ fi
     --traits \
     --out="$FILE_PKGS"
 
-# Packages.
+# wp-cli/i18n-command
 "$(dirname "$0")/vendor/bin/generate-stubs" \
     --force \
     --finder=finder-i18n.php \
