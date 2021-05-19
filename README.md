@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/php-stubs/wp-cli-stubs.svg?branch=master)](https://travis-ci.com/php-stubs/wp-cli-stubs)
 
 This package provides stub declarations for [WP-CLI](https://wp-cli.org/) functions, classes and interfaces.
-These stubs can help plugin and theme developers leverage static analysis tools like [PHPStan](https://github.com/phpstan/phpstan), which is not able to parse WooCommerce as it is not clean OOP code.
+These stubs can help plugin and theme developers leverage static analysis tools like [PHPStan](https://github.com/phpstan/phpstan), which are unable to parse WP-CLI as it is not clean OOP code.
 
 Stubs are generated directly from the [source](https://wp-cli.org/) using [giacocorsiglia/stubs-generator](https://github.com/GiacoCorsiglia/php-stubs-generator).
 
