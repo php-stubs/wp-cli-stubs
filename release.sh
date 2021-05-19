@@ -2,7 +2,7 @@
 
 set -e
 
-for V in 2.1.0  2.2.0  2.3.0  2.4.0; do
+for V in 2.1.0  2.2.0  2.3.0  2.4.0  2.5.0; do
     echo "Releasing version ${V} ..."
 
     if git rev-parse "refs/tags/v${V}" >/dev/null 2>&1; then
