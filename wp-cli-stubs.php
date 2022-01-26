@@ -440,6 +440,24 @@ namespace WP_CLI\Bootstrap {
         }
     }
     /**
+     * Class InitializeContexts.
+     *
+     * @package WP_CLI\Bootstrap
+     */
+    final class InitializeContexts implements \WP_CLI\Bootstrap\BootstrapStep
+    {
+        /**
+         * Process this single bootstrapping step.
+         *
+         * @param BootstrapState $state Contextual state to pass into the step.
+         *
+         * @return BootstrapState Modified state to pass to the next step.
+         */
+        public function process(\WP_CLI\Bootstrap\BootstrapState $state)
+        {
+        }
+    }
+    /**
      * Class InitializeLogger.
      *
      * Initialize the logger through the `WP_CLI\Runner` object.
@@ -668,18 +686,47 @@ namespace WP_CLI {
     {
         private $words;
         private $opts = [];
+        /**
+         * Instantiate a Completions object.
+         *
+         * @param string $line Line of shell input to compute a completion for.
+         */
         public function __construct($line)
         {
         }
+        /**
+         * Get the specific WP-CLI command that is being referenced.
+         *
+         * @param array $words Individual input line words.
+         *
+         * @return array|mixed Array with command and arguments, or error result if command detection failed.
+         */
         private function get_command($words)
         {
         }
+        /**
+         * Get global parameters.
+         *
+         * @return array Associative array of global parameters.
+         */
         private function get_global_parameters()
         {
         }
+        /**
+         * Store individual option.
+         *
+         * @param string $opt Option to store.
+         *
+         * @return void
+         */
         private function add($opt)
         {
         }
+        /**
+         * Render the stored options.
+         *
+         * @return void
+         */
         public function render()
         {
         }
@@ -830,6 +877,193 @@ namespace WP_CLI {
          * @param string $base Base path to prepend.
          */
         private static function absolutize(&$path, $base)
+        {
+        }
+    }
+    /**
+     * Context that can be selected in order to run commands within a properly
+     * set-up environment.
+     */
+    interface Context
+    {
+        const ADMIN = 'admin';
+        const AUTO = 'auto';
+        const CLI = 'cli';
+        const FRONTEND = 'frontend';
+        /**
+         * Debugging group to use for all context-related debug messages.
+         *
+         * @var string
+         */
+        const DEBUG_GROUP = 'context';
+        /**
+         * Process the context to set up the environment correctly.
+         *
+         * @param array $config Associative array of configuration data.
+         * @return void
+         */
+        public function process($config);
+    }
+}
+namespace WP_CLI\Context {
+    /**
+     * Context which simulates the administrator backend.
+     */
+    final class Admin implements \WP_CLI\Context
+    {
+        /**
+         * Process the context to set up the environment correctly.
+         *
+         * @param array $config Associative array of configuration data.
+         * @return void
+         */
+        public function process($config)
+        {
+        }
+        /**
+         * Ensure the current request is done under a logged-in administrator
+         * account.
+         *
+         * A lot of premium plugins/themes have their custom update routines locked
+         * behind an is_admin() call.
+         *
+         * @return void
+         */
+        private function log_in_as_admin_user()
+        {
+        }
+    }
+    /**
+     * Context which switches to other contexts automatically based on conditions.
+     */
+    final class Auto implements \WP_CLI\Context
+    {
+        /**
+         * Array of commands to intercept.
+         *
+         * @var array<array>
+         */
+        const COMMANDS_TO_RUN_AS_ADMIN = [['plugin'], ['theme']];
+        /**
+         * Context manager instance to use.
+         *
+         * @var ContextManager
+         */
+        private $context_manager;
+        /**
+         * Instantiate an Auto object.
+         *
+         * @param ContextManager $context_manager Context manager instance to use.
+         */
+        public function __construct(\WP_CLI\ContextManager $context_manager)
+        {
+        }
+        /**
+         * Process the context to set up the environment correctly.
+         *
+         * @param array $config Associative array of configuration data.
+         * @return void
+         * @throws WP_CLI\ExitException If an invalid context was deduced.
+         */
+        public function process($config)
+        {
+        }
+        /**
+         * Deduce the best context to run the current command in.
+         *
+         * @return string Context to use.
+         */
+        private function deduce_best_context()
+        {
+        }
+        /**
+         * Check whether the current WP-CLI command is amongst those we want to
+         * run as admin.
+         *
+         * @return bool Whether the current command should be run as admin.
+         */
+        private function is_command_to_run_as_admin()
+        {
+        }
+    }
+    /**
+     * Default WP-CLI context.
+     */
+    final class Cli implements \WP_CLI\Context
+    {
+        /**
+         * Process the context to set up the environment correctly.
+         *
+         * @param array $config Associative array of configuration data.
+         *
+         * @return void
+         */
+        public function process($config)
+        {
+        }
+    }
+    /**
+     * Context which simulates a frontend request.
+     */
+    final class Frontend implements \WP_CLI\Context
+    {
+        /**
+         * Process the context to set up the environment correctly.
+         *
+         * @param array $config Associative array of configuration data.
+         *
+         * @return void
+         */
+        public function process($config)
+        {
+        }
+    }
+}
+namespace WP_CLI {
+    /**
+     * Context manager to register_context and process different contexts that commands can
+     * run within.
+     */
+    final class ContextManager
+    {
+        /**
+         * Associative array of context implementations.
+         *
+         * @var array<string, Context>
+         */
+        private $contexts = [];
+        /**
+         * Store the current context.
+         *
+         * @var string Current context.
+         */
+        private $current_context = \WP_CLI\Context::CLI;
+        /**
+         * Register a context with WP-CLI.
+         *
+         * @param string  $name           Name of the context.
+         * @param Context $implementation Implementation of the context.
+         */
+        public function register_context($name, \WP_CLI\Context $implementation)
+        {
+        }
+        /**
+         * Switch the context in which to run WP-CLI.
+         *
+         * @param array $config Associative array of configuration data.
+         * @return void
+         *
+         * @throws ExitException When an invalid context was requested.
+         */
+        public function switch_context($config)
+        {
+        }
+        /**
+         * Return the current context.
+         *
+         * @return string Current context.
+         */
+        public function get_context()
         {
         }
     }
@@ -1003,10 +1237,12 @@ namespace WP_CLI\Dispatcher {
          * Add a named subcommand to this composite command's
          * set of contained subcommands.
          *
-         * @param string $name Represents how subcommand should be invoked
-         * @param Subcommand|CompositeCommand $command
+         * @param string                      $name     Represents how subcommand should be invoked
+         * @param Subcommand|CompositeCommand $command  Cub-command to add.
+         * @param bool                        $override Optional. Whether to override an existing subcommand of the same
+         *                                              name.
          */
-        public function add_subcommand($name, $command)
+        public function add_subcommand($name, $command, $override = true)
         {
         }
         /**
@@ -2080,7 +2316,7 @@ namespace WP_CLI {
          *
          * @return string The string with all delimeter-separated words capitalized.
          */
-        public static function ucwords($string, $delimiters = " \n\t\r\0\v-")
+        public static function ucwords($string, $delimiters = " \n\t\r\x00\v-")
         {
         }
         /**
@@ -2463,6 +2699,12 @@ namespace WP_CLI\Loggers {
     class Quiet extends \WP_CLI\Loggers\Base
     {
         /**
+         * @param bool $in_color Whether or not to Colorize strings.
+         */
+        public function __construct($in_color = false)
+        {
+        }
+        /**
          * Informational messages aren't logged.
          *
          * @param string $message Message to write.
@@ -2652,29 +2894,37 @@ namespace WP_CLI {
     /**
      * Performs the execution of a command.
      *
-     * @property-read string $global_config_path
-     * @property-read string $project_config_path
-     * @property-read array  $config
-     * @property-read array  $extra_config
-     * @property-read string $alias
-     * @property-read array  $aliases
-     * @property-read array  $arguments
-     * @property-read array  $assoc_args
-     * @property-read array  $runtime_config
-     * @property-read bool   $colorize
-     * @property-read array  $early_invoke
-     * @property-read string $global_config_path_debug
-     * @property-read string $project_config_path_debug
-     * @property-read array  $required_files
+     * @property-read string         $global_config_path
+     * @property-read string         $project_config_path
+     * @property-read array          $config
+     * @property-read array          $extra_config
+     * @property-read ContextManager $context_manager
+     * @property-read string         $alias
+     * @property-read array          $aliases
+     * @property-read array          $arguments
+     * @property-read array          $assoc_args
+     * @property-read array          $runtime_config
+     * @property-read bool           $colorize
+     * @property-read array          $early_invoke
+     * @property-read string         $global_config_path_debug
+     * @property-read string         $project_config_path_debug
+     * @property-read array          $required_files
      *
      * @package WP_CLI
      */
     class Runner
     {
+        /**
+         * List of byte-order marks (BOMs) to detect.
+         *
+         * @var array<string, string>
+         */
+        const BYTE_ORDER_MARKS = ['UTF-8' => "﻿", 'UTF-16 (BE)' => "\xfe\xff", 'UTF-16 (LE)' => "\xff\xfe"];
         private $global_config_path;
         private $project_config_path;
         private $config;
         private $extra_config;
+        private $context_manager;
         private $alias;
         private $aliases;
         private $arguments;
@@ -2686,6 +2936,9 @@ namespace WP_CLI {
         private $project_config_path_debug;
         private $required_files;
         public function __get($key)
+        {
+        }
+        public function register_context_manager(\WP_CLI\ContextManager $context_manager)
         {
         }
         /**
@@ -3130,6 +3383,13 @@ namespace WP_CLI {
         public function bulk_footer()
         {
         }
+        /**
+         * Show error message.
+         *
+         * @param string $error Error message.
+         *
+         * @return void
+         */
         public function error($error)
         {
         }
@@ -3416,9 +3676,17 @@ namespace {
         /**
          * Set the logger instance.
          *
-         * @param object $logger
+         * @param object $logger Logger instance to set.
          */
         public static function set_logger($logger)
+        {
+        }
+        /**
+         * Get the logger instance.
+         *
+         * @return object $logger Logger instance.
+         */
+        public static function get_logger()
         {
         }
         /**
@@ -3525,11 +3793,16 @@ namespace {
          * * `before_invoke:<command>` - Just before a command is invoked.
          * * `after_invoke:<command>` - Just after a command is invoked.
          * * `find_command_to_run_pre` - Just before WP-CLI finds the command to run.
+         * * `before_registering_contexts` (1) - Before the contexts are registered.
          * * `before_wp_load` - Just before the WP load process begins.
          * * `before_wp_config_load` - After wp-config.php has been located.
          * * `after_wp_config_load` - After wp-config.php has been loaded into scope.
          * * `after_wp_load` - Just after the WP load process has completed.
-         * * `before_run_command` - Just before the command is executed.
+         * * `before_run_command` (3) - Just before the command is executed.
+         *
+         * The parentheses behind the hook name denote the number of arguments
+         * being passed into the hook. For such hooks, the callback should return
+         * the first argument again, making them work like a WP filter.
          *
          * WP-CLI commands can create their own hooks with `WP_CLI::do_hook()`.
          *
@@ -3566,12 +3839,13 @@ namespace {
          * @access public
          * @category Registration
          *
-         * @param string $when Identifier for the hook.
-         * @param mixed ... Optional. Arguments that will be passed onto the
-         *                  callback provided by `WP_CLI::add_hook()`.
-         * @return null
+         * @param string $when    Identifier for the hook.
+         * @param mixed  ...$args Optional. Arguments that will be passed onto the
+         *                        callback provided by `WP_CLI::add_hook()`.
+         * @return null|mixed Returns the first optional argument if optional
+         *                    arguments were passed, otherwise returns null.
          */
-        public static function do_hook($when)
+        public static function do_hook($when, ...$args)
         {
         }
         /**
@@ -3653,6 +3927,17 @@ namespace {
          * @return bool True on success, false if deferred, hard error if registration failed.
          */
         public static function add_command($name, $callable, $args = [])
+        {
+        }
+        /**
+         * Merge the sub-commands of two commands into a single command to keep.
+         *
+         * @param CompositeCommand $command_to_keep Command to merge the sub commands into. This is typically one of the
+         *                                          two others.
+         * @param CompositeCommand $old_command     Command that was already registered.
+         * @param CompositeCommand $new_command     New command that is being added.
+         */
+        private static function merge_sub_commands(\WP_CLI\Dispatcher\CompositeCommand $command_to_keep, \WP_CLI\Dispatcher\CompositeCommand $old_command, \WP_CLI\Dispatcher\CompositeCommand $new_command)
         {
         }
         /**

@@ -15,7 +15,7 @@ test -d "source/vendor/wp-cli"
 
 # Download dependencies
 if [ ! -d vendor ]; then
-    composer update --no-interaction --no-suggest
+    composer update --no-interaction
 fi
 
 # wp-cli/wp-cli

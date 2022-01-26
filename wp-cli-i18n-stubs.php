@@ -2284,7 +2284,7 @@ class ParsedFunction
     /**
      * Extracted comments.
      *
-     * @var string[]|null
+     * @var ParsedComment[]|null
      */
     protected $comments;
     /**
@@ -2319,7 +2319,7 @@ class ParsedFunction
     /**
      * Add a comment associated to this function.
      *
-     * @param string $comment
+     * @param ParsedComment $comment
      */
     public function addComment($comment)
     {
@@ -2591,6 +2591,14 @@ final class JsFunctionsScanner extends \Gettext\Utils\JsFunctionsScanner
      */
     private $extract_comments = false;
     /**
+     * Holds a list of source code comments already added to a string.
+     *
+     * Prevents associating the same comment to multiple strings.
+     *
+     * @var Node\Comment[] $comments_cache
+     */
+    private $comments_cache = [];
+    /**
      * Enable extracting comments that start with a tag (if $tag is empty all the comments will be extracted).
      *
      * @param mixed $tag
@@ -2661,8 +2669,16 @@ class MakeJsonCommand extends \WP_CLI_Command
      * [--purge]
      * : Whether to purge the strings that were extracted from the original source file. Defaults to true, use `--no-purge` to skip the removal.
      *
+     * [--update-mo-files]
+     * : Whether MO files should be updated as well after updating PO files.
+     * Only has an effect when used in combination with `--purge`.
+     *
      * [--pretty-print]
      * : Pretty-print resulting JSON files.
+     *
+     * [--use-map=<paths_or_maps>]
+     * : Whether to use a mapping file for the strings, as a JSON value, array to specify multiple.
+     * Each element can either be a string (file path) or object (map).
      *
      * ## EXAMPLES
      *
@@ -2672,6 +2688,15 @@ class MakeJsonCommand extends \WP_CLI_Command
      *     # Create JSON files for my-plugin-de_DE.po and leave the PO file untouched.
      *     $ wp i18n make-json my-plugin-de_DE.po /tmp --no-purge
      *
+     *     # Create JSON files with mapping
+     *     $ wp i18n make-json languages --use-map=build/map.json
+     *
+     *     # Create JSON files with multiple mappings
+     *     $ wp i18n make-json languages '--use-map=["build/map.json","build/map2.json"]'
+     *
+     *     # Create JSON files with object mapping
+     *     $ wp i18n make-json languages '--use-map={"source/index.js":"build/index.js"}'
+     *
      * @when before_wp_load
      *
      * @throws WP_CLI\ExitException
@@ -2680,13 +2705,33 @@ class MakeJsonCommand extends \WP_CLI_Command
     {
     }
     /**
+     * Collect maps from paths, normalize and merge
+     *
+     * @param string|array|bool $paths_or_maps argument. False to do nothing.
+     * @return array|null       Mapping array. Null if no maps specified.
+     */
+    protected function build_map($paths_or_maps)
+    {
+    }
+    /**
      * Splits a single PO file into multiple JSON files.
      *
-     * @param string $source_file Path to the source file.
-     * @param string $destination Path to the destination directory.
-     * @return array List of created JSON files.
+     * @param string     $source_file Path to the source file.
+     * @param string     $destination Path to the destination directory.
+     * @param array|null $map               Source to build file mapping.
+     * @return array     List of created JSON files.
      */
-    protected function make_json($source_file, $destination)
+    protected function make_json($source_file, $destination, $map)
+    {
+    }
+    /**
+     * Takes the references and applies map, if given
+     *
+     * @param array      $references translation references
+     * @param array|null $map file mapping
+     * @return array     mapped references
+     */
+    protected function reference_map($references, $map)
     {
     }
     /**
@@ -2749,9 +2794,13 @@ class MakePotCommand extends \WP_CLI_Command
      */
     protected $merge = [];
     /**
-     * @var Translations
+     * @var Translations[]
      */
-    protected $exceptions;
+    protected $exceptions = [];
+    /**
+     * @var bool
+     */
+    protected $subtract_and_merge;
     /**
      * @var array
      */
@@ -2783,7 +2832,15 @@ class MakePotCommand extends \WP_CLI_Command
     /**
      * @var bool
      */
+    protected $skip_theme_json = false;
+    /**
+     * @var bool
+     */
     protected $skip_audit = false;
+    /**
+     * @var bool
+     */
+    protected $location = true;
     /**
      * @var array
      */
@@ -2878,10 +2935,14 @@ class MakePotCommand extends \WP_CLI_Command
      * If left empty, defaults to the destination POT file. POT file headers will be ignored.
      *
      * [--subtract=<paths>]
-     * : Comma-separated list of POT files whose contents should act as some sort of blacklist for string extraction.
-     * Any string which is found on that blacklist will not be extracted.
+     * : Comma-separated list of POT files whose contents should act as some sort of denylist for string extraction.
+     * Any string which is found on that denylist will not be extracted.
      * This can be useful when you want to create multiple POT files from the same source directory with slightly
      * different content and no duplicate strings between them.
+     *
+     * [--subtract-and-merge]
+     * : Whether source code references and comments from the generated POT file should be instead added to the POT file
+     * used for subtraction. Warning: this modifies the files passed to `--subtract`!
      *
      * [--include=<paths>]
      * : Comma-separated list of files and paths that should be used for string extraction.
@@ -2900,6 +2961,11 @@ class MakePotCommand extends \WP_CLI_Command
      * [--headers=<headers>]
      * : Array in JSON format of custom headers which will be added to the POT file. Defaults to empty array.
      *
+     * [--location]
+     * : Whether to write `#: filename:line` lines.
+     * Defaults to true, use `--no-location` to skip the removal.
+     * Note that disabling this option makes it harder for technically skilled translators to understand each message’s context.
+     *
      * [--skip-js]
      * : Skips JavaScript string extraction. Useful when this is done in another build step, e.g. through Babel.
      *
@@ -2908,6 +2974,9 @@ class MakePotCommand extends \WP_CLI_Command
      *
      * [--skip-block-json]
      * : Skips string extraction from block.json files.
+     *
+     * [--skip-theme-json]
+     * : Skips string extraction from theme.json files.
      *
      * [--skip-audit]
      * : Skips string audit where it tries to find possible mistakes in translatable strings. Useful when running in an
@@ -3177,6 +3246,124 @@ class PotGenerator extends \Gettext\Generators\Po
      * @param string $value  The line to add.
      */
     protected static function addLines(array &$lines, $name, $value)
+    {
+    }
+}
+final class ThemeJsonExtractor extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\ExtractorInterface
+{
+    use \WP_CLI\I18n\IterableCodeExtractor;
+    /**
+     * Source URL from which to download the latest theme-i18n.json file.
+     *
+     * @var string
+     */
+    const THEME_JSON_SOURCE = 'https://develop.svn.wordpress.org/trunk/src/wp-includes/theme-i18n.json';
+    /**
+     * @inheritdoc
+     */
+    public static function fromString($string, \Gettext\Translations $translations, array $options = [])
+    {
+    }
+    /**
+     * Given a remote URL, fetches it remotely and returns its content.
+     *
+     * Returns an empty string in case of error.
+     *
+     * @param string $url URL of the file to fetch.
+     *
+     * @return string Contents of the file.
+     */
+    private static function remote_get($url)
+    {
+    }
+    /**
+     * Returns a data structure to help setting up translations for theme.json data.
+     *
+     * [
+     *     [
+     *         'path'    => [ 'settings', 'color', 'palette' ],
+     *         'key'     => 'key-that-stores-the-string-to-translate',
+     *         'context' => 'translation-context',
+     *     ],
+     *     [
+     *         'path'    => 'etc',
+     *         'key'     => 'etc',
+     *         'context' => 'etc',
+     *     ],
+     * ]
+     *
+     * Ported from the core class `WP_Theme_JSON_Resolver`.
+     *
+     * @return array An array of theme.json fields that are translatable and the keys that are translatable.
+     */
+    private static function get_fields_to_translate()
+    {
+    }
+    /**
+     * Converts a tree as in theme-i18.json file into a linear array
+     * containing metadata to translate a theme.json file.
+     *
+     * For example, given this input:
+     *
+     *     {
+     *       "settings": {
+     *         "*": {
+     *           "typography": {
+     *             "fontSizes": [ { "name": "Font size name" } ],
+     *             "fontStyles": [ { "name": "Font size name" } ]
+     *           }
+     *         }
+     *       }
+     *     }
+     *
+     * will return this output:
+     *
+     *     [
+     *       0 => [
+     *         'path'    => [ 'settings', '*', 'typography', 'fontSizes' ],
+     *         'key'     => 'name',
+     *         'context' => 'Font size name'
+     *       ],
+     *       1 => [
+     *         'path'    => [ 'settings', '*', 'typography', 'fontStyles' ],
+     *         'key'     => 'name',
+     *         'context' => 'Font style name'
+     *       ]
+     *     ]
+     *
+     * Ported from the core class `WP_Theme_JSON_Resolver`.
+     *
+     * @param array $i18n_partial A tree that follows the format of theme-i18n.json.
+     * @param array $current_path Keeps track of the path as we walk down the given tree.
+     * @return array A linear array containing the paths to translate.
+     */
+    private static function extract_paths_to_translate($i18n_partial, $current_path = [])
+    {
+    }
+    /**
+     * Accesses an array in depth based on a path of keys.
+     *
+     * It is the PHP equivalent of JavaScript's `lodash.get()` and mirroring it may help other components
+     * retain some symmetry between client and server implementations.
+     *
+     * Example usage:
+     *
+     *     $array = [
+     *         'a' => [
+     *             'b' => [
+     *                 'c' => 1,
+     *             ],
+     *         ],
+     *     ];
+     *     array_get( $array, [ 'a', 'b', 'c' ] );
+     *
+     * @param array $array   An array from which we want to retrieve some information.
+     * @param array $path    An array of keys describing the path with which to retrieve information.
+     * @param mixed $default The return value if the path does not exist within the array,
+     *                       or if `$array` or `$path` are not arrays.
+     * @return mixed The value from the path specified.
+     */
+    private static function array_get($array, $path, $default = null)
     {
     }
 }

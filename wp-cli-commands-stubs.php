@@ -1087,6 +1087,10 @@ namespace {
          * [--force]
          * : Overwrites existing files, if present.
          *
+         * [--config-file=<path>]
+         * : Specify the file path to the config file to be created. Defaults to the root of the
+         * WordPress installation and the filename "wp-config.php".
+         *
          * [--insecure]
          * : Retry API download without certificate validation if TLS handshake fails. Note: This makes the request vulnerable to a MITM attack.
          *
@@ -1112,7 +1116,22 @@ namespace {
         {
         }
         /**
+         * Gives error when wp-config already exist and try to create it.
+         *
+         * @param string $wp_config_file_name Config file name.
+         * @return void
+         */
+        private function config_file_already_exist_error($wp_config_file_name)
+        {
+        }
+        /**
          * Launches system editor to edit the wp-config.php file.
+         *
+         * ## OPTIONS
+         *
+         * [--config-file=<path>]
+         * : Specify the file path to the config file to be edited. Defaults to the root of the
+         * WordPress installation and the filename "wp-config.php".
          *
          * ## EXAMPLES
          *
@@ -1124,7 +1143,7 @@ namespace {
          *
          * @when before_wp_load
          */
-        public function edit()
+        public function edit($_, $assoc_args)
         {
         }
         /**
@@ -1154,6 +1173,7 @@ namespace {
          *
          * [--format=<format>]
          * : Render output in a particular format.
+         * Dotenv is limited to non-object values.
          * ---
          * default: table
          * options:
@@ -1161,10 +1181,15 @@ namespace {
          *   - csv
          *   - json
          *   - yaml
+         *   - dotenv
          * ---
          *
          * [--strict]
          * : Enforce strict matching when a filter is provided.
+         *
+         * [--config-file=<path>]
+         * : Specify the file path to the config file to be read. Defaults to the root of the
+         * WordPress installation and the filename "wp-config.php".
          *
          * ## EXAMPLES
          *
@@ -1227,13 +1252,19 @@ namespace {
          *
          * [--format=<format>]
          * : Get value in a particular format.
+         * Dotenv is limited to non-object values.
          * ---
          * default: var_export
          * options:
          *   - var_export
          *   - json
          *   - yaml
+         *   - dotenv
          * ---
+         *
+         * [--config-file=<path>]
+         * : Specify the file path to the config file to be read. Defaults to the root of the
+         * WordPress installation and the filename "wp-config.php".
          *
          * ## EXAMPLES
          *
@@ -1249,9 +1280,11 @@ namespace {
         /**
          * Get the array of wp-config.php constants and variables.
          *
+         * @param string $wp_config_path Config file path
+         *
          * @return array
          */
-        private static function get_wp_config_vars()
+        private static function get_wp_config_vars($wp_config_path = '')
         {
         }
         /**
@@ -1275,6 +1308,7 @@ namespace {
          * [--anchor=<anchor>]
          * : Anchor string where additions of new values are anchored around.
          * Defaults to "/* That's all, stop editing!".
+         * The special case "EOF" string uses the end of the file as the anchor.
          *
          * [--placement=<placement>]
          * : Where to place the new values in relation to the anchor string.
@@ -1299,6 +1333,10 @@ namespace {
          *   - variable
          *   - all
          * ---
+         *
+         * [--config-file=<path>]
+         * : Specify the file path to the config file to be modified. Defaults to the root of the
+         * WordPress installation and the filename "wp-config.php".
          *
          * ## EXAMPLES
          *
@@ -1328,6 +1366,10 @@ namespace {
          *   - all
          * ---
          *
+         * [--config-file=<path>]
+         * : Specify the file path to the config file to be modified. Defaults to the root of the
+         * WordPress installation and the filename "wp-config.php".
+         *
          * ## EXAMPLES
          *
          *     # Delete the COOKIE_DOMAIN constant from the wp-config.php file.
@@ -1356,6 +1398,10 @@ namespace {
          *   - all
          * ---
          *
+         * [--config-file=<path>]
+         * : Specify the file path to the config file to be checked. Defaults to the root of the
+         * WordPress installation and the filename "wp-config.php".
+         *
          * ## EXAMPLES
          *
          *     # Check whether the DB_PASSWORD constant exists in the wp-config.php file.
@@ -1376,6 +1422,10 @@ namespace {
          *
          * [--force]
          * : If an unknown key is requested to be shuffled, add it instead of throwing a warning.
+         *
+         * [--config-file=<path>]
+         * : Specify the file path to the config file to be modified. Defaults to the root of the
+         * WordPress installation and the filename "wp-config.php".
          *
          * [--insecure]
          * : Retry API download without certificate validation if TLS handshake fails. Note: This makes the request vulnerable to a MITM attack.
@@ -1420,20 +1470,20 @@ namespace {
         /**
          * Prints the value of a constant or variable defined in the wp-config.php file.
          *
-         * If the constant or variable is not defined in the wp-config.php file then an error will be returned.
+         * If the constant or variable is not defined in the wp-config file then an error will be returned.
          *
          * @param string $name
          * @param string $type
-         * @param array $values
-         *
+         * @param string $type
+         * @param string $wp_config_file_name Config file name
          * @return string The value of the requested constant or variable as defined in the wp-config.php file; if the
          *                requested constant or variable is not defined then the function will print an error and exit.
          */
-        private function return_value($name, $type, $values)
+        private function return_value($name, $type, $values, $wp_config_file_name)
         {
         }
         /**
-         * Generates a unique key/salt for the wp-config.php file.
+         * Generates a unique key/salt for the wp-config file.
          *
          * @throws Exception
          *
@@ -1457,9 +1507,19 @@ namespace {
         /**
          * Gets the path to the wp-config.php file or gives a helpful error if none found.
          *
+         * @param array $assoc_args associative arguments given while calling wp config subcommand
          * @return string Path to wp-config.php file.
          */
-        private function get_config_path()
+        private function get_config_path($assoc_args)
+        {
+        }
+        /**
+         * Gives error the wp-config file not found
+         *
+         * @param string $wp_config_file_name Config file name.
+         * @return void
+         */
+        private function config_file_not_found_error($wp_config_file_name)
         {
         }
         /**
@@ -1475,6 +1535,24 @@ namespace {
          * @return mixed Parsed separator string.
          */
         private function parse_separator($separator)
+        {
+        }
+        /**
+         * Writes a provided variable's key and value to stdout, in dotenv format.
+         *
+         * @param array $value
+         */
+        private function print_dotenv(array $value)
+        {
+        }
+        /**
+         * Escape a config value so it can be safely used within single quotes.
+         *
+         * @param string $key   Key into the arguments array.
+         * @param mixed  $value Value to escape.
+         * @return mixed Escaped value.
+         */
+        private function escape_config_value($key, $value)
         {
         }
     }
@@ -2011,11 +2089,11 @@ namespace WP_CLI\Core {
          *
          * @param string $package          The URI of the package. If this is the full path to an
          *                                 existing local file, it will be returned untouched.
-         * @param bool   $check_signatures Whether to validate file signatures. Default true.
+         * @param bool   $check_signatures Whether to validate file signatures. Default false.
          * @param array  $hook_extra       Extra arguments to pass to the filter hooks. Default empty array.
          * @return string|WP_Error The full path to the downloaded package file, or a WP_Error object.
          */
-        public function download_package($package, $check_signatures = true, $hook_extra = [])
+        public function download_package($package, $check_signatures = false, $hook_extra = [])
         {
         }
         /**
@@ -2465,6 +2543,18 @@ namespace {
     class DB_Command extends \WP_CLI_Command
     {
         /**
+         * Legacy UTF-8 encoding for MySQL.
+         *
+         * @var string
+         */
+        const ENCODING_UTF8 = 'utf8';
+        /**
+         * Standards-compliant UTF-8 encoding for MySQL.
+         *
+         * @var string
+         */
+        const ENCODING_UTF8MB4 = 'utf8mb4';
+        /**
          * A list of incompatible SQL modes.
          *
          * Copied over from WordPress Core code.
@@ -2487,6 +2577,9 @@ namespace {
          *
          * [--dbpass=<value>]
          * : Password to pass to mysql. Defaults to DB_PASSWORD.
+         *
+         * [--defaults]
+         * : Loads the environment's MySQL option files. Default behavior is to skip loading them to avoid failures due to misconfiguration.
          *
          * ## EXAMPLES
          *
@@ -2514,6 +2607,9 @@ namespace {
          * [--yes]
          * : Answer yes to the confirmation message.
          *
+         * [--defaults]
+         * : Loads the environment's MySQL option files. Default behavior is to skip loading them to avoid failures due to misconfiguration.
+         *
          * ## EXAMPLES
          *
          *     $ wp db drop --yes
@@ -2540,6 +2636,9 @@ namespace {
          * [--yes]
          * : Answer yes to the confirmation message.
          *
+         * [--defaults]
+         * : Loads the environment's MySQL option files. Default behavior is to skip loading them to avoid failures due to misconfiguration.
+         *
          * ## EXAMPLES
          *
          *     $ wp db reset --yes
@@ -2564,6 +2663,9 @@ namespace {
          *
          * [--yes]
          * : Answer yes to the confirmation message.
+         *
+         * [--defaults]
+         * : Loads the environment's MySQL option files. Default behavior is to skip loading them to avoid failures due to misconfiguration.
          *
          * ## EXAMPLES
          *
@@ -2851,6 +2953,15 @@ namespace {
         {
         }
         /**
+         * Get the current character set of the posts table.
+         *
+         * @param array Associative array of associative arguments.
+         * @return string Posts table character set.
+         */
+        private function get_posts_table_charset($assoc_args)
+        {
+        }
+        /**
          * Imports a database from a file or from STDIN.
          *
          * Runs SQL queries using `DB_HOST`, `DB_NAME`, `DB_USER` and
@@ -3006,6 +3117,9 @@ namespace {
          *
          * [--network]
          * : List all the tables in a multisite install.
+         *
+         * [--decimals=<decimals>]
+         * : Number of digits after decimal point. Defaults to 0.
          *
          * [--all-tables-with-prefix]
          * : List all tables that match the table prefix even if not registered on $wpdb. Overrides --network.
@@ -3176,13 +3290,13 @@ namespace {
          *     wp_options:option_value
          *     1:http://wordpress-develop.dev
          *     wp_options:option_value
-         *     1:http://example.com/foo
+         *     1:https://example.com/foo
          *         ...
          *
          *     # Search through a multisite database on the subsite 'foo' for the 'example.com' string
          *     $ wp db search example.com --url=example.com/foo
          *     wp_2_comments:comment_author_url
-         *     1:http://example.com/
+         *     1:https://example.com/
          *     wp_2_options:option_value
          *         ...
          *
@@ -3213,7 +3327,7 @@ namespace {
          *
          * ## OPTIONS
          *
-         * [<table>]
+         * <table>
          * : Name of the database table.
          *
          * [--format]
@@ -5138,6 +5252,19 @@ namespace {
         private function add_or_update_item($method, $type, $args, $assoc_args)
         {
         }
+        /**
+         * Move block of items in one nav_menu up or down by incrementing/decrementing their menu_order field.
+         * Expects the menu items to have proper menu_orders (i.e. doesn't fix errors from previous incorrect operations).
+         *
+         * @param int $menu_id ID of the nav_menu
+         * @param int $min_position minimal menu_order to touch
+         * @param int $increment how much to change menu_order: +1 to move down, -1 to move up
+         * @param int $ignore_item_id menu item that should be ignored by the change (e.g. newly created menu item)
+         * @return int number of rows affected
+         */
+        private function reorder_menu_items($menu_id, $min_position, $increment, $ignore_item_id = 0)
+        {
+        }
         protected function get_formatter(&$assoc_args)
         {
         }
@@ -5895,6 +6022,16 @@ namespace {
          *     # Update a post with multiple meta values.
          *     $ wp post update 123 --meta_input='{"key1":"value1","key2":"value2"}'
          *     Success: Updated post 123.
+         *
+         *     # Update multiple posts at once.
+         *     $ wp post update 123 456 --post_author=789
+         *     Success: Updated post 123.
+         *     Success: Updated post 456.
+         *
+         *     # Update all posts of a given post type at once.
+         *     $ wp post update $(wp post list --post_type=page --format=ids) --post_author=123
+         *     Success: Updated post 123.
+         *     Success: Updated post 456.
          */
         public function update($args, $assoc_args)
         {
@@ -5998,8 +6135,8 @@ namespace {
         /**
          * Gets a list of posts.
          *
-         * Display posts based on all arguments supported by
-         * [WP_Query()](https://developer.wordpress.org/reference/classes/wp_query/).
+         * Display posts based on all arguments supported by [WP_Query()](https://developer.wordpress.org/reference/classes/wp_query/).
+         * Only shows post types marked as post by default.
          *
          * ## OPTIONS
          *
@@ -6091,6 +6228,14 @@ namespace {
          *     | 3  | Lorem Ipsum  | lorem-ipsum | 2016-06-01 14:34:36 | publish     |
          *     | 1  | Hello world! | hello-world | 2016-06-01 14:31:12 | publish     |
          *     +----+--------------+-------------+---------------------+-------------+
+         *
+         *     # List given post by a specific author
+         *     $ wp post list --author=2
+         *     +----+-------------------+-------------------+---------------------+-------------+
+         *     | ID | post_title        | post_name         | post_date           | post_status |
+         *     +----+-------------------+-------------------+---------------------+-------------+
+         *     | 14 | New documentation | new-documentation | 2021-06-18 21:05:11 | publish     |
+         *     +----+-------------------+-------------------+---------------------+-------------+
          *
          * @subcommand list
          */
@@ -6247,7 +6392,7 @@ namespace {
          * ## EXAMPLES
          *
          *     # The post exists.
-         *     $ wp post exists 1
+         *     $ wp post exists 1337
          *     Success: Post with ID 1337 exists.
          *     $ echo $?
          *     0
@@ -6890,7 +7035,7 @@ namespace {
          * : Title of the new site. Default: prettified slug.
          *
          * [--email=<email>]
-         * : Email for Admin user. User will be created if none exists. Assignement to Super Admin if not included.
+         * : Email for admin user. User will be created if none exists. Assignment to super admin if not included.
          *
          * [--network_id=<network-id>]
          * : Network to associate new site with. Defaults to current network (typically 1).
@@ -8179,6 +8324,348 @@ namespace {
          * @return bool True on successful delete, false on failure.
          */
         protected function delete_metadata($object_id, $meta_key, $meta_value = '')
+        {
+        }
+    }
+    /**
+     * Creates, updates, deletes, lists and retrieves application passwords.
+     *
+     * ## EXAMPLES
+     *
+     *     # List user application passwords and only show app name and password hash
+     *     $ wp user application-passwords list 123 --fields=name,password
+     *     +--------+------------------------------------+
+     *     | name   | password                           |
+     *     +--------+------------------------------------+
+     *     | myapp  | $P$BVGeou1CUot114YohIemgpwxQCzb8O/ |
+     *     +--------+------------------------------------+
+     *
+     *     # Get a specific application password and only show app name and created timestamp
+     *     $ wp user application-passwords get 123 6633824d-c1d7-4f79-9dd5-4586f734d69e --fields=name,created
+     *     +--------+------------+
+     *     | name   | created    |
+     *     +--------+------------+
+     *     | myapp  | 1638395611 |
+     *     +--------+------------+
+     *
+     *     # Create user application password
+     *     $ wp user application-passwords create 123 myapp
+     *     Success: Created application password.
+     *     Password: ZG1bxdxdzjTwhsY8vK8l1C65
+     *
+     *     # Only print the password without any chrome
+     *     $ wp user application-passwords create 123 myapp --porcelain
+     *     ZG1bxdxdzjTwhsY8vK8l1C65
+     *
+     *     # Update an existing application password
+     *     $ wp user application-passwords update 123 6633824d-c1d7-4f79-9dd5-4586f734d69e --name=newappname
+     *     Success: Updated application password.
+     *
+     *     # Check if an application password for a given application exists
+     *     $ wp user application-passwords exists 123 myapp
+     *     $ echo $?
+     *     1
+     *
+     *     # Bash script for checking whether an application password exists and creating one if not
+     *     if ! wp user application-password exists 123 myapp; then
+     *         PASSWORD=$(wp user application-password create 123 myapp --porcelain)
+     *     fi
+     */
+    final class User_Application_Password_Command
+    {
+        /**
+         * List of application password fields.
+         *
+         * @var array<string>
+         */
+        const APPLICATION_PASSWORD_FIELDS = ['uuid', 'app_id', 'name', 'password', 'created', 'last_used', 'last_ip'];
+        /**
+         * Lists all application passwords associated with a user.
+         *
+         * ## OPTIONS
+         *
+         * <user>
+         * : The user login, user email, or user ID of the user to get application passwords for.
+         *
+         * [--<field>=<value>]
+         * : Filter the list by a specific field.
+         *
+         * [--field=<field>]
+         * : Prints the value of a single field for each application password.
+         *
+         * [--fields=<fields>]
+         * : Limit the output to specific fields.
+         *
+         * [--format=<format>]
+         * : Render output in a particular format.
+         * ---
+         * default: table
+         * options:
+         *   - table
+         *   - csv
+         *   - json
+         *   - count
+         *   - yaml
+         * ---
+         *
+         * [--orderby=<fields>]
+         * : Set orderby which field.
+         * ---
+         * default: created
+         * options:
+         *  - uuid
+         *  - app_id
+         *  - name
+         *  - password
+         *  - created
+         *  - last_used
+         *  - last_ip
+         * ---
+         *
+         * [--order=<order>]
+         * : Set ascending or descending order.
+         * ---
+         * default: desc
+         * options:
+         *  - asc
+         *  - desc
+         * ---
+         *
+         * ## EXAMPLES
+         *
+         *     # List user application passwords and only show app name and password hash
+         *     $ wp user application-passwords list 123 --fields=name,password
+         *     +--------+------------------------------------+
+         *     | name   | password                           |
+         *     +--------+------------------------------------+
+         *     | myapp  | $P$BVGeou1CUot114YohIemgpwxQCzb8O/ |
+         *     +--------+------------------------------------+
+         *
+         * @subcommand list
+         *
+         * @param array $args       Indexed array of positional arguments.
+         * @param array $assoc_args Associative array of associative arguments.
+         * @throws ExitException If the user could not be found/parsed.
+         * @throws ExitException If the application passwords could not be retrieved.
+         */
+        public function list_($args, $assoc_args)
+        {
+        }
+        /**
+         * Gets a specific application password.
+         *
+         * ## OPTIONS
+         *
+         * <user>
+         * : The user login, user email, or user ID of the user to get the application password for.
+         *
+         * <uuid>
+         * : The universally unique ID of the application password.
+         *
+         * [--field=<field>]
+         * : Prints the value of a single field for the application password.
+         *
+         * [--fields=<fields>]
+         * : Limit the output to specific fields.
+         *
+         * [--format=<format>]
+         * : Render output in a particular format.
+         * ---
+         * default: table
+         * options:
+         *   - table
+         *   - csv
+         *   - json
+         *   - yaml
+         * ---
+         *
+         * ## EXAMPLES
+         *
+         *     # Get a specific application password and only show app name and created timestamp
+         *     $ wp user application-passwords get 123 6633824d-c1d7-4f79-9dd5-4586f734d69e --fields=name,created
+         *     +--------+------------+
+         *     | name   | created    |
+         *     +--------+------------+
+         *     | myapp  | 1638395611 |
+         *     +--------+------------+
+         *
+         * @param array $args       Indexed array of positional arguments.
+         * @param array $assoc_args Associative array of associative arguments.
+         * @throws ExitException If the application passwords could not be retrieved.
+         */
+        public function get($args, $assoc_args)
+        {
+        }
+        /**
+         * Creates a new application password.
+         *
+         * ## OPTIONS
+         *
+         * <user>
+         * : The user login, user email, or user ID of the user to create a new application password for.
+         *
+         * <app-name>
+         * : Unique name of the application to create an application password for.
+         *
+         * [--app-id=<app-id>]
+         * : Application ID to attribute to the application password.
+         *
+         * [--porcelain]
+         * : Output just the new password.
+         *
+         * ## EXAMPLES
+         *
+         *     # Create user application password
+         *     $ wp user application-passwords create 123 myapp
+         *     Success: Created application password.
+         *     Password: ZG1bxdxdzjTwhsY8vK8l1C65
+         *
+         *     # Only print the password without any chrome
+         *     $ wp user application-passwords create 123 myapp --porcelain
+         *     ZG1bxdxdzjTwhsY8vK8l1C65
+         *
+         *     # Create user application with a custom application ID for internal tracking
+         *     $ wp user application-passwords create 123 myapp --app-id=42 --porcelain
+         *     ZG1bxdxdzjTwhsY8vK8l1C65
+         *
+         * @param array $args       Indexed array of positional arguments.
+         * @param array $assoc_args Associative array of associative arguments.
+         * @throws ExitException If the application password could not be created.
+         */
+        public function create($args, $assoc_args)
+        {
+        }
+        /**
+         * Updates an existing application password.
+         *
+         * ## OPTIONS
+         *
+         * <user>
+         * : The user login, user email, or user ID of the user to update the application password for.
+         *
+         * <uuid>
+         * : The universally unique ID of the application password.
+         *
+         * [--<field>=<value>]
+         * : Update the <field> with a new <value>. Currently supported fields: name.
+         *
+         * ## EXAMPLES
+         *
+         *     # Update an existing application password
+         *     $ wp user application-passwords update 123 6633824d-c1d7-4f79-9dd5-4586f734d69e --name=newappname
+         *     Success: Updated application password.
+         *
+         * @param array $args       Indexed array of positional arguments.
+         * @param array $assoc_args Associative array of associative arguments.
+         * @throws ExitException If the application password could not be created.
+         */
+        public function update($args, $assoc_args)
+        {
+        }
+        /**
+         * Record usage of an application password.
+         *
+         * ## OPTIONS
+         *
+         * <user>
+         * : The user login, user email, or user ID of the user to update the application password for.
+         *
+         * <uuid>
+         * : The universally unique ID of the application password.
+         *
+         * ## EXAMPLES
+         *
+         *     # Record usage of an application password
+         *     $ wp user application-passwords record-usage 123 6633824d-c1d7-4f79-9dd5-4586f734d69e
+         *     Success: Recorded application password usage.
+         *
+         * @subcommand record-usage
+         *
+         * @param array $args       Indexed array of positional arguments.
+         * @param array $assoc_args Associative array of associative arguments.
+         * @throws ExitException If the application password could not be created.
+         */
+        public function record_usage($args, $assoc_args)
+        {
+        }
+        /**
+         * Delete an existing application password.
+         *
+         * ## OPTIONS
+         *
+         * <user>
+         * : The user login, user email, or user ID of the user to delete the application password for.
+         *
+         * [<uuid>...]
+         * : Comma-separated list of UUIDs of the application passwords to delete.
+         *
+         * [--all]
+         * : Delete all of the user's application password.
+         *
+         * ## EXAMPLES
+         *
+         *     # Record usage of an application password
+         *     $ wp user application-passwords record-usage 123 6633824d-c1d7-4f79-9dd5-4586f734d69e
+         *     Success: Recorded application password usage.
+         *
+         * @param array $args       Indexed array of positional arguments.
+         * @param array $assoc_args Associative array of associative arguments.
+         * @throws ExitException If the application password could not be created.
+         */
+        public function delete($args, $assoc_args)
+        {
+        }
+        /**
+         * Checks whether an application password for a given application exists.
+         *
+         * ## OPTIONS
+         *
+         * <user>
+         * : The user login, user email, or user ID of the user to check the existence of an application password for.
+         *
+         * <app-name>
+         * : Name of the application to check the existence of an application password for.
+         *
+         * ## EXAMPLES
+         *
+         *     # Check if an application password for a given application exists
+         *     $ wp user application-passwords exists 123 myapp
+         *     $ echo $?
+         *     1
+         *
+         *     # Bash script for checking whether an application password exists and creating one if not
+         *     if ! wp user application-password exists 123 myapp; then
+         *         PASSWORD=$(wp user application-password create 123 myapp --porcelain)
+         *     fi
+         *
+         * @param array $args       Indexed array of positional arguments.
+         * @param array $assoc_args Associative array of associative arguments.
+         * @throws ExitException If the application password could not be created.
+         */
+        public function exists($args, $assoc_args)
+        {
+        }
+        /**
+         * Replaces user_login value with user ID.
+         *
+         * @param array $args Associative array of arguments.
+         * @return array Associative array of arguments with the user login replaced with an ID.
+         * @throws ExitException If the user is not found.
+         */
+        private function replace_login_with_user_id($args)
+        {
+        }
+        /**
+         * Checks if application name exists for the given user.
+         *
+         * This is a polyfill for WP_Application_Passwords::get_user_application_passwords(), which was only added for
+         * WordPress 5.7+, but we're already supporting application passwords for WordPress 5.6+.
+         *
+         * @param int    $user_id  User ID to check the application passwords for.
+         * @param string $app_name Application name to look for.
+         * @return bool
+         */
+        private function application_name_exists_for_user($user_id, $app_name)
         {
         }
     }
@@ -9589,7 +10076,7 @@ namespace {
          * [--author=<author>]
          * : Export only posts by this author. Can be either user login or user ID.
          *
-         * [--category=<name>]
+         * [--category=<name|id>]
          * : Export only posts in this category.
          *
          * [--post_status=<status>]
@@ -10015,12 +10502,12 @@ namespace {
      * ## EXAMPLES
      *
      *     # Enable the auto-updates for a plugin
-     *     $ wp plugin auto-updates enable activate hello
+     *     $ wp plugin auto-updates enable hello
      *     Plugin auto-updates for 'hello' enabled.
      *     Success: Enabled 1 of 1 plugin auto-updates.
      *
      *     # Disable the auto-updates for a plugin
-     *     $ wp plugin auto-updates disable activate hello
+     *     $ wp plugin auto-updates disable hello
      *     Plugin auto-updates for 'hello' disabled.
      *     Success: Disabled 1 of 1 plugin auto-updates.
      *
@@ -10069,7 +10556,7 @@ namespace {
          * ## EXAMPLES
          *
          *     # Enable the auto-updates for a plugin
-         *     $ wp plugin auto-updates enable activate hello
+         *     $ wp plugin auto-updates enable hello
          *     Plugin auto-updates for 'hello' enabled.
          *     Success: Enabled 1 of 1 plugin auto-updates.
          */
@@ -10094,7 +10581,7 @@ namespace {
          * ## EXAMPLES
          *
          *     # Disable the auto-updates for a plugin
-         *     $ wp plugin auto-updates disable activate hello
+         *     $ wp plugin auto-updates disable hello
          *     Plugin auto-updates for 'hello' disabled.
          *     Success: Disabled 1 of 1 plugin auto-updates.
          */
@@ -10918,6 +11405,9 @@ namespace {
          *   - must-use
          * ---
          *
+         * [--skip-update-check]
+         * : If set, the plugin update check will be skipped.
+         *
          * ## AVAILABLE FIELDS
          *
          * These fields will be displayed by default for each plugin:
@@ -11066,12 +11556,12 @@ namespace {
      * ## EXAMPLES
      *
      *     # Enable the auto-updates for a theme
-     *     $ wp theme auto-updates enable activate twentysixteen
+     *     $ wp theme auto-updates enable twentysixteen
      *     Theme auto-updates for 'twentysixteen' enabled.
      *     Success: Enabled 1 of 1 theme auto-updates.
      *
      *     # Disable the auto-updates for a theme
-     *     $ wp theme auto-updates disable activate twentysixteen
+     *     $ wp theme auto-updates disable twentysixteen
      *     Theme auto-updates for 'twentysixteen' disabled.
      *     Success: Disabled 1 of 1 theme auto-updates.
      *
@@ -11120,7 +11610,7 @@ namespace {
          * ## EXAMPLES
          *
          *     # Enable the auto-updates for a theme
-         *     $ wp theme auto-updates enable activate twentysixteen
+         *     $ wp theme auto-updates enable twentysixteen
          *     Theme auto-updates for 'twentysixteen' enabled.
          *     Success: Enabled 1 of 1 theme auto-updates.
          */
@@ -11145,7 +11635,7 @@ namespace {
          * ## EXAMPLES
          *
          *     # Disable the auto-updates for a theme
-         *     $ wp theme auto-updates disable activate twentysixteen
+         *     $ wp theme auto-updates disable twentysixteen
          *     Theme auto-updates for 'twentysixteen' disabled.
          *     Success: Disabled 1 of 1 theme auto-updates.
          */
@@ -11723,6 +12213,9 @@ namespace {
          *   - parent
          *   - inactive
          * ---
+         *
+         * [--skip-update-check]
+         * : If set, the theme update check will be skipped.
          *
          * ## AVAILABLE FIELDS
          *
@@ -13250,11 +13743,11 @@ namespace {
         }
         // Like WP's get_intermediate_image_sizes(), but removes sizes that won't be generated for a particular attachment due to its being on or below their thresholds,
         // and returns associative array with size name => width/height entries, resolved to crop values if applicable.
-        private function get_intermediate_image_sizes_for_attachment($fullsizepath, $is_pdf, $metadata)
+        private function get_intermediate_image_sizes_for_attachment($fullsizepath, $is_pdf, $metadata, $att_id)
         {
         }
         // Like WP's get_intermediate_image_sizes(), but returns associative array with name => size info entries (and caters for PDFs also).
-        private function get_intermediate_sizes($is_pdf, $metadata)
+        private function get_intermediate_sizes($is_pdf, $metadata, $att_id)
         {
         }
         // Add filters to only process a particular intermediate image size in wp_generate_attachment_metadata().
@@ -13400,15 +13893,15 @@ namespace {
      *
      *     # List installed packages
      *     $ wp package list
-     *     +-----------------------+------------------------------------------+---------+------------+
-     *     | name                  | description                              | authors | version    |
-     *     +-----------------------+------------------------------------------+---------+------------+
-     *     | wp-cli/server-command | Start a development server for WordPress |         | dev-master |
-     *     +-----------------------+------------------------------------------+---------+------------+
+     *     +-----------------------+------------------------------------------+---------+----------+
+     *     | name                  | description                              | authors | version  |
+     *     +-----------------------+------------------------------------------+---------+----------+
+     *     | wp-cli/server-command | Start a development server for WordPress |         | dev-main |
+     *     +-----------------------+------------------------------------------+---------+----------+
      *
      *     # Install the latest development version of the package
      *     $ wp package install wp-cli/server-command
-     *     Installing package wp-cli/server-command (dev-master)
+     *     Installing package wp-cli/server-command (dev-main)
      *     Updating /home/person/.wp-cli/packages/composer.json to require the package...
      *     Using Composer to install the package...
      *     ---
@@ -13439,6 +13932,7 @@ namespace {
     {
         const PACKAGE_INDEX_URL = 'https://wp-cli.org/package-index/';
         const SSL_CERTIFICATE = '/rmccue/requests/library/Requests/Transport/cacert.pem';
+        const DEFAULT_DEV_BRANCH_CONSTRAINTS = 'dev-main || dev-master || dev-trunk';
         private $version_selector = \false;
         /**
          * Default author data used while creating default WP-CLI packages composer.json.
@@ -13495,17 +13989,17 @@ namespace {
          *       name: 10up/mu-migration
          *       description: A set of WP-CLI commands to support the migration of single WordPress instances to multisite
          *       authors: Nícholas André
-         *       version: dev-master, dev-develop
+         *       version: dev-main, dev-develop
          *     aaemnnosttv/wp-cli-dotenv-command:
          *       name: aaemnnosttv/wp-cli-dotenv-command
          *       description: Dotenv commands for WP-CLI
          *       authors: Evan Mattson
-         *       version: v0.1, v0.1-beta.1, v0.2, dev-master, dev-dev, dev-develop, dev-tests/behat
+         *       version: v0.1, v0.1-beta.1, v0.2, dev-main, dev-dev, dev-develop, dev-tests/behat
          *     aaemnnosttv/wp-cli-http-command:
          *       name: aaemnnosttv/wp-cli-http-command
          *       description: WP-CLI command for using the WordPress HTTP API
          *       authors: Evan Mattson
-         *       version: dev-master
+         *       version: dev-main
          */
         public function browse($_, $assoc_args)
         {
@@ -13595,11 +14089,11 @@ namespace {
          * ## EXAMPLES
          *
          *     $ wp package list
-         *     +-----------------------+------------------------------------------+---------+------------+
-         *     | name                  | description                              | authors | version    |
-         *     +-----------------------+------------------------------------------+---------+------------+
-         *     | wp-cli/server-command | Start a development server for WordPress |         | dev-master |
-         *     +-----------------------+------------------------------------------+---------+------------+
+         *     +-----------------------+------------------------------------------+---------+----------+
+         *     | name                  | description                              | authors | version  |
+         *     +-----------------------+------------------------------------------+---------+----------+
+         *     | wp-cli/server-command | Start a development server for WordPress |         | dev-main |
+         *     +-----------------------+------------------------------------------+---------+----------+
          *
          * @subcommand list
          */
@@ -13659,6 +14153,9 @@ namespace {
          * <name>
          * : Name of the package to uninstall.
          *
+         * [--insecure]
+         * : Retry downloads without certificate validation if TLS handshake fails. Note: This makes the request vulnerable to a MITM attack.
+         *
          * ## EXAMPLES
          *
          *     $ wp package uninstall wp-cli/server-command
@@ -13667,7 +14164,7 @@ namespace {
          *     Regenerating Composer autoload.
          *     Success: Uninstalled package.
          */
-        public function uninstall($args)
+        public function uninstall($args, $assoc_args)
         {
         }
         /**
@@ -13724,7 +14221,8 @@ namespace {
          * and then falls back to the corresponding GitHub URL.
          *
          * @param string $package_name Name of the package to get.
-         * @param bool   $insecure Whether to insecurely retry downloads that failed TLS handshake.
+         * @param bool   $insecure     Optional. Whether to insecurely retry downloads that failed TLS handshake. Defaults
+         *                             to false.
          */
         private function get_package_by_shortened_identifier($package_name, $insecure = \false)
         {
@@ -13813,8 +14311,9 @@ namespace {
          * Checks that `$package_name` matches the name in composer.json at Github.com, and return corrected value if not.
          *
          * @param string $package_name Package name to check.
-         * @param string $version      Optional. Package version. Default 'master'.
-         * @param bool   $insecure     Optional. Whether to insecurely retry downloads that failed TLS handshake.
+         * @param string $version      Optional. Package version. Defaults to empty string.
+         * @param bool   $insecure     Optional. Whether to insecurely retry downloads that failed TLS handshake. Defaults
+         *                             to false.
          */
         private function check_github_package_name($package_name, $version = '', $insecure = \false)
         {
@@ -13823,9 +14322,10 @@ namespace {
          * Checks that `$package_name` matches the name in composer.json at the corresponding upstream repository, and return corrected value if not.
          *
          * @param string $package_name Package name to check.
-         * @param string $urrl         URL to fetch the package from.
-         * @param string $version      Optional. Package version. Default 'master'.
-         * @param bool   $insecure     Optional. Whether to insecurely retry downloads that failed TLS handshake.
+         * @param string $url          URL to fetch the package from.
+         * @param string $version      Optional. Package version. Defaults to empty string.
+         * @param bool   $insecure     Optional. Whether to insecurely retry downloads that failed TLS handshake. Defaults
+         *                             to false.
          */
         private function check_git_package_name($package_name, $url = '', $version = '', $insecure = \false)
         {
@@ -13834,17 +14334,18 @@ namespace {
          * Checks that `$package_name` matches the name in composer.json at GitLab.com, and return corrected value if not.
          *
          * @param string $package_name Package name to check.
-         * @param string $version      Optional. Package version. Default 'master'.
-         * @param bool   $insecure     Optional. Whether to insecurely retry downloads that failed TLS handshake.
+         * @param string $version      Optional. Package version. Defaults to empty string.
+         * @param bool   $insecure     Optional. Whether to insecurely retry downloads that failed TLS handshake. Defaults
+         *                             to false.
          */
         private function check_gitlab_package_name($package_name, $version = '', $insecure = \false)
         {
         }
         /**
-         * Get the version to use for raw github request. Very basic.
+         * Get the version to use for raw GitHub request. Very basic.
          *
          * @string $version Package version.
-         * @string Version to use for github request.
+         * @string Version to use for GitHub request.
          */
         private function get_raw_git_version($version)
         {
@@ -13908,6 +14409,17 @@ namespace {
          * @return bool
          */
         private function is_composer_v2()
+        {
+        }
+        /**
+         * Try to retrieve default branch via GitHub API.
+         *
+         * @param string $package_name GitHub package name to retrieve the default branch from.
+         * @param bool   $insecure     Optional. Whether to insecurely retry downloads that failed TLS handshake. Defaults
+         *                             to false.
+         * @return string Default branch, or 'master' if it could not be retrieved.
+         */
+        private function get_github_default_branch($package_name, $insecure = \false)
         {
         }
     }
@@ -15075,6 +15587,7 @@ namespace {
         private $include_columns;
         private $format;
         private $report;
+        private $verbose;
         private $report_changed_only;
         private $log_handle = \null;
         private $log_before_context = 40;
@@ -15536,7 +16049,7 @@ namespace {
      */
     class Super_Admin_Command extends \WP_CLI_Command
     {
-        private $fields = array('user_login');
+        private $fields = ['user_login'];
         public function __construct()
         {
         }
