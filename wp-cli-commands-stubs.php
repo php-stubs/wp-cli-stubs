@@ -1657,6 +1657,9 @@ namespace {
          * [--insecure]
          * : Retry download without certificate validation if TLS handshake fails. Note: This makes the request vulnerable to a MITM attack.
          *
+         * [--extract]
+         * : Whether to extract the downloaded file. Defaults to true.
+         *
          * ## EXAMPLES
          *
          *     $ wp core download --locale=nl_NL
@@ -1730,6 +1733,9 @@ namespace {
          * --admin_email=<email>
          * : The email address for the admin user.
          *
+         * [--locale=<locale>]
+         * : The locale/language for the installation (e.g. `de_DE`). Default is `en_US`.
+         *
          * [--skip-email]
          * : Don't send an email notification to the new admin user.
          *
@@ -1754,7 +1760,7 @@ namespace {
          * For those using WordPress with Apache, remember to update the `.htaccess`
          * file with the appropriate multisite rewrite rules.
          *
-         * [Review the multisite documentation](https://codex.wordpress.org/Create_A_Network)
+         * [Review the multisite documentation](https://wordpress.org/support/article/create-a-network/)
          * for more details about how multisite works.
          *
          * ## OPTIONS
@@ -3126,6 +3132,24 @@ namespace {
          *
          * [--all-tables]
          * : List all tables in the database, regardless of the prefix, and even if not registered on $wpdb. Overrides --all-tables-with-prefix.
+         *
+         * [--order=<order>]
+         * : Ascending or Descending order.
+         * ---
+         * default: asc
+         * options:
+         *   - asc
+         *   - desc
+         * ---
+         *
+         * [--orderby=<orderby>]
+         * : Order by fields.
+         * ---
+         * default: name
+         * options:
+         *   - name
+         *   - size
+         * ---
          *
          * ## EXAMPLES
          *
@@ -5760,6 +5784,32 @@ namespace {
          *   - plaintext
          *   - json
          * ---
+         *
+         * ## EXAMPLES
+         *
+         *     # Add 'bar' to the 'foo' key on an option with name 'option_name'
+         *     $ wp option patch insert option_name foo bar
+         *     Success: Updated 'option_name' option.
+         *
+         *     # Update the value of 'foo' key to 'new' on an option with name 'option_name'
+         *     $ wp option patch update option_name foo new
+         *     Success: Updated 'option_name' option.
+         *
+         *     # Set nested value of 'bar' key to value we have in the patch file on an option with name 'option_name'.
+         *     $ wp option patch update option_name foo bar < patch
+         *     Success: Updated 'option_name' option.
+         *
+         *     # Update the value for the key 'not-a-key' which is not exist on an option with name 'option_name'.
+         *     $ wp option patch update option_name foo not-a-key new-value
+         *     Error: No data exists for key "not-a-key"
+         *
+         *     # Update the value for the key 'foo' without passing value on an option with name 'option_name'.
+         *     $ wp option patch update option_name foo
+         *     Error: Please provide value to update.
+         *
+         *     # Delete the nested key 'bar' under 'foo' key on an option with name 'option_name'.
+         *     $ wp option patch delete option_name foo bar
+         *     Success: Updated 'option_name' option.
          */
         public function patch($args, $assoc_args)
         {
@@ -6310,7 +6360,7 @@ namespace {
          *     Generating posts  100% [================================================] 0:01 / 0:04
          *
          *     # Generate posts with fetched content.
-         *     $ curl -N http://loripsum.net/api/5 | wp post generate --post_content --count=10
+         *     $ curl -N https://loripsum.net/api/5 | wp post generate --post_content --count=10
          *       % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
          *                                      Dload  Upload   Total   Spent    Left  Speed
          *     100  2509  100  2509    0     0    616      0  0:00:04  0:00:04 --:--:--   616
@@ -6494,18 +6544,40 @@ namespace {
          *
          * @param int    $object_id  ID of the object metadata is for
          * @param string $meta_key   Metadata key
-         * @param mixed $meta_value  Optional. Metadata value. Must be serializable
-         *                           if non-scalar. If specified, only delete
-         *                           metadata entries with this value. Otherwise,
-         *                           delete all entries with the specified meta_key.
-         *                           Pass `null, `false`, or an empty string to skip
-         *                           this check. For backward compatibility, it is
-         *                           not possible to pass an empty string to delete
-         *                           those entries with an empty string for a value.
+         * @param mixed  $meta_value  Optional. Metadata value. Must be serializable
+         *                            if non-scalar. If specified, only delete
+         *                            metadata entries with this value. Otherwise,
+         *                            delete all entries with the specified meta_key.
+         *                            Pass `null, `false`, or an empty string to skip
+         *                            this check. For backward compatibility, it is
+         *                            not possible to pass an empty string to delete
+         *                            those entries with an empty string for a value.
          *
          * @return bool True on successful delete, false on failure.
          */
         protected function delete_metadata($object_id, $meta_key, $meta_value = '')
+        {
+        }
+        /**
+         * Cleans up duplicate post meta values on a post.
+         *
+         * ## OPTIONS
+         *
+         * <id>
+         * : ID of the post to clean.
+         *
+         * <key>
+         * : Meta key to clean up.
+         *
+         * ## EXAMPLES
+         *
+         *     # Delete duplicate post meta.
+         *     wp post meta clean-duplicates 1234 enclosure
+         *     Success: Cleaned up duplicate 'enclosure' meta values.
+         *
+         * @subcommand clean-duplicates
+         */
+        public function clean_duplicates($args, $assoc_args)
         {
         }
     }
@@ -8333,7 +8405,7 @@ namespace {
      * ## EXAMPLES
      *
      *     # List user application passwords and only show app name and password hash
-     *     $ wp user application-passwords list 123 --fields=name,password
+     *     $ wp user application-password list 123 --fields=name,password
      *     +--------+------------------------------------+
      *     | name   | password                           |
      *     +--------+------------------------------------+
@@ -8341,7 +8413,7 @@ namespace {
      *     +--------+------------------------------------+
      *
      *     # Get a specific application password and only show app name and created timestamp
-     *     $ wp user application-passwords get 123 6633824d-c1d7-4f79-9dd5-4586f734d69e --fields=name,created
+     *     $ wp user application-password get 123 6633824d-c1d7-4f79-9dd5-4586f734d69e --fields=name,created
      *     +--------+------------+
      *     | name   | created    |
      *     +--------+------------+
@@ -8349,20 +8421,20 @@ namespace {
      *     +--------+------------+
      *
      *     # Create user application password
-     *     $ wp user application-passwords create 123 myapp
+     *     $ wp user application-password create 123 myapp
      *     Success: Created application password.
      *     Password: ZG1bxdxdzjTwhsY8vK8l1C65
      *
      *     # Only print the password without any chrome
-     *     $ wp user application-passwords create 123 myapp --porcelain
+     *     $ wp user application-password create 123 myapp --porcelain
      *     ZG1bxdxdzjTwhsY8vK8l1C65
      *
      *     # Update an existing application password
-     *     $ wp user application-passwords update 123 6633824d-c1d7-4f79-9dd5-4586f734d69e --name=newappname
+     *     $ wp user application-password update 123 6633824d-c1d7-4f79-9dd5-4586f734d69e --name=newappname
      *     Success: Updated application password.
      *
      *     # Check if an application password for a given application exists
-     *     $ wp user application-passwords exists 123 myapp
+     *     $ wp user application-password exists 123 myapp
      *     $ echo $?
      *     1
      *
@@ -8434,7 +8506,7 @@ namespace {
          * ## EXAMPLES
          *
          *     # List user application passwords and only show app name and password hash
-         *     $ wp user application-passwords list 123 --fields=name,password
+         *     $ wp user application-password list 123 --fields=name,password
          *     +--------+------------------------------------+
          *     | name   | password                           |
          *     +--------+------------------------------------+
@@ -8482,7 +8554,7 @@ namespace {
          * ## EXAMPLES
          *
          *     # Get a specific application password and only show app name and created timestamp
-         *     $ wp user application-passwords get 123 6633824d-c1d7-4f79-9dd5-4586f734d69e --fields=name,created
+         *     $ wp user application-password get 123 6633824d-c1d7-4f79-9dd5-4586f734d69e --fields=name,created
          *     +--------+------------+
          *     | name   | created    |
          *     +--------+------------+
@@ -8516,16 +8588,16 @@ namespace {
          * ## EXAMPLES
          *
          *     # Create user application password
-         *     $ wp user application-passwords create 123 myapp
+         *     $ wp user application-password create 123 myapp
          *     Success: Created application password.
          *     Password: ZG1bxdxdzjTwhsY8vK8l1C65
          *
          *     # Only print the password without any chrome
-         *     $ wp user application-passwords create 123 myapp --porcelain
+         *     $ wp user application-password create 123 myapp --porcelain
          *     ZG1bxdxdzjTwhsY8vK8l1C65
          *
          *     # Create user application with a custom application ID for internal tracking
-         *     $ wp user application-passwords create 123 myapp --app-id=42 --porcelain
+         *     $ wp user application-password create 123 myapp --app-id=42 --porcelain
          *     ZG1bxdxdzjTwhsY8vK8l1C65
          *
          * @param array $args       Indexed array of positional arguments.
@@ -8552,7 +8624,7 @@ namespace {
          * ## EXAMPLES
          *
          *     # Update an existing application password
-         *     $ wp user application-passwords update 123 6633824d-c1d7-4f79-9dd5-4586f734d69e --name=newappname
+         *     $ wp user application-password update 123 6633824d-c1d7-4f79-9dd5-4586f734d69e --name=newappname
          *     Success: Updated application password.
          *
          * @param array $args       Indexed array of positional arguments.
@@ -8576,7 +8648,7 @@ namespace {
          * ## EXAMPLES
          *
          *     # Record usage of an application password
-         *     $ wp user application-passwords record-usage 123 6633824d-c1d7-4f79-9dd5-4586f734d69e
+         *     $ wp user application-password record-usage 123 6633824d-c1d7-4f79-9dd5-4586f734d69e
          *     Success: Recorded application password usage.
          *
          * @subcommand record-usage
@@ -8605,7 +8677,7 @@ namespace {
          * ## EXAMPLES
          *
          *     # Record usage of an application password
-         *     $ wp user application-passwords record-usage 123 6633824d-c1d7-4f79-9dd5-4586f734d69e
+         *     $ wp user application-password record-usage 123 6633824d-c1d7-4f79-9dd5-4586f734d69e
          *     Success: Recorded application password usage.
          *
          * @param array $args       Indexed array of positional arguments.
@@ -8629,7 +8701,7 @@ namespace {
          * ## EXAMPLES
          *
          *     # Check if an application password for a given application exists
-         *     $ wp user application-passwords exists 123 myapp
+         *     $ wp user application-password exists 123 myapp
          *     $ echo $?
          *     1
          *
@@ -8856,6 +8928,9 @@ namespace {
          *     $ wp user delete $(wp user list --role=contributor --field=ID) --reassign=2
          *     Success: Removed user 813 from http://example.com
          *     Success: Removed user 578 from http://example.com
+         *
+         *     # Delete all contributors in batches of 100 (avoid error: argument list too long: wp)
+         *     $ wp user delete $(wp user list --role=contributor --field=ID | head -n 100)
          */
         public function delete($args, $assoc_args)
         {
@@ -9450,6 +9525,10 @@ namespace {
          *     # Get user meta
          *     $ wp user meta get 123 bio
          *     Mary is an WordPress developer.
+         *
+         *     # Get the primary site of a user (for multisite)
+         *     $ wp user meta get 2 primary_blog
+         *     3
          */
         public function get($args, $assoc_args)
         {
@@ -10477,9 +10556,10 @@ namespace WP_CLI {
          * @param bool   $all All flag.
          * @param string $verb Optional. Verb to use. Defaults to 'install'.
          * @return array Same as $args if not all, otherwise all slugs.
+         * @param string $exclude Comma separated list of plugin slugs.
          * @throws ExitException If neither plugin name nor --all were provided.
          */
-        protected function check_optional_args_and_all($args, $all, $verb = 'install')
+        protected function check_optional_args_and_all($args, $all, $verb = 'install', $exclude = null)
         {
         }
         /**
@@ -10950,6 +11030,9 @@ namespace {
          * [--all]
          * : If set, all plugins will be activated.
          *
+         * [--exclude=<name>]
+         * : Comma separated list of plugin slugs to be excluded from activation.
+         *
          * [--network]
          * : If set, the plugin will be activated for the entire multisite network.
          *
@@ -10982,6 +11065,9 @@ namespace {
          * [--all]
          * : If set, all plugins will be deactivated.
          *
+         *  [--exclude=<name>]
+         * : Comma separated list of plugin slugs that should be excluded from deactivation.
+         *
          * [--network]
          * : If set, the plugin will be deactivated for the entire multisite network.
          *
@@ -10991,6 +11077,12 @@ namespace {
          *     $ wp plugin deactivate hello
          *     Plugin 'hello' deactivated.
          *     Success: Deactivated 1 of 1 plugins.
+         *
+         *     # Deactivate all plugins with exclusion
+         *     $ wp plugin deactivate --all --exclude=hello,wordpress-seo
+         *     Plugin 'contact-form-7' deactivated.
+         *     Plugin 'ninja-forms' deactivated.
+         *     Success: Deactivated 2 of 2 plugins.
          */
         public function deactivate($args, $assoc_args = array())
         {
@@ -11281,11 +11373,20 @@ namespace {
          * [--all]
          * : If set, all plugins will be uninstalled.
          *
+         * [--exclude=<name>]
+         * : Comma separated list of plugin slugs to be excluded from uninstall.
+         *
          * ## EXAMPLES
          *
          *     $ wp plugin uninstall hello
          *     Uninstalled and deleted 'hello' plugin.
          *     Success: Uninstalled 1 of 1 plugins.
+         *
+         *     # Uninstall all plugins excluding specified ones
+         *     $ wp plugin uninstall --all --exclude=hello-dolly,jetpack
+         *     Uninstalled and deleted 'akismet' plugin.
+         *     Uninstalled and deleted 'tinymce-templates' plugin.
+         *     Success: Uninstalled 2 of 2 plugins.
          */
         public function uninstall($args, $assoc_args = array())
         {
@@ -11348,6 +11449,9 @@ namespace {
          * [--all]
          * : If set, all plugins will be deleted.
          *
+         * [--exclude=<name>]
+         * : Comma separated list of plugin slugs to be excluded from deletion.
+         *
          * ## EXAMPLES
          *
          *     # Delete plugin
@@ -11359,6 +11463,12 @@ namespace {
          *     $ wp plugin delete $(wp plugin list --status=inactive --field=name)
          *     Deleted 'tinymce-templates' plugin.
          *     Success: Deleted 1 of 1 plugins.
+         *
+         *     # Delete all plugins excluding specified ones
+         *     $ wp plugin delete --all --exclude=hello-dolly,jetpack
+         *     Deleted 'akismet' plugin.
+         *     Deleted 'tinymce-templates' plugin.
+         *     Success: Deleted 2 of 2 plugins.
          */
         public function delete($args, $assoc_args = array())
         {
@@ -11537,6 +11647,16 @@ namespace WP_CLI {
          * @return bool Whether the provided theme is the active theme.
          */
         protected function is_active_theme($theme)
+        {
+        }
+        /**
+         * Check whether a given theme is the active theme parent.
+         *
+         * @param string $theme Theme to check.
+         *
+         * @return bool Whether the provided theme is the active theme.
+         */
+        protected function is_active_parent_theme($theme)
         {
         }
         /**
@@ -13614,7 +13734,7 @@ namespace {
          * : Attachment title (post title field).
          *
          * [--caption=<caption>]
-         * : Caption for attachent (post excerpt field).
+         * : Caption for attachment (post excerpt field).
          *
          * [--alt=<alt_text>]
          * : Alt text for image (saved as post meta).
@@ -15121,11 +15241,11 @@ namespace {
         /**
          * Generates PHP, JS and CSS code for registering a Gutenberg block for a plugin or theme.
          *
-         * Blocks are the fundamental element of the Gutenberg editor. They are the primary way in which plugins and themes can register their own functionality and extend the capabilities of the editor.
+         * **Warning: `wp scaffold block` is deprecated.**
          *
-         * Visit the [Gutenberg handbook](https://wordpress.org/gutenberg/handbook/block-api/) to learn more about Block API.
+         * The official script to generate a block is the [@wordpress/create-block](https://developer.wordpress.org/block-editor/designers-developers/developers/packages/packages-create-block/) package.
          *
-         * When you scaffold a block you must use either the theme or plugin option. The latter is recommended.
+         * See the [Create a Block tutorial](https://developer.wordpress.org/block-editor/getting-started/create-block/) for a complete walk-through.
          *
          * ## OPTIONS
          *
@@ -15158,24 +15278,6 @@ namespace {
          *
          * [--force]
          * : Overwrite files that already exist.
-         *
-         * ## EXAMPLES
-         *
-         *     # Generate a 'movie' block for the 'movies' plugin
-         *     $ wp scaffold block movie --title="Movie block" --plugin=movies
-         *     Success: Created block 'Movie block'.
-         *
-         *     # Generate a 'movie' block for the 'simple-life' theme
-         *     $ wp scaffold block movie --title="Movie block" --theme=simple-life
-         *      Success: Created block 'Movie block'.
-         *
-         *     # Create a new plugin and add two blocks
-         *     # Create plugin called books
-         *     $ wp scaffold plugin books
-         *     # Add a block called book to plugin books
-         *     $ wp scaffold block book --title="Book" --plugin=books
-         *     # Add a second block to plugin called books.
-         *     $ wp scaffold block books --title="Book List" --plugin=books
          *
          * @subcommand block
          */

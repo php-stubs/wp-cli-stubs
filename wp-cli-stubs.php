@@ -781,6 +781,14 @@ namespace WP_CLI {
         {
         }
         /**
+         * Loads the config spec file.
+         *
+         * @param string $path Path to the config spec file.
+         */
+        private function load_config_spec($path)
+        {
+        }
+        /**
          * Get declared configuration values as an array.
          *
          * @return array
@@ -930,6 +938,20 @@ namespace WP_CLI\Context {
          * @return void
          */
         private function log_in_as_admin_user()
+        {
+        }
+        /**
+         * Load the admin environment.
+         *
+         * This tries to load `wp-admin/admin.php` while trying to avoid issues
+         * like re-loading the wp-config.php file (which redeclares constants).
+         *
+         * To make this work across WordPress versions, we use the actual file and
+         * modify it on-the-fly.
+         *
+         * @return void
+         */
+        private function load_admin_environment()
         {
         }
     }
@@ -3055,7 +3077,7 @@ namespace WP_CLI {
         }
         /**
          * Perform a command against a remote server over SSH (or a container using
-         * scheme of "docker" or "docker-compose").
+         * scheme of "docker", "docker-compose", or "docker-compose-run").
          *
          * @param string $connection_string Passed connection string.
          * @return void
@@ -4120,6 +4142,7 @@ namespace {
          * @category Output
          *
          * @param integer $return_code
+         * @return never
          */
         public static function halt($return_code)
         {
@@ -5221,6 +5244,16 @@ namespace WP_CLI\Utils {
     function strip_tags($string)
     {
     }
+    /**
+     * Internalized version of global_terms_enabled() to get around a bug in WordPress Core.
+     *
+     * WP Core inadvertently removed the function instead of deprecating it during th 6.1 cycle.
+     *
+     * @see https://core.trac.wordpress.org/ticket/21734#comment:34
+     */
+    function global_terms_enabled()
+    {
+    }
 }
 // Utilities that do NOT depend on WordPress code.
 namespace WP_CLI\Utils {
@@ -5980,6 +6013,14 @@ namespace WP_CLI\Utils {
      *                  read.
      */
     function get_sql_modes()
+    {
+    }
+    /**
+     * Get the WP-CLI cache directory.
+     *
+     * @return string
+     */
+    function get_cache_dir()
     {
     }
 }
