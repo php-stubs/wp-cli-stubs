@@ -1,6 +1,6 @@
 # WP-CLI Stubs
 
-[![Build Status](https://travis-ci.com/php-stubs/wp-cli-stubs.svg?branch=master)](https://travis-ci.com/php-stubs/wp-cli-stubs)
+[![Build Status](https://app.travis-ci.com/php-stubs/wp-cli-stubs.svg?branch=master)](https://app.travis-ci.com/php-stubs/wp-cli-stubs)
 
 This package provides stub declarations for [WP-CLI](https://wp-cli.org/) functions, classes and interfaces.
 These stubs can help plugin and theme developers leverage static analysis tools like [PHPStan](https://github.com/phpstan/phpstan), which are unable to parse WP-CLI as it is not clean OOP code.

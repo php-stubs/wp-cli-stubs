@@ -23,7 +23,7 @@ install:
     composer update --no-interaction
   - |
     wget -nv -O "source/composer.lock" "https://github.com/wp-cli/wp-cli-bundle/raw/v$(jq -r '."version"' source/composer.json)/composer.lock"
-    composer --working-dir=source/ install --no-interaction
+    composer --working-dir=source/ install --no-interaction --no-dev
 
 script:
   - |
