@@ -713,6 +713,12 @@ namespace WP_CLI\Compat\Min_PHP_5_6 {
         }
     }
 }
+namespace WP_CLI\Compat {
+    trait FeedbackMethodTrait
+    {
+        use \WP_CLI\Compat\Min_PHP_5_6\FeedbackMethodTrait;
+    }
+}
 namespace WP_CLI {
     class Completions
     {
