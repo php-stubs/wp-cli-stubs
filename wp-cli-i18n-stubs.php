@@ -2039,6 +2039,25 @@ class Translator extends \Gettext\BaseTranslator implements \Gettext\TranslatorI
     protected function getPluralIndex($domain, $n, $fallback)
     {
     }
+    /**
+     * This function will recursively wrap failure states in brackets if they contain a nested terse if.
+     *
+     * This because PHP can not handle nested terse if's unless they are wrapped in brackets.
+     *
+     * This code probably only works for the gettext plural decision codes.
+     *
+     * return ($n==1 ? 0 : $n%10>=2 && $n%10<=4 && ($n%100<10 || $n%100>=20) ? 1 : 2);
+     * becomes
+     * return ($n==1 ? 0 : ($n%10>=2 && $n%10<=4 && ($n%100<10 || $n%100>=20) ? 1 : 2));
+     *
+     * @param string $code  the terse if string
+     * @param bool   $inner If inner is true we wrap it in brackets
+     *
+     * @return string A formatted terse If that PHP can work with.
+     */
+    private static function fixTerseIfs($code, $inner = false)
+    {
+    }
 }
 namespace Gettext\Utils;
 
@@ -2584,6 +2603,7 @@ final class BladeCodeExtractor extends \WP_CLI\I18n\BladeGettextExtractor
         '__ngettext' => 'single_plural_number_domain',
         '__ngettext_noop' => 'single_plural_domain',
     ]];
+    protected static $functionsScannerClass = 'WP_CLI\\I18n\\PhpFunctionsScanner';
     /**
      * {@inheritdoc}
      */
@@ -2637,6 +2657,31 @@ class JsonSchemaExtractor extends \Gettext\Extractors\Extractor
      * @inheritdoc
      */
     public static function fromString($string, \Gettext\Translations $translations, array $options = [])
+    {
+    }
+    /**
+     * Extract strings from a JSON file using its i18n schema.
+     *
+     * @param Translations                   $translations The translations instance to append the new translations.
+     * @param string|null                    $file         JSON file name or null if no reference should be added.
+     * @param string|string[]|array[]|object $i18n_schema  I18n schema for the setting.
+     * @param string|string[]|array[]        $settings     Value for the settings.
+     *
+     * @return void
+     */
+    private static function extract_strings_using_i18n_schema(\Gettext\Translations $translations, $file, $i18n_schema, $settings)
+    {
+    }
+    /**
+     * Given a remote URL, fetches it remotely and returns its content.
+     *
+     * Returns an empty string in case of error.
+     *
+     * @param string $url URL of the file to fetch.
+     *
+     * @return string Contents of the file.
+     */
+    private static function remote_get($url)
     {
     }
 }
@@ -2736,6 +2781,7 @@ final class JsCodeExtractor extends \Gettext\Extractors\JsCode
 {
     use \WP_CLI\I18n\IterableCodeExtractor;
     public static $options = ['extractComments' => ['translators', 'Translators'], 'constants' => [], 'functions' => ['__' => 'text_domain', '_x' => 'text_context_domain', '_n' => 'single_plural_number_domain', '_nx' => 'single_plural_number_context_domain']];
+    protected static $functionsScannerClass = 'WP_CLI\\I18n\\JsFunctionsScanner';
     /**
      * @inheritdoc
      */
@@ -2751,6 +2797,20 @@ final class JsCodeExtractor extends \Gettext\Extractors\JsCode
 }
 final class JsFunctionsScanner extends \Gettext\Utils\JsFunctionsScanner
 {
+    /**
+     * If not false, comments will be extracted.
+     *
+     * @var string|false|array
+     */
+    private $extract_comments = false;
+    /**
+     * Holds a list of source code comments already added to a string.
+     *
+     * Prevents associating the same comment to multiple strings.
+     *
+     * @var Node\Comment[] $comments_cache
+     */
+    private $comments_cache = [];
     /**
      * Enable extracting comments that start with a tag (if $tag is empty all the comments will be extracted).
      *
@@ -2769,6 +2829,28 @@ final class JsFunctionsScanner extends \Gettext\Utils\JsFunctionsScanner
      * {@inheritdoc}
      */
     public function saveGettextFunctions($translations, array $options)
+    {
+    }
+    /**
+     * Resolve the callee of a call expression using known formats.
+     *
+     * @param Node\CallExpression $node The call expression whose callee to resolve.
+     *
+     * @return array|bool Array containing the name and comments of the identifier if resolved. False if not.
+     */
+    private function resolveExpressionCallee(\Peast\Syntax\Node\CallExpression $node)
+    {
+    }
+    /**
+     * Returns wether or not a comment precedes a node.
+     * The comment must be before the node and on the same line or the one before.
+     *
+     * @param Node\Comment $comment The comment.
+     * @param Node\Node    $node    The node.
+     *
+     * @return bool Whether or not the comment precedes the node.
+     */
+    private function commentPrecedesNode(\Peast\Syntax\Node\Comment $comment, \Peast\Syntax\Node\Node $node)
     {
     }
 }
@@ -3289,6 +3371,7 @@ final class PhpCodeExtractor extends \Gettext\Extractors\PhpCode
         '__ngettext' => 'single_plural_number_domain',
         '__ngettext_noop' => 'single_plural_domain',
     ]];
+    protected static $functionsScannerClass = 'WP_CLI\\I18n\\PhpFunctionsScanner';
     /**
      * {@inheritdoc}
      */
