@@ -20,6 +20,7 @@ fi
 
 # wp-cli/wp-cli
 "$(dirname "$0")/vendor/bin/generate-stubs" \
+    --include-inaccessible-class-nodes \
     --force \
     --finder=finder.php \
     --header="$HEADER" \
@@ -31,6 +32,7 @@ fi
 
 # Commands
 "$(dirname "$0")/vendor/bin/generate-stubs" \
+    --include-inaccessible-class-nodes \
     --force \
     --finder=finder-commands.php \
     --header="$HEADER" \
@@ -42,6 +44,7 @@ fi
 
 # wp-cli/i18n-command
 "$(dirname "$0")/vendor/bin/generate-stubs" \
+    --include-inaccessible-class-nodes \
     --force \
     --finder=finder-i18n.php \
     --header="$HEADER" \
