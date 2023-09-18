@@ -2,6 +2,7 @@
 
 return \StubsGenerator\Finder::create()
     ->in('source/vendor/wp-cli/wp-cli/php')
+    ->in('source/vendor/wp-cli/php-cli-tools/lib')
     // Compatiblility code
     ->notPath('compat.php')
     ->notPath('wp-settings-cli.php')
