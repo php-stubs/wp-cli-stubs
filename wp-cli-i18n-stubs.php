@@ -2458,10 +2458,10 @@ class BladeGettextExtractor extends \Gettext\Extractors\PhpCode
     /**
      * Compiles the Blade template string into a PHP string in one step.
      *
-     * @param string $string Blade string to be compiled to a PHP string
+     * @param string $text Blade string to be compiled to a PHP string
      * @return string
      */
-    protected static function compileBladeToPhp($string)
+    protected static function compileBladeToPhp($text)
     {
     }
     /**
@@ -2469,7 +2469,7 @@ class BladeGettextExtractor extends \Gettext\Extractors\PhpCode
      *
      * Note: In the parent PhpCode class fromString() uses fromStringMultiple() (overriden here)
      */
-    public static function fromStringMultiple($string, array $translations, array $options = [])
+    public static function fromStringMultiple($text, array $translations, array $options = [])
     {
     }
 }
@@ -2534,13 +2534,13 @@ trait IterableCodeExtractor
      * Recursively gets all PHP files within a directory.
      *
      * @param string $dir A path of a directory.
-     * @param array $include List of files and directories to include.
-     * @param array $exclude List of files and directories to skip.
+     * @param array $includes List of files and directories to include.
+     * @param array $excludes List of files and directories to skip.
      * @param array $extensions List of filename extensions to process.
      *
      * @return array File list.
      */
-    public static function getFilesFromDirectory($dir, array $include = [], array $exclude = [], $extensions = [])
+    public static function getFilesFromDirectory($dir, array $includes = [], array $excludes = [], $extensions = [])
     {
     }
     /**
@@ -2607,7 +2607,7 @@ final class BladeCodeExtractor extends \WP_CLI\I18n\BladeGettextExtractor
     /**
      * {@inheritdoc}
      */
-    public static function fromString($string, \Gettext\Translations $translations, array $options = [])
+    public static function fromString($text, \Gettext\Translations $translations, array $options = [])
     {
     }
 }
@@ -2656,7 +2656,7 @@ class JsonSchemaExtractor extends \Gettext\Extractors\Extractor
     /**
      * @inheritdoc
      */
-    public static function fromString($string, \Gettext\Translations $translations, array $options = [])
+    public static function fromString($text, \Gettext\Translations $translations, array $options = [])
     {
     }
     /**
@@ -2690,7 +2690,7 @@ final class BlockExtractor extends \WP_CLI\I18n\JsonSchemaExtractor
     /**
      * @inheritdoc
      */
-    public static function fromString($string, \Gettext\Translations $translations, array $options = [])
+    public static function fromString($text, \Gettext\Translations $translations, array $options = [])
     {
     }
 }
@@ -2732,12 +2732,12 @@ class FileDataExtractor
     /**
      * Retrieves metadata from a string.
      *
-     * @param string $string String to look for metadata in.
+     * @param string $text String to look for metadata in.
      * @param array $headers List of headers.
      *
      * @return array Array of file headers in `HeaderKey => Header Value` format.
      */
-    public static function get_file_data_from_string($string, $headers)
+    public static function get_file_data_from_string($text, $headers)
     {
     }
     /**
@@ -2785,13 +2785,13 @@ final class JsCodeExtractor extends \Gettext\Extractors\JsCode
     /**
      * @inheritdoc
      */
-    public static function fromString($string, \Gettext\Translations $translations, array $options = [])
+    public static function fromString($text, \Gettext\Translations $translations, array $options = [])
     {
     }
     /**
      * @inheritDoc
      */
-    public static function fromStringMultiple($string, array $translations, array $options = [])
+    public static function fromStringMultiple($text, array $translations, array $options = [])
     {
     }
 }
@@ -3261,10 +3261,10 @@ class MakePotCommand extends \WP_CLI_Command
     /**
      * Removes leading and trailing slashes of a string.
      *
-     * @param string $string What to add and remove slashes from.
+     * @param string $text What to add and remove slashes from.
      * @return string String without leading and trailing slashes.
      */
-    protected function unslashit($string)
+    protected function unslashit($text)
     {
     }
     /**
@@ -3337,7 +3337,7 @@ final class MapCodeExtractor extends \Gettext\Extractors\JsCode
     /**
      * {@inheritdoc}
      */
-    public static function fromString($string, \Gettext\Translations $translations, array $options = [])
+    public static function fromString($text, \Gettext\Translations $translations, array $options = [])
     {
     }
 }
@@ -3375,7 +3375,7 @@ final class PhpCodeExtractor extends \Gettext\Extractors\PhpCode
     /**
      * {@inheritdoc}
      */
-    public static function fromString($string, \Gettext\Translations $translations, array $options = [])
+    public static function fromString($text, \Gettext\Translations $translations, array $options = [])
     {
     }
 }
@@ -3416,11 +3416,11 @@ class PotGenerator extends \Gettext\Generators\Po
     /**
      * Escapes and adds double quotes to a string.
      *
-     * @param string $string Multiline string.
+     * @param string $text Multiline string.
      *
      * @return string[]
      */
-    protected static function multilineQuote($string)
+    protected static function multilineQuote($text)
     {
     }
     /**
@@ -3439,7 +3439,7 @@ final class ThemeJsonExtractor extends \WP_CLI\I18n\JsonSchemaExtractor
     /**
      * @inheritdoc
      */
-    public static function fromString($string, \Gettext\Translations $translations, array $options = [])
+    public static function fromString($text, \Gettext\Translations $translations, array $options = [])
     {
     }
 }

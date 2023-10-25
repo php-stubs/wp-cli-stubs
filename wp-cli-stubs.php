@@ -812,7 +812,7 @@ namespace WP_CLI {
          *
          * @var array
          */
-        private static $alias_spec = ['user', 'url', 'path', 'ssh', 'http'];
+        private static $alias_spec = ['user', 'url', 'path', 'ssh', 'http', 'proxyjump', 'key'];
         /**
          * @param string $path Path to config spec file.
          */
@@ -2520,18 +2520,23 @@ namespace WP_CLI\Iterators {
         private function load_items_from_db()
         {
         }
+        #[\ReturnTypeWillChange]
         public function current()
         {
         }
+        #[\ReturnTypeWillChange]
         public function key()
         {
         }
+        #[\ReturnTypeWillChange]
         public function next()
         {
         }
+        #[\ReturnTypeWillChange]
         public function rewind()
         {
         }
+        #[\ReturnTypeWillChange]
         public function valid()
         {
         }
@@ -3138,6 +3143,12 @@ namespace WP_CLI {
          * @return string The path to the bundled certificate.
          */
         public static function get_bundled_certificate_path()
+        {
+        }
+        /**
+         * Define WP_CLI_ROOT if it is not already defined.
+         */
+        private static function maybe_define_wp_cli_root()
         {
         }
     }
@@ -4162,7 +4173,7 @@ namespace {
          * @category Registration
          *
          * @param string   $name Name for the command (e.g. "post list" or "site empty").
-         * @param callable $callable Command implementation as a class, function or closure.
+         * @param callable|object|string $callable Command implementation as a class, function or closure.
          * @param array    $args {
          *    Optional. An associative array with additional registration parameters.
          *
@@ -5492,16 +5503,6 @@ namespace WP_CLI\Utils {
      * @return string String devoid of tags.
      */
     function strip_tags($string)
-    {
-    }
-    /**
-     * Internalized version of global_terms_enabled() to get around a bug in WordPress Core.
-     *
-     * WP Core inadvertently removed the function instead of deprecating it during th 6.1 cycle.
-     *
-     * @see https://core.trac.wordpress.org/ticket/21734#comment:34
-     */
-    function global_terms_enabled()
     {
     }
 }

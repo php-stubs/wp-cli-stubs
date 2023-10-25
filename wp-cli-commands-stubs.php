@@ -890,6 +890,9 @@ namespace {
          * [--insecure]
          * : Retry downloads without certificate validation if TLS handshake fails. Note: This makes the request vulnerable to a MITM attack.
          *
+         * [--exclude=<name>]
+         * : Comma separated list of plugin names that should be excluded from verifying.
+         *
          * ## EXAMPLES
          *
          *     # Verify the checksums of all installed plugins
@@ -1332,6 +1335,43 @@ namespace {
         {
         }
         /**
+         * Determines whether value of a specific defined constant or variable is truthy.
+         *
+         * This determination is made by evaluating the retrieved value via boolval().
+         *
+         * ## OPTIONS
+         *
+         * <name>
+         * : Name of the wp-config.php constant or variable.
+         *
+         * [--type=<type>]
+         * : Type of config value to retrieve. Defaults to 'all'.
+         * ---
+         * default: all
+         * options:
+         *   - constant
+         *   - variable
+         *   - all
+         * ---
+         *
+         * [--config-file=<path>]
+         * : Specify the file path to the config file to be read. Defaults to the root of the
+         * WordPress installation and the filename "wp-config.php".
+         *
+         * ## EXAMPLES
+         *
+         *     # Assert if MULTISITE is true
+         *     $ wp config is-true MULTISITE
+         *     $ echo $?
+         *     0
+         *
+         * @subcommand is-true
+         * @when before_wp_load
+         */
+        public function is_true($args, $assoc_args)
+        {
+        }
+        /**
          * Get the array of wp-config.php constants and variables.
          *
          * @param string $wp_config_path Config file path
@@ -1502,13 +1542,13 @@ namespace {
         /**
          * Filters wp-config.php file configurations.
          *
-         * @param array $list
+         * @param array $vars
          * @param array $previous_list
          * @param string $type
          * @param array $exclude_list
          * @return array
          */
-        private static function get_wp_config_diff($list, $previous_list, $type, $exclude_list = [])
+        private static function get_wp_config_diff($vars, $previous_list, $type, $exclude_list = [])
         {
         }
         /**
@@ -1589,6 +1629,17 @@ namespace {
          * @return mixed Parsed separator string.
          */
         private function parse_separator($separator)
+        {
+        }
+        /**
+         * Gets the value of a specific constant or variable defined in wp-config.php file.
+         *
+         * @param $assoc_args
+         * @param $args
+         *
+         * @return string
+         */
+        protected function get_value($assoc_args, $args)
         {
         }
         /**
@@ -1738,14 +1789,21 @@ namespace {
          *
          * ## EXAMPLES
          *
-         *     # Check whether WordPress is installed; exit status 0 if installed, otherwise 1
-         *     $ wp core is-installed
-         *     $ echo $?
-         *     1
+         *     # Bash script for checking if WordPress is not installed
          *
-         *     # Bash script for checking whether WordPress is installed or not
-         *     if ! wp core is-installed; then
+         *     if ! wp core is-installed 2>/dev/null; then
+         *         # WP is not installed. Let's try installing it.
          *         wp core install
+         *     fi
+         *
+         *     # Bash script for checking if WordPress is installed, with fallback
+         *
+         *     if wp core is-installed 2>/dev/null; then
+         *         # WP is installed. Let's do some things we should only do in a confirmed WP environment.
+         *         wp core verify-checksums
+         *     else
+         *         # Fallback if WP is not installed.
+         *         echo 'Hey Friend, you are in the wrong spot. Move in to your WordPress directory and try again.'
          *     fi
          *
          * @subcommand is-installed
@@ -4072,6 +4130,7 @@ namespace {
         protected $obj_type = 'comment';
         protected $obj_id_key = 'comment_ID';
         protected $obj_fields = ['comment_ID', 'comment_post_ID', 'comment_date', 'comment_approved', 'comment_author', 'comment_author_email'];
+        private $fetcher;
         public function __construct()
         {
         }
@@ -5935,6 +5994,7 @@ namespace {
     {
         protected $obj_type = 'post';
         protected $obj_fields = ['ID', 'post_title', 'post_name', 'post_date', 'post_status'];
+        private $fetcher;
         public function __construct()
         {
         }
@@ -6430,10 +6490,10 @@ namespace {
          * ---
          *
          * [--post_date=<yyyy-mm-dd-hh-ii-ss>]
-         * : The date of the generated posts. Default: current date
+         * : The date of the post. Default is the current time.
          *
          * [--post_date_gmt=<yyyy-mm-dd-hh-ii-ss>]
-         * : The GMT date of the generated posts. Default: value of post_date (or current date if it's not set)
+         * : The date of the post in the GMT timezone. Default is the value of --post_date.
          *
          * [--post_content]
          * : If set, the command reads the post_content from STDIN.
@@ -6553,6 +6613,19 @@ namespace {
          *     1
          */
         public function exists($args)
+        {
+        }
+        /**
+         * Convert a date-time string with a hyphen separator to a space separator.
+         *
+         * @param string $date_string The date-time string to convert.
+         * @return string The converted date-time string.
+         *
+         * Example:
+         * maybe_convert_hyphenated_date_format( "2018-07-05-17:17:17" );
+         * Returns: "2018-07-05 17:17:17"
+         */
+        private function maybe_convert_hyphenated_date_format($date_string)
         {
         }
     }
@@ -6918,6 +6991,7 @@ namespace {
     class Post_Term_Command extends \WP_CLI\CommandWithTerms
     {
         protected $obj_type = 'post';
+        private $fetcher;
         public function __construct()
         {
         }
@@ -7110,6 +7184,7 @@ namespace {
     {
         protected $obj_type = 'site';
         protected $obj_id_key = 'blog_id';
+        private $fetcher;
         public function __construct()
         {
         }
@@ -7199,13 +7274,13 @@ namespace {
          * : The id of the site to delete. If not provided, you must set the --slug parameter.
          *
          * [--slug=<slug>]
-         * : Path of the blog to be deleted. Subdomain on subdomain installs, directory on subdirectory installs.
+         * : Path of the site to be deleted. Subdomain on subdomain installs, directory on subdirectory installs.
          *
          * [--yes]
          * : Answer yes to the confirmation message.
          *
          * [--keep-tables]
-         * : Delete the blog from the list, but don't drop it's tables.
+         * : Delete the blog from the list, but don't drop its tables.
          *
          * ## EXAMPLES
          *
@@ -7328,15 +7403,21 @@ namespace {
          *
          * ## OPTIONS
          *
-         * <id>...
-         * : One or more IDs of sites to archive.
+         * [<id>...]
+         * : One or more IDs of sites to archive. If not provided, you must set the --slug parameter.
+         *
+         * [--slug=<slug>]
+         * : Path of the site to archive. Subdomain on subdomain installs, directory on subdirectory installs.
          *
          * ## EXAMPLES
          *
          *     $ wp site archive 123
          *     Success: Site 123 archived.
+         *
+         *     $ wp site archive --slug=demo
+         *     Success: Site 123 archived.
          */
-        public function archive($args)
+        public function archive($args, $assoc_args)
         {
         }
         /**
@@ -7344,15 +7425,21 @@ namespace {
          *
          * ## OPTIONS
          *
-         * <id>...
-         * : One or more IDs of sites to unarchive.
+         * [<id>...]
+         * : One or more IDs of sites to unarchive. If not provided, you must set the --slug parameter.
+         *
+         * [--slug=<slug>]
+         * : Path of the site to unarchive. Subdomain on subdomain installs, directory on subdirectory installs.
          *
          * ## EXAMPLES
          *
          *     $ wp site unarchive 123
          *     Success: Site 123 unarchived.
+         *
+         *     $ wp site unarchive --slug=demo
+         *     Success: Site 123 unarchived.
          */
-        public function unarchive($args)
+        public function unarchive($args, $assoc_args)
         {
         }
         /**
@@ -7360,15 +7447,21 @@ namespace {
          *
          * ## OPTIONS
          *
-         * <id>...
-         * : One or more IDs of sites to activate.
+         * [<id>...]
+         * : One or more IDs of sites to activate. If not provided, you must set the --slug parameter.
+         *
+         * [--slug=<slug>]
+         * : Path of the site to be activated. Subdomain on subdomain installs, directory on subdirectory installs.
          *
          * ## EXAMPLES
          *
          *     $ wp site activate 123
          *     Success: Site 123 activated.
+         *
+         *      $ wp site activate --slug=demo
+         *      Success: Site 123 marked as activated.
          */
-        public function activate($args)
+        public function activate($args, $assoc_args)
         {
         }
         /**
@@ -7376,15 +7469,21 @@ namespace {
          *
          * ## OPTIONS
          *
-         * <id>...
-         * : One or more IDs of sites to deactivate.
+         * [<id>...]
+         * : One or more IDs of sites to deactivate. If not provided, you must set the --slug parameter.
+         *
+         * [--slug=<slug>]
+         * : Path of the site to be deactivated. Subdomain on subdomain installs, directory on subdirectory installs.
          *
          * ## EXAMPLES
          *
          *     $ wp site deactivate 123
          *     Success: Site 123 deactivated.
+         *
+         *      $ wp site deactivate --slug=demo
+         *      Success: Site 123 marked as deactivated.
          */
-        public function deactivate($args)
+        public function deactivate($args, $assoc_args)
         {
         }
         /**
@@ -7392,15 +7491,18 @@ namespace {
          *
          * ## OPTIONS
          *
-         * <id>...
-         * : One or more IDs of sites to be marked as spam.
+         * [<id>...]
+         * : One or more IDs of sites to be marked as spam. If not provided, you must set the --slug parameter.
+         *
+         * [--slug=<slug>]
+         * : Path of the site to be marked as spam. Subdomain on subdomain installs, directory on subdirectory installs.
          *
          * ## EXAMPLES
          *
          *     $ wp site spam 123
          *     Success: Site 123 marked as spam.
          */
-        public function spam($args)
+        public function spam($args, $assoc_args)
         {
         }
         /**
@@ -7408,8 +7510,11 @@ namespace {
          *
          * ## OPTIONS
          *
-         * <id>...
-         * : One or more IDs of sites to remove from spam.
+         * [<id>...]
+         * : One or more IDs of sites to remove from spam. If not provided, you must set the --slug parameter.
+         *
+         * [--slug=<slug>]
+         * : Path of the site to be removed from spam. Subdomain on subdomain installs, directory on subdirectory installs.
          *
          * ## EXAMPLES
          *
@@ -7418,7 +7523,7 @@ namespace {
          *
          * @subcommand unspam
          */
-        public function unspam($args)
+        public function unspam($args, $assoc_args)
         {
         }
         /**
@@ -7426,15 +7531,21 @@ namespace {
          *
          * ## OPTIONS
          *
-         * <id>...
-         * : One or more IDs of sites to set as mature.
+         * [<id>...]
+         * : One or more IDs of sites to set as mature. If not provided, you must set the --slug parameter.
+         *
+         * [--slug=<slug>]
+         * : Path of the site to be set as mature. Subdomain on subdomain installs, directory on subdirectory installs.
          *
          * ## EXAMPLES
          *
          *     $ wp site mature 123
          *     Success: Site 123 marked as mature.
+         *
+         *     $ wp site mature --slug=demo
+         *     Success: Site 123 marked as mature.
          */
-        public function mature($args)
+        public function mature($args, $assoc_args)
         {
         }
         /**
@@ -7442,15 +7553,21 @@ namespace {
          *
          * ## OPTIONS
          *
-         * <id>...
-         * : One or more IDs of sites to set as unmature.
+         * [<id>...]
+         * : One or more IDs of sites to set as unmature. If not provided, you must set the --slug parameter.
+         *
+         * [--slug=<slug>]
+         * : Path of the site to be set as unmature. Subdomain on subdomain installs, directory on subdirectory installs.
          *
          * ## EXAMPLES
          *
-         *     $ wp site general 123
+         *     $ wp site unmature 123
+         *     Success: Site 123 marked as unmature.
+         *
+         *     $ wp site unmature --slug=demo
          *     Success: Site 123 marked as unmature.
          */
-        public function unmature($args)
+        public function unmature($args, $assoc_args)
         {
         }
         /**
@@ -7458,17 +7575,23 @@ namespace {
          *
          * ## OPTIONS
          *
-         * <id>...
-         * : One or more IDs of sites to set as public.
+         * [<id>...]
+         * : One or more IDs of sites to set as public. If not provided, you must set the --slug parameter.
+         *
+         * [--slug=<slug>]
+         * : Path of the site to be set as public. Subdomain on subdomain installs, directory on subdirectory installs.
          *
          * ## EXAMPLES
          *
          *     $ wp site public 123
          *     Success: Site 123 marked as public.
          *
+         *      $ wp site public --slug=demo
+         *      Success: Site 123 marked as public.
+         *
          * @subcommand public
          */
-        public function set_public($args)
+        public function set_public($args, $assoc_args)
         {
         }
         /**
@@ -7476,20 +7599,50 @@ namespace {
          *
          * ## OPTIONS
          *
-         * <id>...
-         * : One or more IDs of sites to set as private.
+         * [<id>...]
+         * : One or more IDs of sites to set as private. If not provided, you must set the --slug parameter.
+         *
+         * [--slug=<slug>]
+         * : Path of the site to be set as private. Subdomain on subdomain installs, directory on subdirectory installs.
          *
          * ## EXAMPLES
          *
          *     $ wp site private 123
          *     Success: Site 123 marked as private.
          *
+         *     $ wp site private --slug=demo
+         *     Success: Site 123 marked as private.
+         *
          * @subcommand private
          */
-        public function set_private($args)
+        public function set_private($args, $assoc_args)
         {
         }
         private function update_site_status($ids, $pref, $value)
+        {
+        }
+        /**
+         * Get an array of site IDs from the passed-in arguments or slug parameter.
+         *
+         * @param array $args Passed-in arguments.
+         * @param array $assoc_args Passed-in parameters.
+         *
+         * @return array Site IDs.
+         * @throws ExitException
+         */
+        private function get_sites_ids($args, $assoc_args)
+        {
+        }
+        /**
+         * Check that the site IDs or slug are provided.
+         *
+         * @param  array  $args  Passed-in arguments.
+         * @param  array  $assoc_args  Passed-in parameters.
+         *
+         * @return bool
+         * @throws ExitException If neither site ids nor site slug using --slug were provided.
+         */
+        private function check_site_ids_and_slug($args, $assoc_args)
         {
         }
     }
@@ -8893,6 +9046,7 @@ namespace {
         protected $obj_type = 'user';
         protected $obj_fields = ['ID', 'user_login', 'display_name', 'user_email', 'user_registered', 'roles'];
         private $cap_fields = ['name'];
+        private $fetcher;
         public function __construct()
         {
         }
@@ -9434,6 +9588,18 @@ namespace {
          *     $ wp user reset-password admin --skip-email --porcelain
          *     yV6BP*!d70wg
          *
+         *     # Reset password for all users.
+         *     $ wp user reset-password $(wp user list --format=ids)
+         *     Reset password for admin
+         *     Reset password for editor
+         *     Reset password for subscriber
+         *     Success: Passwords reset for 3 users.
+         *
+         *     # Reset password for all users with a particular role.
+         *     $ wp user reset-password $(wp user list --format=ids --role=administrator)
+         *     Reset password for admin
+         *     Success: Password reset for 1 user.
+         *
          * @subcommand reset-password
          */
         public function reset_password($args, $assoc_args)
@@ -9562,6 +9728,7 @@ namespace {
     class User_Meta_Command extends \WP_CLI\CommandWithMeta
     {
         protected $meta_type = 'user';
+        private $fetcher;
         public function __construct()
         {
         }
@@ -10007,11 +10174,11 @@ namespace WP_CLI\Entity {
         /**
          * RecursiveDataStructureTraverser constructor.
          *
-         * @param mixed $data The data to read/manipulate by reference.
-         * @param string|int $key The key/property the data belongs to.
-         * @param static $parent
+         * @param mixed       $data            The data to read/manipulate by reference.
+         * @param string|int  $key             The key/property the data belongs to.
+         * @param static|null $parent_instance The parent instance of the traverser.
          */
-        public function __construct(&$data, $key = null, $parent = null)
+        public function __construct(&$data, $key = null, $parent_instance = null)
         {
         }
         /**
@@ -10147,7 +10314,7 @@ namespace {
          * : The path to the PHP file to execute.  Use '-' to run code from STDIN.
          *
          * [<arg>...]
-         * : One or more arguments to pass to the file. They are placed in the $args variable.
+         * : One or more positional arguments to pass to the file. They are placed in the $args variable.
          *
          * [--skip-wordpress]
          * : Load and execute file without loading WordPress.
@@ -10159,7 +10326,9 @@ namespace {
          *
          * ## EXAMPLES
          *
-         *     wp eval-file my-code.php value1 value2
+         *     # Execute file my-code.php and pass value1 and value2 arguments.
+         *     # Access arguments in $args array ($args[0] = value1, $args[1] = value2).
+         *     $ wp eval-file my-code.php value1 value2
          */
         public function __invoke($args, $assoc_args)
         {
@@ -10264,6 +10433,9 @@ namespace {
          * : Include specified export section only in the first export file. Valid options
          * are categories, tags, nav_menu_items, custom_taxonomies_terms. Separate multiple
          * sections with a comma. Defaults to none.
+         *
+         * [--allow_orphan_terms]
+         * : Export orphaned terms with `parent=0`, instead of throwing an exception.
          *
          * ## FILTERS
          *
@@ -10377,7 +10549,10 @@ namespace {
         private function check_max_file_size($size)
         {
         }
-        private function check_include_once($include_once)
+        private function check_include_once($once)
+        {
+        }
+        private function check_allow_orphan_terms($allow_orphan_terms)
         {
         }
     }
@@ -10429,7 +10604,7 @@ namespace {
     class WP_Export_Query
     {
         const QUERY_CHUNK = 100;
-        private static $defaults = ['post_ids' => \null, 'post_type' => \null, 'status' => \null, 'author' => \null, 'start_date' => \null, 'end_date' => \null, 'start_id' => \null, 'max_num_posts' => \null, 'category' => \null];
+        private static $defaults = ['post_ids' => \null, 'post_type' => \null, 'status' => \null, 'author' => \null, 'start_date' => \null, 'end_date' => \null, 'start_id' => \null, 'max_num_posts' => \null, 'category' => \null, 'allow_orphan_terms' => \null];
         private $post_ids;
         private $filters;
         private $wheres = [];
@@ -10518,7 +10693,7 @@ namespace {
         private static function topologically_sort_terms($terms)
         {
         }
-        private function check_for_orphaned_terms($terms)
+        private function process_orphaned_terms($terms)
         {
         }
         private static function get_terms_for_post($post)
@@ -11697,6 +11872,7 @@ namespace {
          * * description
          * * file
          * * auto_update
+         * * author
          *
          * ## EXAMPLES
          *
@@ -13130,6 +13306,8 @@ namespace {
         /**
          * Activates a given language.
          *
+         * **Warning: `wp language core activate` is deprecated. Use `wp site switch-language` instead.**
+         *
          * ## OPTIONS
          *
          * <language>
@@ -13348,11 +13526,25 @@ namespace {
          *
          * ## OPTIONS
          *
-         * <plugin>
+         * [<plugin>]
          * : Plugin to uninstall language for.
+         *
+         * [--all]
+         * : If set, languages for all plugins will be uninstalled.
          *
          * <language>...
          * : Language code to uninstall.
+         *
+         * [--format=<format>]
+         * : Render output in a particular format. Used when installing languages for all plugins.
+         * ---
+         * default: table
+         * options:
+         *   - table
+         *   - csv
+         *   - json
+         *   - summary
+         * ---
          *
          * ## EXAMPLES
          *
@@ -13599,11 +13791,25 @@ namespace {
          *
          * ## OPTIONS
          *
-         * <theme>
+         * [<theme>]
          * : Theme to uninstall language for.
+         *
+         * [--all]
+         * : If set, languages for all themes will be uninstalled.
          *
          * <language>...
          * : Language code to uninstall.
+         *
+         * [--format=<format>]
+         * : Render output in a particular format. Used when installing languages for all themes.
+         * ---
+         * default: table
+         * options:
+         *   - table
+         *   - csv
+         *   - json
+         *   - summary
+         * ---
          *
          * ## EXAMPLES
          *
@@ -13933,8 +14139,12 @@ namespace {
          * [--featured_image]
          * : If set, set the imported image as the Featured Image of the post it is attached to.
          *
-         * [--porcelain]
-         * : Output just the new attachment ID.
+         * [--porcelain[=<field>]]
+         * : Output a single field for each imported image. Defaults to attachment ID when used as flag.
+         * ---
+         * options:
+         *   - url
+         * ---
          *
          * ## EXAMPLES
          *
@@ -14179,6 +14389,20 @@ namespace {
         private function get_attached_file($attachment_id)
         {
         }
+        /**
+         * Image-friendly alternative to wp_get_attachment_url(). Will return the full size URL of an image instead of the `-scaled` version.
+         *
+         * In WordPress 5.3, behavior changed to account for automatic resizing of
+         * big image files.
+         *
+         * @see https://core.trac.wordpress.org/ticket/47873
+         *
+         * @param int $attachment_id ID of the attachment to get the URL for.
+         * @return string|false URL of the attachment, or false if not found.
+         */
+        private function get_real_attachment_url($attachment_id)
+        {
+        }
     }
     /**
      * Lists, installs, and removes WP-CLI packages.
@@ -14323,6 +14547,13 @@ namespace {
          *
          * When installing a .zip file, WP-CLI extracts the package to
          * `~/.wp-cli/packages/local/<package-name>`.
+         *
+         * If Github token authorization is required, a GitHub Personal Access Token
+         * (https://github.com/settings/tokens) can be used. The following command
+         * will add a GitHub Personal Access Token to Composer's global configuration:
+         * composer config -g github-oauth.github.com <GITHUB_TOKEN>
+         * Once this has been added, the value used for <GITHUB_TOKEN> will be used
+         * for future authorization requests.
          *
          * ## OPTIONS
          *
@@ -14637,7 +14868,7 @@ namespace {
          * @param bool   $insecure     Optional. Whether to insecurely retry downloads that failed TLS handshake. Defaults
          *                             to false.
          */
-        private function check_gitlab_package_name($package_name, $version = '', $insecure = \false)
+        private function check_gitlab_package_name($project_name, $version = '', $insecure = \false)
         {
         }
         /**
@@ -16014,7 +16245,7 @@ namespace {
          *     $ wp search-replace '\[foo id="([0-9]+)"' '[bar id="\1"' --regex --regex-flags='i'
          *
          *     # Turn your production multisite database into a local dev database
-         *     $ wp search-replace --url=example.com example.com example.test 'wp_*options' wp_blogs
+         *     $ wp search-replace --url=example.com example.com example.test 'wp_*options' wp_blogs wp_site --network
          *
          *     # Search/replace to a SQL file without transforming the database
          *     $ wp search-replace foo bar --export=database.sql
