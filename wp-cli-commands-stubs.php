@@ -558,7 +558,7 @@ namespace {
          *     $ wp transient delete --all --network
          *     Success: 2 transients deleted from the database.
          *
-         *     # Delete all transients in a multsite.
+         *     # Delete all transients in a multisite.
          *     $ wp transient delete --all --network && wp site list --field=url | xargs -n1 -I % wp --url=% transient delete --all
          */
         public function delete($args, $assoc_args)
@@ -904,6 +904,9 @@ namespace {
          *     Success: Verified 1 of 1 plugins.
          */
         public function __invoke($args, $assoc_args)
+        {
+        }
+        private function verify_hello_dolly_from_core($assoc_args)
         {
         }
         /**
@@ -1698,6 +1701,9 @@ namespace {
          * [--major]
          * : Compare only the first part of the version number.
          *
+         * [--force-check]
+         * : Bypass the transient cache and force a fresh update check.
+         *
          * [--field=<field>]
          * : Prints the value of a single field for each update.
          *
@@ -1735,7 +1741,7 @@ namespace {
          *
          * Downloads and extracts WordPress core files to the specified path. Uses
          * current directory when no path is specified. Downloaded build is verified
-         * to have the correct md5 and then cached to the local filesytem.
+         * to have the correct md5 and then cached to the local filesystem.
          * Subsequent uses of command will use the local cache if it still exists.
          *
          * ## OPTIONS
@@ -2812,6 +2818,9 @@ namespace {
          * [See docs](http://dev.mysql.com/doc/refman/5.7/en/check-table.html)
          * for more details on the `CHECK TABLE` statement.
          *
+         * This command does not check whether WordPress is installed;
+         * to do that run `wp core is-installed`.
+         *
          * ## OPTIONS
          *
          * [--dbuser=<value>]
@@ -2938,6 +2947,10 @@ namespace {
          * Executes an arbitrary SQL query using `DB_HOST`, `DB_NAME`, `DB_USER`
          *  and `DB_PASSWORD` database credentials specified in wp-config.php.
          *
+         * Use the `--skip-column-names` MySQL argument to exclude the headers
+         * from a SELECT query. Pipe the output to remove the ASCII table
+         * entirely.
+         *
          * ## OPTIONS
          *
          * [<sql>]
@@ -2959,6 +2972,12 @@ namespace {
          *
          *     # Execute a query stored in a file
          *     $ wp db query < debug.sql
+         *
+         *     # Query for a specific value in the database (pipe the result to remove the ASCII table borders)
+         *     $ wp db query 'SELECT option_value FROM wp_options WHERE option_name="home"' --skip-column-names
+         *     +---------------------+
+         *     | https://example.com |
+         *     +---------------------+
          *
          *     # Check all tables in the database
          *     $ wp db query "CHECK TABLE $(wp db tables | paste -s -d, -);"
@@ -4328,6 +4347,32 @@ namespace {
          *     | 29         | 2013-03-14 11:56:08 | Jane Doe       |
          *     +------------+---------------------+----------------+
          *
+         *     # List unapproved comments.
+         *     $ wp comment list --number=3 --status=hold --fields=ID,comment_date,comment_author
+         *     +------------+---------------------+----------------+
+         *     | comment_ID | comment_date        | comment_author |
+         *     +------------+---------------------+----------------+
+         *     | 8          | 2023-11-10 13:13:06 | John Doe       |
+         *     | 7          | 2023-11-10 13:09:55 | Mr WordPress   |
+         *     | 9          | 2023-11-10 11:22:31 | Jane Doe       |
+         *     +------------+---------------------+----------------+
+         *
+         *     # List comments marked as spam.
+         *     $ wp comment list --status=spam --fields=ID,comment_date,comment_author
+         *     +------------+---------------------+----------------+
+         *     | comment_ID | comment_date        | comment_author |
+         *     +------------+---------------------+----------------+
+         *     | 2          | 2023-11-10 11:22:31 | Jane Doe       |
+         *     +------------+---------------------+----------------+
+         *
+         *     # List comments in trash.
+         *     $ wp comment list --status=trash --fields=ID,comment_date,comment_author
+         *     +------------+---------------------+----------------+
+         *     | comment_ID | comment_date        | comment_author |
+         *     +------------+---------------------+----------------+
+         *     | 3          | 2023-11-10 11:22:31 | John Doe       |
+         *     +------------+---------------------+----------------+
+         *
          * @subcommand list
          */
         public function list_($args, $assoc_args)
@@ -5629,7 +5674,7 @@ namespace {
          * : The name of the option to add.
          *
          * [<value>]
-         * : The value of the option to add. If ommited, the value is read from STDIN.
+         * : The value of the option to add. If omitted, the value is read from STDIN.
          *
          * [--format=<format>]
          * : The serialization format for the value.
@@ -5770,7 +5815,7 @@ namespace {
          * : The name of the option to update.
          *
          * [<value>]
-         * : The new value. If ommited, the value is read from STDIN.
+         * : The new value. If omitted, the value is read from STDIN.
          *
          * [--autoload=<autoload>]
          * : Requires WP 4.2. Should this option be automatically loaded.
@@ -6104,7 +6149,7 @@ namespace {
          * ## EXAMPLES
          *
          *     # Create post and schedule for future
-         *     $ wp post create --post_type=page --post_title='A future post' --post_status=future --post_date='2020-12-01 07:00:00'
+         *     $ wp post create --post_type=post --post_title='A future post' --post_status=future --post_date='2030-12-01 07:00:00'
          *     Success: Created post 1921.
          *
          *     # Create post with content from given file
@@ -6533,6 +6578,25 @@ namespace {
          *     Success: Added custom field.
          */
         public function generate($args, $assoc_args)
+        {
+        }
+        /**
+         * Gets the post ID for a given URL.
+         *
+         * ## OPTIONS
+         *
+         * <url>
+         * : The URL of the post to get.
+         *
+         * ## EXAMPLES
+         *
+         *     # Get post ID by URL
+         *     $ wp post url-to-id https://example.com/?p=1
+         *     1
+         *
+         * @subcommand url-to-id
+         */
+        public function url_to_id($args, $assoc_args)
         {
         }
         private function maybe_make_child()
@@ -7346,6 +7410,9 @@ namespace {
          * [--site__in=<value>]
          * : Only list the sites with these blog_id values (comma-separated).
          *
+         * [--site_user=<value>]
+         * : Only list the sites with this user.
+         *
          * [--field=<field>]
          * : Prints the value of a single field for each site.
          *
@@ -7808,7 +7875,7 @@ namespace {
          * : The name of the site option to add.
          *
          * [<value>]
-         * : The value of the site option to add. If ommited, the value is read from STDIN.
+         * : The value of the site option to add. If omitted, the value is read from STDIN.
          *
          * [--format=<format>]
          * : The serialization format for the value.
@@ -7873,7 +7940,7 @@ namespace {
          *
          * ## EXAMPLES
          *
-         *     # List all site options begining with "i2f_"
+         *     # List all site options beginning with "i2f_"
          *     $ wp site option list --search="i2f_*"
          *     +-------------+--------------+
          *     | meta_key    | meta_value   |
@@ -7895,7 +7962,7 @@ namespace {
          * : The name of the site option to update.
          *
          * [<value>]
-         * : The new value. If ommited, the value is read from STDIN.
+         * : The new value. If omitted, the value is read from STDIN.
          *
          * [--format=<format>]
          * : The serialization format for the value.
@@ -8707,6 +8774,10 @@ namespace {
      *     $ wp user application-password update 123 6633824d-c1d7-4f79-9dd5-4586f734d69e --name=newappname
      *     Success: Updated application password.
      *
+     *     # Delete an existing application password
+     *     $ wp user application-password delete 123 6633824d-c1d7-4f79-9dd5-4586f734d69e
+     *     Success: Deleted 1 of 1 application password.
+     *
      *     # Check if an application password for a given application exists
      *     $ wp user application-password exists 123 myapp
      *     $ echo $?
@@ -8950,9 +9021,13 @@ namespace {
          *
          * ## EXAMPLES
          *
-         *     # Record usage of an application password
-         *     $ wp user application-password record-usage 123 6633824d-c1d7-4f79-9dd5-4586f734d69e
-         *     Success: Recorded application password usage.
+         *     # Delete an existing application password
+         *     $ wp user application-password delete 123 6633824d-c1d7-4f79-9dd5-4586f734d69e
+         *     Success: Deleted 1 of 1 application password.
+         *
+         *     # Delete all of the user's application passwords
+         *     $ wp user application-password delete 123 --all
+         *     Success: Deleted all application passwords.
          *
          * @param array $args       Indexed array of positional arguments.
          * @param array $assoc_args Associative array of associative arguments.
@@ -9400,13 +9475,16 @@ namespace {
          * <user>
          * : User ID, user email, or user login.
          *
-         * <role>
-         * : Add the specified role to the user.
+         * [<role>...]
+         * : Add the specified role(s) to the user.
          *
          * ## EXAMPLES
          *
          *     $ wp user add-role 12 author
          *     Success: Added 'author' role for johndoe (12).
+         *
+         *     $ wp user add-role 12 author editor
+         *     Success: Added 'author', 'editor' roles for johndoe (12).
          *
          * @subcommand add-role
          */
@@ -9421,13 +9499,16 @@ namespace {
          * <user>
          * : User ID, user email, or user login.
          *
-         * [<role>]
-         * : A specific role to remove.
+         * [<role>...]
+         * : Remove the specified role(s) from the user.
          *
          * ## EXAMPLES
          *
          *     $ wp user remove-role 12 author
          *     Success: Removed 'author' role for johndoe (12).
+         *
+         *     $ wp user remove-role 12 author editor
+         *     Success: Removed 'author', 'editor' roles for johndoe (12).
          *
          * @subcommand remove-role
          */
@@ -9507,6 +9588,19 @@ namespace {
          *   - count
          *   - yaml
          * ---
+         *
+         * [--origin=<origin>]
+         * : Render output in a particular format.
+         * ---
+         * default: all
+         * options:
+         *   - all
+         *   - user
+         *   - role
+         * ---
+         *
+         * [--exclude-role-names]
+         * : Exclude capabilities that match role names from output.
          *
          * ## EXAMPLES
          *
@@ -10138,162 +10232,6 @@ namespace {
     {
         protected $obj_type = 'user';
     }
-}
-namespace WP_CLI\Entity {
-    class NonExistentKeyException extends \OutOfBoundsException
-    {
-        /** @var RecursiveDataStructureTraverser */
-        protected $traverser;
-        /**
-         * @param RecursiveDataStructureTraverser $traverser
-         */
-        public function set_traverser($traverser)
-        {
-        }
-        /**
-         * @return RecursiveDataStructureTraverser
-         */
-        public function get_traverser()
-        {
-        }
-    }
-    class RecursiveDataStructureTraverser
-    {
-        /**
-         * @var mixed The data to traverse set by reference.
-         */
-        protected $data;
-        /**
-         * @var null|string The key the data belongs to in the parent's data.
-         */
-        protected $key;
-        /**
-         * @var null|static The parent instance of the traverser.
-         */
-        protected $parent;
-        /**
-         * RecursiveDataStructureTraverser constructor.
-         *
-         * @param mixed       $data            The data to read/manipulate by reference.
-         * @param string|int  $key             The key/property the data belongs to.
-         * @param static|null $parent_instance The parent instance of the traverser.
-         */
-        public function __construct(&$data, $key = null, $parent_instance = null)
-        {
-        }
-        /**
-         * Get the nested value at the given key path.
-         *
-         * @param string|int|array $key_path
-         *
-         * @return static
-         */
-        public function get($key_path)
-        {
-        }
-        /**
-         * Get the current data.
-         *
-         * @return mixed
-         */
-        public function value()
-        {
-        }
-        /**
-         * Update a nested value at the given key path.
-         *
-         * @param string|int|array $key_path
-         * @param mixed $value
-         */
-        public function update($key_path, $value)
-        {
-        }
-        /**
-         * Update the current data with the given value.
-         *
-         * This will mutate the variable which was passed into the constructor
-         * as the data is set and traversed by reference.
-         *
-         * @param mixed $value
-         */
-        public function set_value($value)
-        {
-        }
-        /**
-         * Unset the value at the given key path.
-         *
-         * @param $key_path
-         */
-        public function delete($key_path)
-        {
-        }
-        /**
-         * Define a nested value while creating keys if they do not exist.
-         *
-         * @param array $key_path
-         * @param mixed $value
-         */
-        public function insert($key_path, $value)
-        {
-        }
-        /**
-         * Delete the key on the parent's data that references this data.
-         */
-        public function unset_on_parent()
-        {
-        }
-        /**
-         * Delete the given key from the data.
-         *
-         * @param $key
-         */
-        public function delete_by_key($key)
-        {
-        }
-        /**
-         * Get an instance of the traverser for the given hierarchical key.
-         *
-         * @param array $key_path Hierarchical key path within the current data to traverse to.
-         *
-         * @throws NonExistentKeyException
-         *
-         * @return static
-         */
-        public function traverse_to(array $key_path)
-        {
-        }
-        /**
-         * Create the key on the current data.
-         *
-         * @throws UnexpectedValueException
-         */
-        protected function create_key()
-        {
-        }
-        /**
-         * Check if the given key exists on the current data.
-         *
-         * @param string $key
-         *
-         * @return bool
-         */
-        public function exists($key)
-        {
-        }
-    }
-    class Utils
-    {
-        /**
-         * Check whether any input is passed to STDIN.
-         *
-         * @return bool
-         */
-        public static function has_stdin()
-        {
-        }
-    }
-}
-namespace {
     class EvalFile_Command extends \WP_CLI_Command
     {
         /**
@@ -11130,15 +11068,16 @@ namespace WP_CLI {
         {
         }
         /**
-         * Get the minor or patch version for plugins with available updates
+         * Get the minor or patch version for plugins and themes with available updates
          *
-         * @param array  $items    Plugins with updates.
+         * @param array  $items    Items with updates.
          * @param string $type     Either 'minor' or 'patch'.
          * @param bool   $insecure Whether to retry without certificate validation on TLS handshake failure.
          * @param bool   $require_stable Whether to require stable version when comparing versions.
+         * @param string $item_type Item type, either 'plugin' or 'theme'.
          * @return array
          */
-        private function get_minor_or_patch_updates($items, $type, $insecure, $require_stable)
+        private function get_minor_or_patch_updates($items, $type, $insecure, $require_stable, $item_type)
         {
         }
         /**
@@ -11216,7 +11155,8 @@ namespace {
         protected $item_type = 'plugin';
         protected $upgrade_refresh = 'wp_update_plugins';
         protected $upgrade_transient = 'update_plugins';
-        protected $obj_fields = array('name', 'status', 'update', 'version');
+        protected $check_wporg = ['status' => \false, 'last_updated' => \false];
+        protected $obj_fields = array('name', 'status', 'update', 'version', 'update_version', 'auto_update');
         /**
          * Plugin fetcher instance.
          *
@@ -11570,6 +11510,16 @@ namespace {
         protected function get_item_list()
         {
         }
+        /**
+         * Get the wordpress.org status of a plugin.
+         *
+         * @param string $plugin_name The plugin slug.
+         *
+         * @return string The status of the plugin, includes the last update date.
+         */
+        protected function get_wporg_data($plugin_name)
+        {
+        }
         protected function filter_item_list($items, $args)
         {
         }
@@ -11862,10 +11812,10 @@ namespace {
          * * status
          * * update
          * * version
+         * * update_version
          *
          * These fields are optionally available:
          *
-         * * update_version
          * * update_package
          * * update_id
          * * title
@@ -11873,27 +11823,40 @@ namespace {
          * * file
          * * auto_update
          * * author
+         * * wporg_status
+         * * wporg_last_updated
          *
          * ## EXAMPLES
          *
          *     # List active plugins on the site.
          *     $ wp plugin list --status=active --format=json
-         *     [{"name":"dynamic-hostname","status":"active","update":"none","version":"0.4.2"},{"name":"tinymce-templates","status":"active","update":"none","version":"4.4.3"},{"name":"wp-multibyte-patch","status":"active","update":"none","version":"2.4"},{"name":"wp-total-hacks","status":"active","update":"none","version":"2.0.1"}]
+         *     [{"name":"dynamic-hostname","status":"active","update":"none","version":"0.4.2","update_version": ""},{"name":"tinymce-templates","status":"active","update":"none","version":"4.4.3","update_version": ""},{"name":"wp-multibyte-patch","status":"active","update":"none","version":"2.4","update_version": ""},{"name":"wp-total-hacks","status":"active","update":"none","version":"2.0.1","update_version": ""}]
          *
          *     # List plugins on each site in a network.
          *     $ wp site list --field=url | xargs -I % wp plugin list --url=%
-         *     +---------+----------------+--------+---------+
-         *     | name    | status         | update | version |
-         *     +---------+----------------+--------+---------+
-         *     | akismet | active-network | none   | 3.1.11  |
-         *     | hello   | inactive       | none   | 1.6     |
-         *     +---------+----------------+--------+---------+
-         *     +---------+----------------+--------+---------+
-         *     | name    | status         | update | version |
-         *     +---------+----------------+--------+---------+
-         *     | akismet | active-network | none   | 3.1.11  |
-         *     | hello   | inactive       | none   | 1.6     |
-         *     +---------+----------------+--------+---------+
+         *     +---------+----------------+--------+---------+----------------+
+         *     | name    | status         | update | version | update_version |
+         *     +---------+----------------+--------+---------+----------------+
+         *     | akismet | active-network | none   | 3.1.11  |                |
+         *     | hello   | inactive       | none   | 1.6     | 1.7.2          |
+         *     +---------+----------------+--------+---------+----------------+
+         *     +---------+----------------+--------+---------+----------------+
+         *     | name    | status         | update | version | update_version |
+         *     +---------+----------------+--------+---------+----------------+
+         *     | akismet | active-network | none   | 3.1.11  |                |
+         *     | hello   | inactive       | none   | 1.6     | 1.7.2          |
+         *     +---------+----------------+--------+---------+----------------+
+         *
+         *     # Check whether plugins are still active on WordPress.org
+         *     $ wp plugin list --format=csv --fields=name,wporg_status,wporg_last_updated
+         *     +--------------------+--------------+--------------------+
+         *     | name               | wporg_status | wporg_last_updated |
+         *     +--------------------+--------------+--------------------+
+         *     | akismet            | active       | 2023-12-11         |
+         *     | user-switching     | active       | 2023-11-17         |
+         *     | wordpress-importer | active       | 2023-04-28         |
+         *     | local              |              |                    |
+         *     +--------------------+--------------+--------------------+
          *
          * @subcommand list
          */
@@ -12196,7 +12159,7 @@ namespace {
         protected $item_type = 'theme';
         protected $upgrade_refresh = 'wp_update_themes';
         protected $upgrade_transient = 'update_themes';
-        protected $obj_fields = ['name', 'status', 'update', 'version'];
+        protected $obj_fields = ['name', 'status', 'update', 'version', 'update_version', 'auto_update'];
         public function __construct()
         {
         }
@@ -12508,6 +12471,12 @@ namespace {
          * [--exclude=<theme-names>]
          * : Comma separated list of theme names that should be excluded from updating.
          *
+         * [--minor]
+         * : Only perform updates for minor releases (e.g. from 1.3 to 1.4 instead of 2.0)
+         *
+         * [--patch]
+         * : Only perform updates for patch releases (e.g. from 1.3 to 1.3.3 instead of 1.4)
+         *
          * [--format=<format>]
          * : Render output in a particular format.
          * ---
@@ -12695,10 +12664,10 @@ namespace {
          * * status
          * * update
          * * version
+         * * update_version
          *
          * These fields are optionally available:
          *
-         * * update_version
          * * update_package
          * * update_id
          * * title
@@ -12709,9 +12678,9 @@ namespace {
          *
          *     # List themes
          *     $ wp theme list --status=inactive --format=csv
-         *     name,status,update,version
-         *     twentyfourteen,inactive,none,1.7
-         *     twentysixteen,inactive,available,1.1
+         *     name,status,update,version,update_version
+         *     twentyfourteen,inactive,none,1.7,
+         *     twentysixteen,inactive,available,1.1,
          *
          * @subcommand list
          */
@@ -14116,6 +14085,9 @@ namespace {
          * [--post_name=<post_name>]
          * : Name of the post to attach the imported files to.
          *
+         * [--file_name=<name>]
+         * : Attachment name (post_name field).
+         *
          * [--title=<title>]
          * : Attachment title (post title field).
          *
@@ -14401,6 +14373,18 @@ namespace {
          * @return string|false URL of the attachment, or false if not found.
          */
         private function get_real_attachment_url($attachment_id)
+        {
+        }
+        /**
+         * Create image slug based on user input slug.
+         * Add basename extension to slug.
+         *
+         * @param string $basename Default slu of image.
+         * @param string $slug User input slug.
+         *
+         * @return string Image slug with extension.
+         */
+        private function get_image_name($basename, $slug)
         {
         }
     }
@@ -15030,6 +15014,70 @@ namespace WP_CLI {
         protected function pregMatch($re, $str, &$matches = array())
         {
         }
+    }
+}
+namespace WP_CLI\Package\Compat\Min_Composer_1_10 {
+    trait NullIOMethodsTrait
+    {
+        /**
+         * {@inheritDoc}
+         */
+        public function isVerbose()
+        {
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public function write($messages, $newline = true, $verbosity = self::NORMAL)
+        {
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public function writeError($messages, $newline = true, $verbosity = self::NORMAL)
+        {
+        }
+        private static function output_clean_message($messages)
+        {
+        }
+    }
+}
+namespace WP_CLI\Package\Compat\Min_Composer_2_3 {
+    trait NullIOMethodsTrait
+    {
+        /**
+         * {@inheritDoc}
+         */
+        public function isVerbose() : bool
+        {
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public function write($messages, bool $newline = true, int $verbosity = self::NORMAL) : void
+        {
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public function writeError($messages, bool $newline = true, int $verbosity = self::NORMAL) : void
+        {
+        }
+        private static function output_clean_message($messages)
+        {
+        }
+    }
+}
+namespace WP_CLI\Package\Compat {
+    trait NullIOMethodsTrait
+    {
+        use \WP_CLI\Package\Compat\Min_Composer_2_3\NullIOMethodsTrait;
+    }
+}
+namespace WP_CLI\Package {
+    class ComposerIO extends \Composer\IO\NullIO
+    {
+        use \WP_CLI\Package\Compat\NullIOMethodsTrait;
     }
 }
 namespace {
@@ -15817,7 +15865,7 @@ namespace {
          * The following files are also included unless the `--skip-tests` is used:
          *
          * * `phpunit.xml.dist` is the configuration file for PHPUnit.
-         * * `.travis.yml` is the configuration file for Travis CI. Use `--ci=<provider>` to select a different service.
+         * * `.circleci/config.yml` is the configuration file for CircleCI. Use `--ci=<provider>` to select a different service.
          * * `bin/install-wp-tests.sh` configures the WordPress test suite and a test database.
          * * `tests/bootstrap.php` is the file that makes the current plugin active when running the test suite.
          * * `tests/test-sample.php` is a sample file containing test cases.
@@ -15852,9 +15900,8 @@ namespace {
          * [--ci=<provider>]
          * : Choose a configuration file for a continuous integration provider.
          * ---
-         * default: travis
+         * default: circle
          * options:
-         *   - travis
          *   - circle
          *   - gitlab
          * ---
@@ -15883,7 +15930,7 @@ namespace {
          * The following files are generated by default:
          *
          * * `phpunit.xml.dist` is the configuration file for PHPUnit.
-         * * `.travis.yml` is the configuration file for Travis CI. Use `--ci=<provider>` to select a different service.
+         * * `.circleci/config.yml` is the configuration file for CircleCI. Use `--ci=<provider>` to select a different service.
          * * `bin/install-wp-tests.sh` configures the WordPress test suite and a test database.
          * * `tests/bootstrap.php` is the file that makes the current plugin active when running the test suite.
          * * `tests/test-sample.php` is a sample file containing the actual tests.
@@ -15907,9 +15954,8 @@ namespace {
          * [--ci=<provider>]
          * : Choose a configuration file for a continuous integration provider.
          * ---
-         * default: travis
+         * default: circle
          * options:
-         *   - travis
          *   - circle
          *   - gitlab
          *   - bitbucket
@@ -15935,7 +15981,7 @@ namespace {
          * The following files are generated by default:
          *
          * * `phpunit.xml.dist` is the configuration file for PHPUnit.
-         * * `.travis.yml` is the configuration file for Travis CI. Use `--ci=<provider>` to select a different service.
+         * * `.circleci/config.yml` is the configuration file for CircleCI. Use `--ci=<provider>` to select a different service.
          * * `bin/install-wp-tests.sh` configures the WordPress test suite and a test database.
          * * `tests/bootstrap.php` is the file that makes the current theme active when running the test suite.
          * * `tests/test-sample.php` is a sample file containing the actual tests.
@@ -15959,9 +16005,8 @@ namespace {
          * [--ci=<provider>]
          * : Choose a configuration file for a continuous integration provider.
          * ---
-         * default: travis
+         * default: circle
          * options:
-         *   - travis
          *   - circle
          *   - gitlab
          *   - bitbucket
@@ -16121,6 +16166,7 @@ namespace {
         private $log_prefixes = array('< ', '> ');
         private $log_colors;
         private $log_encoding;
+        private $start_time;
         /**
          * Searches/replaces strings in the database.
          *
@@ -16576,6 +16622,7 @@ namespace {
     class Super_Admin_Command extends \WP_CLI_Command
     {
         private $fields = ['user_login'];
+        private $fetcher;
         public function __construct()
         {
         }

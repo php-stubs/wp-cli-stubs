@@ -701,24 +701,6 @@ namespace WP_CLI\Bootstrap {
         }
     }
 }
-namespace WP_CLI\Compat\Min_PHP_5_6 {
-    trait FeedbackMethodTrait
-    {
-        /**
-         * @param string $string
-         * @param mixed  ...$args Optional text replacements.
-         */
-        public function feedback($string, ...$args)
-        {
-        }
-    }
-}
-namespace WP_CLI\Compat {
-    trait FeedbackMethodTrait
-    {
-        use \WP_CLI\Compat\Min_PHP_5_6\FeedbackMethodTrait;
-    }
-}
 namespace WP_CLI {
     class Completions
     {
@@ -987,6 +969,11 @@ namespace WP_CLI\Context {
          *
          * To make this work across WordPress versions, we use the actual file and
          * modify it on-the-fly.
+         *
+         * @global string $hook_suffix
+         * @global string $pagenow
+         * @global int    $wp_db_version
+         * @global array  $_wp_submenu_nopriv
          *
          * @return void
          */
@@ -1740,6 +1727,27 @@ namespace WP_CLI {
         {
         }
     }
+}
+namespace WP_CLI\Exception {
+    class NonExistentKeyException extends \OutOfBoundsException
+    {
+        /** @var RecursiveDataStructureTraverser */
+        protected $traverser;
+        /**
+         * @param RecursiveDataStructureTraverser $traverser
+         */
+        public function set_traverser($traverser)
+        {
+        }
+        /**
+         * @return RecursiveDataStructureTraverser
+         */
+        public function get_traverser()
+        {
+        }
+    }
+}
+namespace WP_CLI {
     class ExitException extends \Exception
     {
     }
@@ -3623,6 +3631,134 @@ namespace WP_CLI {
         {
         }
     }
+}
+namespace WP_CLI\Traverser {
+    class RecursiveDataStructureTraverser
+    {
+        /**
+         * @var mixed The data to traverse set by reference.
+         */
+        protected $data;
+        /**
+         * @var null|string The key the data belongs to in the parent's data.
+         */
+        protected $key;
+        /**
+         * @var null|static The parent instance of the traverser.
+         */
+        protected $parent;
+        /**
+         * RecursiveDataStructureTraverser constructor.
+         *
+         * @param mixed       $data            The data to read/manipulate by reference.
+         * @param string|int  $key             The key/property the data belongs to.
+         * @param static|null $parent_instance The parent instance of the traverser.
+         */
+        public function __construct(&$data, $key = null, $parent_instance = null)
+        {
+        }
+        /**
+         * Get the nested value at the given key path.
+         *
+         * @param string|int|array $key_path
+         *
+         * @return static
+         */
+        public function get($key_path)
+        {
+        }
+        /**
+         * Get the current data.
+         *
+         * @return mixed
+         */
+        public function value()
+        {
+        }
+        /**
+         * Update a nested value at the given key path.
+         *
+         * @param string|int|array $key_path
+         * @param mixed $value
+         */
+        public function update($key_path, $value)
+        {
+        }
+        /**
+         * Update the current data with the given value.
+         *
+         * This will mutate the variable which was passed into the constructor
+         * as the data is set and traversed by reference.
+         *
+         * @param mixed $value
+         */
+        public function set_value($value)
+        {
+        }
+        /**
+         * Unset the value at the given key path.
+         *
+         * @param $key_path
+         */
+        public function delete($key_path)
+        {
+        }
+        /**
+         * Define a nested value while creating keys if they do not exist.
+         *
+         * @param array $key_path
+         * @param mixed $value
+         */
+        public function insert($key_path, $value)
+        {
+        }
+        /**
+         * Delete the key on the parent's data that references this data.
+         */
+        public function unset_on_parent()
+        {
+        }
+        /**
+         * Delete the given key from the data.
+         *
+         * @param $key
+         */
+        public function delete_by_key($key)
+        {
+        }
+        /**
+         * Get an instance of the traverser for the given hierarchical key.
+         *
+         * @param array $key_path Hierarchical key path within the current data to traverse to.
+         *
+         * @throws NonExistentKeyException
+         *
+         * @return static
+         */
+        public function traverse_to(array $key_path)
+        {
+        }
+        /**
+         * Create the key on the current data.
+         *
+         * @throws UnexpectedValueException
+         */
+        protected function create_key()
+        {
+        }
+        /**
+         * Check if the given key exists on the current data.
+         *
+         * @param string $key
+         *
+         * @return bool
+         */
+        public function exists($key)
+        {
+        }
+    }
+}
+namespace WP_CLI {
     /**
      * A Upgrader Skin for WordPress that only generates plain-text
      *
@@ -3630,7 +3766,6 @@ namespace WP_CLI {
      */
     class UpgraderSkin extends \WP_Upgrader_Skin
     {
-        use \WP_CLI\Compat\FeedbackMethodTrait;
         public $api;
         public function header()
         {
@@ -3652,6 +3787,13 @@ namespace WP_CLI {
          * @return void
          */
         public function error($error)
+        {
+        }
+        /**
+         * @param string $string
+         * @param mixed  ...$args Optional text replacements.
+         */
+        public function feedback($string, ...$args)
         {
         }
         /**
@@ -3860,10 +4002,11 @@ namespace WP_CLI {
          *
          * @param string $plugin Plugin slug to query.
          * @param string $locale Optional. Locale to request info for. Defaults to 'en_US'.
+         * @param array $fields Optional. Fields to include/omit from the response.
          * @return array|false False on failure. Associative array of the offer on success.
          * @throws RuntimeException If the remote request failed.
          */
-        public function get_plugin_info($plugin, $locale = 'en_US')
+        public function get_plugin_info($plugin, $locale = 'en_US', array $fields = [])
         {
         }
         /**
@@ -3871,10 +4014,11 @@ namespace WP_CLI {
          *
          * @param string $theme  Theme slug to query.
          * @param string $locale Optional. Locale to request info for. Defaults to 'en_US'.
+         * @param array $fields Optional. Fields to include/omit from the response.
          * @return array|false False on failure. Associative array of the offer on success.
          * @throws RuntimeException If the remote request failed.
          */
-        public function get_theme_info($theme, $locale = 'en_US')
+        public function get_theme_info($theme, $locale = 'en_US', array $fields = [])
         {
         }
         /**
@@ -5831,10 +5975,12 @@ namespace WP_CLI\Utils {
      *
      * @access public
      *
-     * @param string $method  HTTP method (GET, POST, DELETE, etc.).
-     * @param string $url     URL to make the HTTP request to.
-     * @param array  $headers Add specific headers to the request.
-     * @param array  $options {
+     * @param string     $method  HTTP method (GET, POST, DELETE, etc.).
+     * @param string     $url     URL to make the HTTP request to.
+     * @param array|null $data    Data to send either as a query string for GET/HEAD requests,
+     *                            or in the body for POST requests.
+     * @param array      $headers Add specific headers to the request.
+     * @param array      $options {
      *     Optional. An associative array of additional request options.
      *
      *     @type bool $halt_on_error Whether or not command execution should be halted on error. Default: true
@@ -6297,6 +6443,14 @@ namespace WP_CLI\Utils {
      * @return string
      */
     function get_cache_dir()
+    {
+    }
+    /**
+     * Check whether any input is passed to STDIN.
+     *
+     * @return bool
+     */
+    function has_stdin()
     {
     }
 }

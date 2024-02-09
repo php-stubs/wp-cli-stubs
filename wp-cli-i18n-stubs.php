@@ -2982,7 +2982,7 @@ class MakeMoCommand extends \WP_CLI_Command
      * : Path to an existing PO file or a directory containing multiple PO files.
      *
      * [<destination>]
-     * : Path to the destination directory for the resulting MO files. Defaults to the source directory.
+     * : Path to the destination file or directory for the resulting MO files. Defaults to the source directory.
      *
      * ## EXAMPLES
      *
@@ -2991,6 +2991,40 @@ class MakeMoCommand extends \WP_CLI_Command
      *
      *     # Create a MO file from a single PO file in a specific directory.
      *     $ wp i18n make-mo example-plugin-de_DE.po languages
+     *
+     *     # Create a MO file from a single PO file to a specific file destination
+     *     $ wp i18n make-mo example-plugin-de_DE.po languages/bar.mo
+     *
+     * @when before_wp_load
+     *
+     * @throws WP_CLI\ExitException
+     */
+    public function __invoke($args, $assoc_args)
+    {
+    }
+}
+class MakePhpCommand extends \WP_CLI_Command
+{
+    /**
+     * Create PHP files from PO files.
+     *
+     * ## OPTIONS
+     *
+     * <source>
+     * : Path to an existing PO file or a directory containing multiple PO files.
+     *
+     * [<destination>]
+     * : Path to the destination directory for the resulting PHP files. Defaults to the source directory.
+     *
+     * ## EXAMPLES
+     *
+     *     # Create PHP files for all PO files in the current directory.
+     *     $ wp i18n make-php .
+     *     Success: Created 3 files.
+     *
+     *     # Create a PHP file from a single PO file in a specific directory.
+     *     $ wp i18n make-php example-plugin-de_DE.po languages
+     *     Success: Created 1 file.
      *
      * @when before_wp_load
      *
@@ -3038,6 +3072,10 @@ class MakePotCommand extends \WP_CLI_Command
      * @var array
      */
     protected $main_file_data = [];
+    /**
+     * @var string
+     */
+    protected $main_file_path;
     /**
      * @var bool
      */
@@ -3338,6 +3376,77 @@ final class MapCodeExtractor extends \Gettext\Extractors\JsCode
      * {@inheritdoc}
      */
     public static function fromString($text, \Gettext\Translations $translations, array $options = [])
+    {
+    }
+}
+/**
+ * PHP array file generator.
+ *
+ * Returns output in the form WordPress uses.
+ */
+class PhpArrayGenerator extends \Gettext\Generators\PhpArray
+{
+    public static $options = ['includeHeaders' => false];
+    /**
+     * {@inheritdoc}
+     */
+    public static function toString(\Gettext\Translations $translations, array $options = [])
+    {
+    }
+    /**
+     * Generates an array with the translations.
+     *
+     * @param Translations $translations
+     * @param array        $options
+     *
+     * @return array
+     */
+    public static function generate(\Gettext\Translations $translations, array $options = [])
+    {
+    }
+    /**
+     * Returns a flat array.
+     *
+     * @param Translations $translations
+     * @param bool         $include_headers
+     * @param bool         $force_array Unused.
+     *
+     * @return array
+     */
+    protected static function toArray(\Gettext\Translations $translations, $include_headers, $force_array = false)
+    {
+    }
+    /**
+     * Determines if the given array is a list.
+     *
+     * An array is considered a list if its keys consist of consecutive numbers from 0 to count($array)-1.
+     *
+     * Polyfill for array_is_list() in PHP 8.1.
+     *
+     * @see https://github.com/symfony/polyfill-php81/tree/main
+     *
+     * @since 4.0.0
+     *
+     * @codeCoverageIgnore
+     *
+     * @param array<mixed> $arr The array being evaluated.
+     * @return bool True if array is a list, false otherwise.
+     */
+    private static function array_is_list(array $arr)
+    {
+    }
+    /**
+     * Outputs or returns a parsable string representation of a variable.
+     *
+     * Like {@see var_export()} but "minified", using short array syntax
+     * and no newlines.
+     *
+     * @since 4.0.0
+     *
+     * @param mixed $value The variable you want to export.
+     * @return string The variable representation.
+     */
+    private static function var_export($value)
     {
     }
 }
