@@ -32,4 +32,5 @@ parameters:
         - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php
         - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-commands-stubs.php
         - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-i18n-stubs.php
+        - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-tools.php
 ```

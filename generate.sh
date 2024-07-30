@@ -5,6 +5,7 @@ HEADER=$'/**\n * Generated stub declarations for WP-CLI\n * @see https://wp-cli.
 FILE="wp-cli-stubs.php"
 FILE_PKGS="wp-cli-commands-stubs.php"
 FILE_I18N="wp-cli-i18n-stubs.php"
+FILE_TOOLS="wp-cli-tools-stubs.php"
 
 set -e
 
@@ -53,3 +54,15 @@ fi
     --interfaces \
     --traits \
     --out="$FILE_I18N"
+
+# wp-cli/php-cli-tools
+"$(dirname "$0")/vendor/bin/generate-stubs" \
+    --include-inaccessible-class-nodes \
+    --force \
+    --finder=finder-tools.php \
+    --header="$HEADER" \
+    --functions \
+    --classes \
+    --interfaces \
+    --traits \
+    --out="$FILE_TOOLS"
