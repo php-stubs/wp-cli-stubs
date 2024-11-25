@@ -3271,12 +3271,14 @@ class MakePotCommand extends \WP_CLI_Command
      *
      * ## EXAMPLES
      *
-     *     # Create a POT file for the WordPress plugin/theme in the current directory
+     *     # Create a POT file for the WordPress plugin/theme in the current directory.
      *     $ wp i18n make-pot . languages/my-plugin.pot
      *
      *     # Create a POT file for the continents and cities list in WordPress core.
-     *     $ wp i18n make-pot . continents-and-cities.pot --include="wp-admin/includes/continents-cities.php"
-     *     --ignore-domain
+     *     $ wp i18n make-pot . continents-and-cities.pot --include="wp-admin/includes/continents-cities.php" --ignore-domain
+     *
+     *     # Create a POT file for the WordPress theme in the current directory with custom headers.
+     *     $ wp i18n make-pot . languages/my-theme.pot --headers='{"Report-Msgid-Bugs-To":"https://github.com/theme-author/my-theme/","POT-Creation-Date":""}'
      *
      * @when before_wp_load
      *
@@ -3405,7 +3407,7 @@ class PhpArrayGenerator extends \Gettext\Generators\PhpArray
     {
     }
     /**
-     * Returns a flat array.
+     * Returns an array containing headers and translations.
      *
      * @param Translations $translations
      * @param bool         $include_headers
@@ -3562,11 +3564,25 @@ class UpdatePoCommand extends \WP_CLI_Command
      * ## OPTIONS
      *
      * <source>
-     * : Path to an existing POT file to use for updating
+     * : Path to an existing POT file to use for updating.
      *
      * [<destination>]
      * : PO file to update or a directory containing multiple PO files.
      *   Defaults to all PO files in the source directory.
+     *
+     * ## EXAMPLES
+     *
+     *     # Update all PO files from a POT file in the current directory.
+     *     $ wp i18n update-po example-plugin.pot
+     *     Success: Updated 3 files.
+     *
+     *     # Update a PO file from a POT file.
+     *     $ wp i18n update-po example-plugin.pot example-plugin-de_DE.po
+     *     Success: Updated 1 file.
+     *
+     *     # Update all PO files in a given directory from a POT file.
+     *     $ wp i18n update-po example-plugin.pot languages
+     *     Success: Updated 2 files.
      *
      * @when before_wp_load
      *

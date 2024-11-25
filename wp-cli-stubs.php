@@ -361,8 +361,7 @@ namespace WP_CLI\Bootstrap {
         /**
          * Get the autoloader paths to scan for an autoloader.
          *
-         * @return string[]|false Array of strings with autoloader paths, or false
-         *                        to skip.
+         * @return string[] Array of autoloader paths, or an empty array if none are found.
          */
         protected function get_autoloader_paths()
         {
@@ -1261,6 +1260,7 @@ namespace WP_CLI\Dispatcher {
         protected $shortdesc;
         protected $longdesc;
         protected $synopsis;
+        protected $hook;
         protected $docparser;
         protected $parent;
         protected $subcommands = [];
@@ -1335,6 +1335,15 @@ namespace WP_CLI\Dispatcher {
          * @return string
          */
         public function get_shortdesc()
+        {
+        }
+        /**
+         * Get the hook name for this composite
+         * command.
+         *
+         * @return string
+         */
+        public function get_hook()
         {
         }
         /**
@@ -1611,7 +1620,7 @@ namespace WP_CLI\Dispatcher {
          * Get an array of parameter names, by merging the command-specific and the
          * global parameters.
          *
-         * @param array  $spec Optional. Specification of the current command.
+         * @param array $spec Optional. Specification of the current command.
          *
          * @return array Array of parameter names
          */
@@ -1933,6 +1942,36 @@ namespace WP_CLI\Fetchers {
         }
     }
     /**
+     * Fetch a signup based on one of its attributes.
+     */
+    class Signup extends \WP_CLI\Fetchers\Base
+    {
+        /**
+         * The message to display when an item is not found.
+         *
+         * @var string
+         */
+        protected $msg = "Invalid signup ID, email, login, or activation key: '%s'";
+        /**
+         * Get a signup.
+         *
+         * @param int|string $signup
+         * @return stdClass|false
+         */
+        public function get($signup)
+        {
+        }
+        /**
+         * Get a signup by one of its identifying attributes.
+         *
+         * @param string $arg The raw CLI argument.
+         * @return stdClass|false The item if found; false otherwise.
+         */
+        protected function get_signup($arg)
+        {
+        }
+    }
+    /**
      * Fetch a WordPress site based on one of its attributes.
      */
     class Site extends \WP_CLI\Fetchers\Base
@@ -2069,7 +2108,7 @@ namespace WP_CLI {
          * Copy a file into the cache
          *
          * @param string $key    cache key
-         * @param string $source source filename
+         * @param string $source source filename; tmp file filepath from HTTP response
          * @return bool
          */
         public function import($key, $source)
@@ -2132,7 +2171,7 @@ namespace WP_CLI {
          * Prepare cache write
          *
          * @param string $key cache key
-         * @return bool|string filename or false
+         * @return bool|string The destination filename or false when cache disabled or directory creation fails.
          */
         protected function prepare_write($key)
         {
@@ -2147,7 +2186,7 @@ namespace WP_CLI {
         {
         }
         /**
-         * Filename from key
+         * Destination filename from key
          *
          * @param string $key
          * @return string filename
@@ -2362,11 +2401,11 @@ namespace WP_CLI {
         {
         }
         /**
-         * Uppercases words with configurable delimeters between words.
+         * Uppercases words with configurable delimiters between words.
          *
          * Takes a string and capitalizes all of the words, like PHP's built-in
          * ucwords function.  This extends that behavior, however, by allowing the
-         * word delimeters to be configured, rather than only separating on
+         * word delimiters to be configured, rather than only separating on
          * whitespace.
          *
          * Here is an example:
@@ -2384,7 +2423,7 @@ namespace WP_CLI {
          * @param string $string The string to operate on.
          * @param string $delimiters A list of word separators.
          *
-         * @return string The string with all delimeter-separated words capitalized.
+         * @return string The string with all delimiter-separated words capitalized.
          */
         public static function ucwords($string, $delimiters = " \n\t\r\x00\v-")
         {
@@ -3814,7 +3853,7 @@ namespace WP_CLI {
     class WpHttpCacheManager
     {
         /**
-         * @var array map whitelisted urls to keys and ttls
+         * @var array<string, array{key:string, ttl:int}> map whitelisted urls to keys and ttls
          */
         protected $whitelist = [];
         /**
@@ -4686,7 +4725,7 @@ namespace {
          * Get values of global configuration parameters.
          *
          * Provides access to `--path=<path>`, `--url=<url>`, and other values of
-         * the [global configuration parameters](https://wp-cli.org/config/).
+         * the [global configuration parameters](https://make.wordpress.org/cli/handbook/references/config/).
          *
          * ```
          * WP_CLI::log( 'The --url=<url> value is: ' . WP_CLI::get_config( 'url' ) );
@@ -4759,15 +4798,15 @@ namespace {
         public static function run_command($args, $assoc_args = [])
         {
         }
-        // DEPRECATED STUFF
+        // DEPRECATED STUFF.
         public static function add_man_dir()
         {
         }
-        // back-compat
+        // back-compat.
         public static function out($str)
         {
         }
-        // back-compat
+        // back-compat.
         // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid -- Deprecated method.
         public static function addCommand($name, $class)
         {
@@ -5085,6 +5124,16 @@ namespace {
         private function process_aliases($aliases, $alias, $config_path, $operation = '')
         {
         }
+        /**
+         * Normalize the alias to an expected format.
+         *
+         * - Add @ if not present.
+         *
+         * @param string $alias Name of alias.
+         */
+        private function normalize_alias($alias)
+        {
+        }
     }
     /**
      * Manages the internal WP-CLI cache,.
@@ -5190,7 +5239,7 @@ namespace {
          * * WP-CLI project config: where the project config YAML file is located.
          * * WP-CLI version: currently installed version.
          *
-         * See [config docs](https://wp-cli.org/config/) for more details on global
+         * See [config docs](https://make.wordpress.org/cli/handbook/references/config/) for more details on global
          * and project config YAML files.
          *
          * ## OPTIONS
@@ -5225,7 +5274,7 @@ namespace {
         /**
          * Checks to see if there is a newer version of WP-CLI available.
          *
-         * Queries the Github releases API. Returns available versions if there are
+         * Queries the GitHub releases API. Returns available versions if there are
          * updates available, or success message if using the latest release.
          *
          * ## OPTIONS
@@ -5434,6 +5483,14 @@ namespace {
          *     $ wp cli has-command "foo bar"
          *     $ echo $?
          *     1
+         *
+         *     # Install a WP-CLI package if not already installed
+         *     $ if ! $(wp cli has-command doctor); then wp package install wp-cli/doctor-command; fi
+         *     Installing package wp-cli/doctor-command (dev-main || dev-master || dev-trunk)
+         *     Updating /home/person/.wp-cli/packages/composer.json to require the package...
+         *     Using Composer to install the package...
+         *     ---
+         *     Success: Package installed.
          *
          * @subcommand has-command
          *
@@ -6226,7 +6283,7 @@ namespace WP_CLI\Utils {
     {
     }
     /**
-     * Get the closest suggestion for a mis-typed target term amongst a list of
+     * Get the closest suggestion for a mistyped target term amongst a list of
      * options.
      *
      * Uses the Levenshtein algorithm to calculate the relative "distance" between
@@ -6451,6 +6508,16 @@ namespace WP_CLI\Utils {
      * @return bool
      */
     function has_stdin()
+    {
+    }
+    /**
+     * Return description of WP_CLI hooks used in @when tag
+     *
+     *  @param string $hook Name of WP_CLI hook
+     *
+     * @return string|null
+     */
+    function get_hook_description($hook)
     {
     }
 }

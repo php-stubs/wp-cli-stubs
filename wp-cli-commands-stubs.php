@@ -1068,6 +1068,60 @@ namespace WP_CLI\Fetchers {
 namespace {
     /**
      * Generates and reads the wp-config.php file.
+     *
+     * ## EXAMPLES
+     *
+     *     # Create standard wp-config.php file.
+     *     $ wp config create --dbname=testing --dbuser=wp --dbpass=securepswd --locale=ro_RO
+     *     Success: Generated 'wp-config.php' file.
+     *
+     *     # List constants and variables defined in wp-config.php file.
+     *     $ wp config list
+     *     +------------------+------------------------------------------------------------------+----------+
+     *     | key              | value                                                            | type     |
+     *     +------------------+------------------------------------------------------------------+----------+
+     *     | table_prefix     | wp_                                                              | variable |
+     *     | DB_NAME          | wp_cli_test                                                      | constant |
+     *     | DB_USER          | root                                                             | constant |
+     *     | DB_PASSWORD      | root                                                             | constant |
+     *     | AUTH_KEY         | r6+@shP1yO&$)1gdu.hl[/j;7Zrvmt~o;#WxSsa0mlQOi24j2cR,7i+QM/#7S:o^ | constant |
+     *     | SECURE_AUTH_KEY  | iO-z!_m--YH$Tx2tf/&V,YW*13Z_HiRLqi)d?$o-tMdY+82pK$`T.NYW~iTLW;xp | constant |
+     *     +------------------+------------------------------------------------------------------+----------+
+     *
+     *     # Get wp-config.php file path.
+     *     $ wp config path
+     *     /home/person/htdocs/project/wp-config.php
+     *
+     *     # Get the table_prefix as defined in wp-config.php file.
+     *     $ wp config get table_prefix
+     *     wp_
+     *
+     *     # Set the WP_DEBUG constant to true.
+     *     $ wp config set WP_DEBUG true --raw
+     *     Success: Updated the constant 'WP_DEBUG' in the 'wp-config.php' file with the raw value 'true'.
+     *
+     *     # Delete the COOKIE_DOMAIN constant from the wp-config.php file.
+     *     $ wp config delete COOKIE_DOMAIN
+     *     Success: Deleted the constant 'COOKIE_DOMAIN' from the 'wp-config.php' file.
+     *
+     *     # Launch system editor to edit wp-config.php file.
+     *     $ wp config edit
+     *
+     *     # Check whether the DB_PASSWORD constant exists in the wp-config.php file.
+     *     $ wp config has DB_PASSWORD
+     *     $ echo $?
+     *     0
+     *
+     *     # Assert if MULTISITE is true.
+     *     $ wp config is-true MULTISITE
+     *     $ echo $?
+     *     0
+     *
+     *     # Get new salts for your wp-config.php file.
+     *     $ wp config shuffle-salts
+     *     Success: Shuffled the salt keys.
+     *
+     * @package wp-cli
      */
     class Config_Command extends \WP_CLI_Command
     {
@@ -1439,6 +1493,7 @@ namespace {
          *
          *     # Set the WP_DEBUG constant to true.
          *     $ wp config set WP_DEBUG true --raw
+         *     Success: Updated the constant 'WP_DEBUG' in the 'wp-config.php' file with the raw value 'true'.
          *
          * @when before_wp_load
          */
@@ -1471,6 +1526,7 @@ namespace {
          *
          *     # Delete the COOKIE_DOMAIN constant from the wp-config.php file.
          *     $ wp config delete COOKIE_DOMAIN
+         *     Success: Deleted the constant 'COOKIE_DOMAIN' from the 'wp-config.php' file.
          *
          * @when before_wp_load
          */
@@ -1535,6 +1591,7 @@ namespace {
          *
          *     # Add a cache key salt to the wp-config.php file
          *     $ wp config shuffle-salts WP_CACHE_KEY_SALT --force
+         *     Success: Shuffled the salt keys.
          *
          * @subcommand shuffle-salts
          * @when before_wp_load
@@ -1790,19 +1847,21 @@ namespace {
          * database tables are installed. Doesn't produce output; uses exit codes
          * to communicate whether WordPress is installed.
          *
+         * ## OPTIONS
+         *
          * [--network]
          * : Check if this is a multisite installation.
          *
          * ## EXAMPLES
          *
-         *     # Bash script for checking if WordPress is not installed
+         *     # Bash script for checking if WordPress is not installed.
          *
          *     if ! wp core is-installed 2>/dev/null; then
          *         # WP is not installed. Let's try installing it.
          *         wp core install
          *     fi
          *
-         *     # Bash script for checking if WordPress is installed, with fallback
+         *     # Bash script for checking if WordPress is installed, with fallback.
          *
          *     if wp core is-installed 2>/dev/null; then
          *         # WP is installed. Let's do some things we should only do in a confirmed WP environment.
@@ -2105,15 +2164,10 @@ namespace {
          *     No files found that need cleaning up
          *     Success: WordPress updated successfully.
          *
-         *     # Update WordPress to latest version of 3.8 release
-         *     $ wp core update --version=3.8 ../latest.zip
-         *     Updating to version 3.8 ()...
+         *     # Update WordPress using zip file.
+         *     $ wp core update ../latest.zip
+         *     Starting update...
          *     Unpacking the update...
-         *     Cleaning up files...
-         *     File removed: wp-admin/js/tags-box.js
-         *     ...
-         *     File removed: wp-admin/js/updates.min.
-         *     377 files cleaned up
          *     Success: WordPress updated successfully.
          *
          *     # Update WordPress to 3.1 forcefully
@@ -2132,6 +2186,8 @@ namespace {
         /**
          * Runs the WordPress database update procedure.
          *
+         * ## OPTIONS
+         *
          * [--network]
          * : Update databases for all sites on a network
          *
@@ -2140,14 +2196,14 @@ namespace {
          *
          * ## EXAMPLES
          *
-         *     # Update the WordPress database
+         *     # Update the WordPress database.
          *     $ wp core update-db
          *     Success: WordPress database upgraded successfully from db version 36686 to 35700.
          *
-         *     # Update databases for all sites on a network
+         *     # Update databases for all sites on a network.
          *     $ wp core update-db --network
          *     WordPress database upgraded successfully from db version 35700 to 29630 on example.com/
-         *     Success: WordPress database upgraded on 123/123 sites
+         *     Success: WordPress database upgraded on 123/123 sites.
          *
          * @subcommand update-db
          */
@@ -2323,11 +2379,13 @@ namespace {
      *
      *     # Run all cron events due right now
      *     $ wp cron event run --due-now
+     *     Executed the cron event 'cron_test_1' in 0.01s.
+     *     Executed the cron event 'cron_test_2' in 0.006s.
      *     Success: Executed a total of 2 cron events.
      *
      *     # Delete all scheduled cron events for the given hook
      *     $ wp cron event delete cron_test
-     *     Success: Deleted 2 instances of the cron event 'cron_test'.
+     *     Success: Deleted a total of 2 cron events.
      *
      *     # List scheduled cron events in JSON
      *     $ wp cron event list --fields=hook,next_run --format=json
@@ -2458,6 +2516,8 @@ namespace {
          *
          *     # Run all cron events due right now
          *     $ wp cron event run --due-now
+         *     Executed the cron event 'cron_test_1' in 0.01s.
+         *     Executed the cron event 'cron_test_2' in 0.006s.
          *     Success: Executed a total of 2 cron events.
          */
         public function run($args, $assoc_args)
@@ -2475,9 +2535,35 @@ namespace {
          *
          *     # Unschedule a cron event on given hook.
          *     $ wp cron event unschedule cron_test
-         *     Success: Unscheduled 2 events with hook 'cron_test'.
+         *     Success: Unscheduled 2 events for hook 'cron_test'.
          */
         public function unschedule($args, $assoc_args)
+        {
+        }
+        /**
+         * Deletes all scheduled cron events for the given hook.
+         *
+         * ## OPTIONS
+         *
+         * [<hook>...]
+         * : One or more hooks to delete.
+         *
+         * [--due-now]
+         * : Delete all hooks due right now.
+         *
+         * [--exclude=<hooks>]
+         * : Comma-separated list of hooks to exclude.
+         *
+         * [--all]
+         * : Delete all hooks.
+         *
+         * ## EXAMPLES
+         *
+         *     # Delete all scheduled cron events for the given hook
+         *     $ wp cron event delete cron_test
+         *     Success: Deleted a total of 2 cron events.
+         */
+        public function delete($args, $assoc_args)
         {
         }
         /**
@@ -2487,23 +2573,6 @@ namespace {
          * @return bool Whether the event was successfully executed or not.
          */
         protected static function run_event(\stdClass $event)
-        {
-        }
-        /**
-         * Deletes all scheduled cron events for the given hook.
-         *
-         * ## OPTIONS
-         *
-         * <hook>
-         * : The hook name.
-         *
-         * ## EXAMPLES
-         *
-         *     # Delete all scheduled cron events for the given hook
-         *     $ wp cron event delete cron_test
-         *     Success: Deleted 2 instances of the cron event 'cron_test'.
-         */
-        public function delete($args, $assoc_args)
         {
         }
         /**
@@ -2530,6 +2599,17 @@ namespace {
          * @return array|WP_Error An array of event objects, or a WP_Error object if there are no events scheduled.
          */
         protected static function get_cron_events($is_due_now = \false)
+        {
+        }
+        /**
+         * Fetches an array of scheduled cron events selected by the user.
+         *
+         * @param array $args       A list of event names
+         * @param array $assoc_args An associative list of CLI parameters
+         *
+         * @return array|WP_Error An array of objects, or a WP_Error object is there are no events scheduled.
+         */
+        protected static function get_selected_cron_events($args, $assoc_args)
         {
         }
         /**
@@ -3003,6 +3083,29 @@ namespace {
          *     +---+------+------------------------------+-----+
          *     | 2 | home | http://wordpress-develop.dev | yes |
          *     +---+------+------------------------------+-----+
+         *
+         * ## MULTISITE USAGE
+         *
+         * Please note that the global `--url` parameter will have no effect on this command.
+         * In order to query for data in a site other than your primary site,
+         * you will need to manually modify the table names to use the prefix that includes the site's ID.
+         *
+         * For example, to get the `home` option for your second site, modify the example above like so:
+         *
+         *     $ wp db query 'SELECT option_value FROM wp_2_options WHERE option_name="home"' --skip-column-names
+         *     +----------------------+
+         *     | https://example2.com |
+         *     +----------------------+
+         *
+         * To confirm the ID for the site you want to query, you can use the `wp site list` command:
+         *
+         *     # wp site list --fields=blog_id,url
+         *     +---------+-----------------------+
+         *     | blog_id | url                   |
+         *     +---------+-----------------------+
+         *     | 1       | https://example1.com/ |
+         *     | 2       | https://example2.com/ |
+         *     +---------+-----------------------+
          */
         public function query($args, $assoc_args)
         {
@@ -3410,6 +3513,12 @@ namespace {
          * [--match_color=<color_code>]
          * : Percent color code to use for the match (unless both before and after context are 0, when no color code is used). For a list of available percent color codes, see below. Default '%3%k' (black on a mustard background).
          *
+         * [--fields=<fields>]
+         * : Get a specific subset of the fields.
+         *
+         * [--format=<format>]
+         * : Render output in a particular format.
+         *
          * The percent color codes available are:
          *
          * | Code | Color
@@ -3477,6 +3586,21 @@ namespace {
          *
          *     # SQL search and delete records from database table 'wp_options' where 'option_name' match 'foo'
          *     wp db query "DELETE from wp_options where option_id in ($(wp db query "SELECT GROUP_CONCAT(option_id SEPARATOR ',') from wp_options where option_name like '%foo%';" --silent --skip-column-names))"
+         *
+         *     # Search for a string and print the result as a table
+         *     $ wp db search https://localhost:8889 --format=table --fields=table,column,match
+         *     +------------+--------------+-----------------------------+
+         *     | table      | column       | match                       |
+         *     +------------+--------------+-----------------------------+
+         *     | wp_options | option_value | https://localhost:8889      |
+         *     | wp_options | option_value | https://localhost:8889      |
+         *     | wp_posts   | guid         | https://localhost:8889/?p=1 |
+         *     | wp_users   | user_url     | https://localhost:8889      |
+         *     +------------+--------------+-----------------------------+
+         *
+         *     # Search for a string and get only the IDs (only works for a single table)
+         *     $ wp db search https://localhost:8889 wp_options --format=ids
+         *     1 2
          *
          * @when after_wp_load
          */
@@ -3673,6 +3797,22 @@ namespace {
 namespace WP_CLI\Embeds {
     /**
      * Finds, triggers, and deletes oEmbed caches.
+     *
+     * ## EXAMPLES
+     *
+     *     # Find cache post ID for a given URL.
+     *     $ wp embed cache find https://www.youtube.com/watch?v=dQw4w9WgXcQ --width=500
+     *     123
+     *
+     *     # Clear cache for a post.
+     *     $ wp embed cache clear 123
+     *     Success: Cleared oEmbed cache.
+     *
+     *     # Triggers cache for a post.
+     *     $ wp embed cache trigger 456
+     *     Success: Caching triggered!
+     *
+     * @package wp-cli
      */
     class Cache_Command extends \WP_CLI_Command
     {
@@ -3748,6 +3888,35 @@ namespace WP_CLI\Embeds {
     }
     /**
      * Inspects oEmbed providers, clears embed cache, and more.
+     *
+     * ## EXAMPLES
+     *
+     *     # Get embed HTML for a given URL.
+     *     $ wp embed fetch https://www.youtube.com/watch?v=dQw4w9WgXcQ
+     *     <iframe width="525" height="295" src="https://www.youtube.com/embed/dQw4w9WgXcQ?feature=oembed" ...
+     *
+     *     # Find cache post ID for a given URL.
+     *     $ wp embed cache find https://www.youtube.com/watch?v=dQw4w9WgXcQ --width=500
+     *     123
+     *
+     *     # List format,endpoint fields of available providers.
+     *     $ wp embed provider list
+     *     +------------------------------+-----------------------------------------+
+     *     | format                       | endpoint                                |
+     *     +------------------------------+-----------------------------------------+
+     *     | #https?://youtu\.be/.*#i     | https://www.youtube.com/oembed          |
+     *     | #https?://flic\.kr/.*#i      | https://www.flickr.com/services/oembed/ |
+     *     | #https?://wordpress\.tv/.*#i | https://wordpress.tv/oembed/            |
+     *
+     *     # List id,regex,priority fields of available handlers.
+     *     $ wp embed handler list --fields=priority,id
+     *     +----------+-------------------+
+     *     | priority | id                |
+     *     +----------+-------------------+
+     *     | 10       | youtube_embed_url |
+     *     | 9999     | audio             |
+     *     | 9999     | video             |
+     *     +----------+-------------------+
      *
      * @package wp-cli
      */
@@ -3834,6 +4003,19 @@ namespace WP_CLI\Embeds {
     }
     /**
      * Retrieves embed handlers.
+     *
+     * ## EXAMPLES
+     *
+     *     # List id,regex,priority fields of available handlers.
+     *     $ wp embed handler list --fields=priority,id
+     *     +----------+-------------------+
+     *     | priority | id                |
+     *     +----------+-------------------+
+     *     | 10       | youtube_embed_url |
+     *     | 9999     | audio             |
+     *     | 9999     | video             |
+     *
+     * @package wp-cli
      */
     class Handler_Command extends \WP_CLI_Command
     {
@@ -3899,6 +4081,23 @@ namespace WP_CLI\Embeds {
     }
     /**
      * Retrieves oEmbed providers.
+     *
+     * ## EXAMPLES
+     *
+     *     # List format,endpoint fields of available providers.
+     *     $ wp embed provider list
+     *     +------------------------------+-----------------------------------------+
+     *     | format                       | endpoint                                |
+     *     +------------------------------+-----------------------------------------+
+     *     | #https?://youtu\.be/.*#i     | https://www.youtube.com/oembed          |
+     *     | #https?://flic\.kr/.*#i      | https://www.flickr.com/services/oembed/ |
+     *     | #https?://wordpress\.tv/.*#i | https://wordpress.tv/oembed/            |
+     *
+     *     # Get the matching provider for the URL.
+     *     $ wp embed provider match https://www.youtube.com/watch?v=dQw4w9WgXcQ
+     *     https://www.youtube.com/oembed
+     *
+     * @package wp-cli
      */
     class Provider_Command extends \WP_CLI_Command
     {
@@ -4137,10 +4336,10 @@ namespace {
      *     $ wp comment delete 1337 --force
      *     Success: Deleted comment 1337.
      *
-     *     # Delete all spam comments.
+     *     # Trash all spam comments.
      *     $ wp comment delete $(wp comment list --status=spam --format=ids)
-     *     Success: Deleted comment 264.
-     *     Success: Deleted comment 262.
+     *     Success: Trashed comment 264.
+     *     Success: Trashed comment 262.
      *
      * @package wp-cli
      */
@@ -5047,7 +5246,7 @@ namespace {
      *
      *     # Assign the 'my-menu' menu to the 'primary' location
      *     $ wp menu location assign my-menu primary
-     *     Success: Assigned location to menu.
+     *     Success: Assigned location primary to menu my-menu.
      *
      * @package wp-cli
      */
@@ -5085,7 +5284,8 @@ namespace {
          * ## EXAMPLES
          *
          *     $ wp menu delete "My Menu"
-         *     Success: 1 menu deleted.
+         *     Deleted menu 'My Menu'.
+         *     Success: Deleted 1 of 1 menus.
          */
         public function delete($args, $assoc_args)
         {
@@ -5163,7 +5363,7 @@ namespace {
      *
      *     # Delete menu item
      *     $ wp menu item delete 45
-     *     Success: 1 menu item deleted.
+     *     Success: Deleted 1 of 1 menu items.
      */
     class Menu_Item_Command extends \WP_CLI_Command
     {
@@ -5427,7 +5627,7 @@ namespace {
          * ## EXAMPLES
          *
          *     $ wp menu item delete 45
-         *     Success: 1 menu item deleted.
+         *     Success: Deleted 1 of 1 menu items.
          *
          * @subcommand delete
          */
@@ -5473,7 +5673,7 @@ namespace {
      *
      *     # Assign the 'primary-menu' menu to the 'primary' location
      *     $ wp menu location assign primary-menu primary
-     *     Success: Assigned location to menu.
+     *     Success: Assigned location primary to menu primary-menu.
      *
      *     # Remove the 'primary-menu' menu from the 'primary' location
      *     $ wp menu location remove primary-menu primary
@@ -5689,6 +5889,8 @@ namespace {
          * : Should this option be automatically loaded.
          * ---
          * options:
+         *   - 'on'
+         *   - 'off'
          *   - 'yes'
          *   - 'no'
          * ---
@@ -5821,6 +6023,8 @@ namespace {
          * : Requires WP 4.2. Should this option be automatically loaded.
          * ---
          * options:
+         *   - 'on'
+         *   - 'off'
          *   - 'yes'
          *   - 'no'
          * ---
@@ -5878,6 +6082,12 @@ namespace {
          * <key>
          * : The name of the option to get 'autoload' of.
          *
+         * ## EXAMPLES
+         *
+         *     # Get the 'autoload' value for an option.
+         *     $ wp option get-autoload blogname
+         *     yes
+         *
          * @subcommand get-autoload
          */
         public function get_autoload($args)
@@ -5895,9 +6105,17 @@ namespace {
          * : Should this option be automatically loaded.
          * ---
          * options:
+         *   - 'on'
+         *   - 'off'
          *   - 'yes'
          *   - 'no'
          * ---
+         *
+         * ## EXAMPLES
+         *
+         *     # Set the 'autoload' value for an option.
+         *     $ wp option set-autoload abc_options no
+         *     Success: Updated autoload value for 'abc_options' option.
          *
          * @subcommand set-autoload
          */
@@ -6842,6 +7060,8 @@ namespace WP_CLI {
         /**
          * List all terms associated with an object.
          *
+         * ## OPTIONS
+         *
          * <id>
          * : ID for the object.
          *
@@ -6923,6 +7143,8 @@ namespace WP_CLI {
          *
          * Append the term to the existing set of terms on the object.
          *
+         * ## OPTIONS
+         *
          * <id>
          * : The ID of the object.
          *
@@ -6948,6 +7170,8 @@ namespace WP_CLI {
          * Set object terms.
          *
          * Replaces existing terms on the object.
+         *
+         * ## OPTIONS
          *
          * <id>
          * : The ID of the object.
@@ -7224,6 +7448,210 @@ namespace {
         }
     }
     /**
+     * Manages signups on a multisite installation.
+     *
+     * ## EXAMPLES
+     *
+     *     # List signups.
+     *     $ wp user signup list
+     *     +-----------+------------+---------------------+---------------------+--------+------------------+
+     *     | signup_id | user_login | user_email          | registered          | active | activation_key   |
+     *     +-----------+------------+---------------------+---------------------+--------+------------------+
+     *     | 1         | bobuser    | bobuser@example.com | 2024-03-13 05:46:53 | 1      | 7320b2f009266618 |
+     *     | 2         | johndoe    | johndoe@example.com | 2024-03-13 06:24:44 | 0      | 9068d859186cd0b5 |
+     *     +-----------+------------+---------------------+---------------------+--------+------------------+
+     *
+     *     # Activate signup.
+     *     $ wp user signup activate 2
+     *     Signup 2 activated. Password: bZFSGsfzb9xs
+     *     Success: Activated 1 of 1 signups.
+     *
+     *     # Delete signup.
+     *     $ wp user signup delete 3
+     *     Signup 3 deleted.
+     *     Success: Deleted 1 of 1 signups.
+     *
+     * @package wp-cli
+     */
+    class Signup_Command extends \WP_CLI\CommandWithDBObject
+    {
+        protected $obj_type = 'signup';
+        protected $obj_id_key = 'signup_id';
+        protected $obj_fields = ['signup_id', 'user_login', 'user_email', 'registered', 'active', 'activation_key'];
+        private $fetcher;
+        public function __construct()
+        {
+        }
+        /**
+         * Lists signups.
+         *
+         * [--<field>=<value>]
+         * : Filter the list by a specific field.
+         *
+         * [--field=<field>]
+         * : Prints the value of a single field for each signup.
+         *
+         * [--fields=<fields>]
+         * : Limit the output to specific object fields.
+         *
+         * [--format=<format>]
+         * : Render output in a particular format.
+         * ---
+         * default: table
+         * options:
+         *   - table
+         *   - csv
+         *   - ids
+         *   - json
+         *   - count
+         *   - yaml
+         * ---
+         *
+         * [--per_page=<per_page>]
+         * : Limits the signups to the given number. Defaults to none.
+         *
+         * ## AVAILABLE FIELDS
+         *
+         * These fields will be displayed by default for each signup:
+         *
+         * * signup_id
+         * * user_login
+         * * user_email
+         * * registered
+         * * active
+         * * activation_key
+         *
+         * These fields are optionally available:
+         *
+         * * domain
+         * * path
+         * * title
+         * * activated
+         * * meta
+         *
+         * ## EXAMPLES
+         *
+         *     # List signup IDs.
+         *     $ wp user signup list --field=signup_id
+         *     1
+         *
+         *     # List all signups.
+         *     $ wp user signup list
+         *     +-----------+------------+---------------------+---------------------+--------+------------------+
+         *     | signup_id | user_login | user_email          | registered          | active | activation_key   |
+         *     +-----------+------------+---------------------+---------------------+--------+------------------+
+         *     | 1         | bobuser    | bobuser@example.com | 2024-03-13 05:46:53 | 1      | 7320b2f009266618 |
+         *     | 2         | johndoe    | johndoe@example.com | 2024-03-13 06:24:44 | 0      | 9068d859186cd0b5 |
+         *     +-----------+------------+---------------------+---------------------+--------+------------------+
+         *
+         * @subcommand list
+         *
+         * @package wp-cli
+         */
+        public function list_($args, $assoc_args)
+        {
+        }
+        /**
+         * Gets details about a signup.
+         *
+         * ## OPTIONS
+         *
+         * <signup>
+         * : The signup ID, user login, user email, or activation key.
+         *
+         * [--field=<field>]
+         * : Instead of returning the whole signup, returns the value of a single field.
+         *
+         * [--fields=<fields>]
+         * : Limit the output to specific fields. Defaults to all fields.
+         *
+         * [--format=<format>]
+         * : Render output in a particular format.
+         * ---
+         * default: table
+         * options:
+         *   - table
+         *   - csv
+         *   - json
+         *   - yaml
+         * ---
+         *
+         * ## EXAMPLES
+         *
+         *     # Get signup.
+         *     $ wp user signup get 1 --field=user_login
+         *     bobuser
+         *
+         *     # Get signup and export to JSON file.
+         *     $ wp user signup get bobuser --format=json > bobuser.json
+         *
+         * @package wp-cli
+         */
+        public function get($args, $assoc_args)
+        {
+        }
+        /**
+         * Activates one or more signups.
+         *
+         * ## OPTIONS
+         *
+         * <signup>...
+         * : The signup ID, user login, user email, or activation key of the signup(s) to activate.
+         *
+         * ## EXAMPLES
+         *
+         *     # Activate signup.
+         *     $ wp user signup activate 2
+         *     Signup 2 activated. Password: bZFSGsfzb9xs
+         *     Success: Activated 1 of 1 signups.
+         *
+         * @package wp-cli
+         */
+        public function activate($args, $assoc_args)
+        {
+        }
+        /**
+         * Deletes one or more signups.
+         *
+         * ## OPTIONS
+         *
+         * [<signup>...]
+         * : The signup ID, user login, user email, or activation key of the signup(s) to delete.
+         *
+         * [--all]
+         * : If set, all signups will be deleted.
+         *
+         * ## EXAMPLES
+         *
+         *     # Delete signup.
+         *     $ wp user signup delete 3
+         *     Signup 3 deleted.
+         *     Success: Deleted 1 of 1 signups.
+         *
+         * @package wp-cli
+         */
+        public function delete($args, $assoc_args)
+        {
+        }
+        /**
+         * Deletes signup.
+         *
+         * @param stdClasss $signup
+         * @return bool True if success; otherwise false.
+         */
+        private function delete_signup($signup)
+        {
+        }
+        /**
+         * Deletes all signup.
+         *
+         * @return bool True if success; otherwise false.
+         */
+        private function delete_all_signups()
+        {
+        }
+    }
+    /**
      * Creates, deletes, empties, moderates, and lists one or more sites on a multisite installation.
      *
      * ## EXAMPLES
@@ -7387,6 +7815,59 @@ namespace {
         {
         }
         /**
+         * Generate some sites.
+         *
+         * Creates a specified number of new sites.
+         *
+         * ## OPTIONS
+         *
+         * [--count=<number>]
+         * : How many sites to generates?
+         * ---
+         * default: 100
+         * ---
+         *
+         * [--slug=<slug>]
+         * : Path for the new site. Subdomain on subdomain installs, directory on subdirectory installs.
+         *
+         * [--email=<email>]
+         * : Email for admin user. User will be created if none exists. Assignment to super admin if not included.
+         *
+         * [--network_id=<network-id>]
+         * : Network to associate new site with. Defaults to current network (typically 1).
+         *
+         * [--private]
+         * : If set, the new site will be non-public (not indexed)
+         *
+         * [--format=<format>]
+         * : Render output in a particular format.
+         * ---
+         * default: progress
+         * options:
+         *  - progress
+         *  - ids
+         * ---
+         *
+         * ## EXAMPLES
+         *
+         *    # Generate 10 sites.
+         *    $ wp site generate --count=10
+         *    Generating sites  100% [================================================] 0:01 / 0:04
+         */
+        public function generate($args, $assoc_args)
+        {
+        }
+        /**
+         * Retrieves a list of reserved site on a sub-directory Multisite installation.
+         *
+         * Works on older WordPress versions where get_subdirectory_reserved_names() does not exist.
+         *
+         * @return string[] Array of reserved names.
+         */
+        private function get_subdirectory_reserved_names()
+        {
+        }
+        /**
          * Gets network data for a given id.
          *
          * @param int     $network_id
@@ -7547,8 +8028,8 @@ namespace {
          *     $ wp site deactivate 123
          *     Success: Site 123 deactivated.
          *
-         *      $ wp site deactivate --slug=demo
-         *      Success: Site 123 marked as deactivated.
+         *     $ wp site deactivate --slug=demo
+         *     Success: Site 123 deactivated.
          */
         public function deactivate($args, $assoc_args)
         {
@@ -8620,9 +9101,10 @@ namespace {
          *
          *     # Migrate a category's term (video) to tag taxonomy.
          *     $ wp term migrate 9190 --from=category --to=post_tag
-         *     Term '9190' migrated!
-         *     Old instance of term '9190' removed from its original taxonomy.
-         *     Success: Migrated the term '9190' from taxonomy 'category' to taxonomy 'post_tag' for 1 posts
+         *     Term 'video' assigned to post 1155.
+         *     Term 'video' migrated.
+         *     Old instance of term 'video' removed from its original taxonomy.
+         *     Success: Migrated the term 'video' from taxonomy 'category' to taxonomy 'post_tag' for 1 post.
          */
         public function migrate($args, $assoc_args)
         {
@@ -8823,6 +9305,7 @@ namespace {
          *   - json
          *   - count
          *   - yaml
+         *   - ids
          * ---
          *
          * [--orderby=<fields>]
@@ -9112,7 +9595,7 @@ namespace {
      *
      *     # Delete user 123 and reassign posts to user 567
      *     $ wp user delete 123 --reassign=567
-     *     Success: Removed user 123 from http://example.com
+     *     Success: Removed user 123 from http://example.com.
      *
      * @package wp-cli
      */
@@ -9272,12 +9755,12 @@ namespace {
          *
          *     # Delete user 123 and reassign posts to user 567
          *     $ wp user delete 123 --reassign=567
-         *     Success: Removed user 123 from http://example.com
+         *     Success: Removed user 123 from http://example.com.
          *
          *     # Delete all contributors and reassign their posts to user 2
          *     $ wp user delete $(wp user list --role=contributor --field=ID) --reassign=2
-         *     Success: Removed user 813 from http://example.com
-         *     Success: Removed user 578 from http://example.com
+         *     Success: Removed user 813 from http://example.com.
+         *     Success: Removed user 578 from http://example.com.
          *
          *     # Delete all contributors in batches of 100 (avoid error: argument list too long: wp)
          *     $ wp user delete $(wp user list --role=contributor --field=ID | head -n 100)
@@ -9443,6 +9926,32 @@ namespace {
          *     Success: Added custom field.
          */
         public function generate($args, $assoc_args)
+        {
+        }
+        /**
+         * Verifies whether a user exists.
+         *
+         * Displays a success message if the user does exist.
+         *
+         * ## OPTIONS
+         *
+         * <id>
+         * : The ID of the user to check.
+         *
+         * ## EXAMPLES
+         *
+         *     # The user exists.
+         *     $ wp user exists 1337
+         *     Success: User with ID 1337 exists.
+         *     $ echo $?
+         *     0
+         *
+         *     # The user does not exist.
+         *     $ wp user exists 10000
+         *     $ echo $?
+         *     1
+         */
+        public function exists($args)
         {
         }
         /**
@@ -9634,9 +10143,9 @@ namespace {
          *
          *     # Import users from local CSV file
          *     $ wp user import-csv /path/to/users.csv
-         *     Success: bobjones created
-         *     Success: newuser1 created
-         *     Success: existinguser created
+         *     Success: bobjones created.
+         *     Success: newuser1 created.
+         *     Success: existinguser created.
          *
          *     # Import users from remote CSV file
          *     $ wp user import-csv http://example.com/users.csv
@@ -9678,20 +10187,26 @@ namespace {
          *     Reset password for editor.
          *     Success: Passwords reset for 2 users.
          *
+         *     # Reset and display the password.
+         *     $ wp user reset-password editor --show-password
+         *     Reset password for editor.
+         *     Password: N6hAau0fXZMN#rLCIirdEGOh
+         *     Success: Password reset for 1 user.
+         *
          *     # Reset the password for one user, displaying only the new password, and not sending the change email.
          *     $ wp user reset-password admin --skip-email --porcelain
          *     yV6BP*!d70wg
          *
          *     # Reset password for all users.
          *     $ wp user reset-password $(wp user list --format=ids)
-         *     Reset password for admin
-         *     Reset password for editor
-         *     Reset password for subscriber
+         *     Reset password for admin.
+         *     Reset password for editor.
+         *     Reset password for subscriber.
          *     Success: Passwords reset for 3 users.
          *
          *     # Reset password for all users with a particular role.
          *     $ wp user reset-password $(wp user list --format=ids --role=administrator)
-         *     Reset password for admin
+         *     Reset password for admin.
          *     Success: Password reset for 1 user.
          *
          * @subcommand reset-password
@@ -9721,32 +10236,34 @@ namespace {
         {
         }
         /**
-         * Marks one or more users as spam.
+         * Marks one or more users as spam on multisite.
          *
          * ## OPTIONS
          *
-         * <id>...
-         * : One or more IDs of users to mark as spam.
+         * <user>...
+         * : The user login, user email, or user ID of the user(s) to mark as spam.
          *
          * ## EXAMPLES
          *
+         *     # Mark user as spam.
          *     $ wp user spam 123
          *     User 123 marked as spam.
-         *     Success: Spamed 1 of 1 users.
+         *     Success: Spammed 1 of 1 users.
          */
         public function spam($args)
         {
         }
         /**
-         * Removes one or more users from spam.
+         * Removes one or more users from spam on multisite.
          *
          * ## OPTIONS
          *
-         * <id>...
-         * : One or more IDs of users to remove from spam.
+         * <user>...
+         * : The user login, user email, or user ID of the user(s) to remove from spam.
          *
          * ## EXAMPLES
          *
+         *     # Remove user from spam.
          *     $ wp user unspam 123
          *     User 123 removed from spam.
          *     Success: Unspamed 1 of 1 users.
@@ -10115,6 +10632,7 @@ namespace {
     class User_Session_Command extends \WP_CLI_Command
     {
         private $fields = ['token', 'login_time', 'expiration_time', 'ip', 'ua'];
+        private $fetcher;
         public function __construct()
         {
         }
@@ -10991,6 +11509,18 @@ namespace WP_CLI {
         protected $upgrade_refresh;
         protected $upgrade_transient;
         protected $chained_command = false;
+        /**
+         * The GitHub Releases public api endpoint.
+         *
+         * @var string
+         */
+        private $github_releases_api_endpoint = 'https://api.github.com/repos/%s/releases';
+        /**
+         * The GitHub latest release url format.
+         *
+         * @var string
+         */
+        private $github_latest_release_url = '/^https:\\/\\/github\\.com\\/(.*)\\/releases\\/latest\\/?$/';
         // Invalid version message.
         const INVALID_VERSION_MESSAGE = 'version higher than expected';
         public function __construct()
@@ -11110,6 +11640,42 @@ namespace WP_CLI {
         private function parse_url_host_component($url, $component)
         {
         }
+        /**
+         * Get the latest package version based on a given repo slug.
+         *
+         * @param string $repo_slug
+         *
+         * @return array{ name: string, url: string }|\WP_Error
+         */
+        protected function get_the_latest_github_version($repo_slug)
+        {
+        }
+        /**
+         * Get the asset URL from the release array. When the asset is not present, we fallback to the zipball_url (source code) property.
+         */
+        private function get_asset_url_from_release($release)
+        {
+        }
+        /**
+         * Get the GitHub repo from the URL.
+         *
+         * @param string $url
+         *
+         * @return string|null
+         */
+        protected function get_github_repo_from_releases_url($url)
+        {
+        }
+        /**
+         * Build the error message we display in WP-CLI for the API Rate limiting error response.
+         *
+         * @param $decoded_body
+         *
+         * @return string
+         */
+        private function build_rate_limiting_error_message($decoded_body)
+        {
+        }
     }
 }
 namespace {
@@ -11156,6 +11722,7 @@ namespace {
         protected $upgrade_refresh = 'wp_update_plugins';
         protected $upgrade_transient = 'update_plugins';
         protected $check_wporg = ['status' => \false, 'last_updated' => \false];
+        protected $check_headers = ['tested_up_to' => \false];
         protected $obj_fields = array('name', 'status', 'update', 'version', 'update_version', 'auto_update');
         /**
          * Plugin fetcher instance.
@@ -11323,6 +11890,18 @@ namespace {
          *     $ wp plugin activate hello --network
          *     Plugin 'hello' network activated.
          *     Success: Network activated 1 of 1 plugins.
+         *
+         *     # Activate plugins that were recently active.
+         *     $ wp plugin activate $(wp plugin list --recently-active --field=name)
+         *     Plugin 'bbpress' activated.
+         *     Plugin 'buddypress' activated.
+         *     Success: Activated 2 of 2 plugins.
+         *
+         *     # Activate plugins that were recently active on a multisite.
+         *     $ wp plugin activate $(wp plugin list --recently-active --field=name) --network
+         *     Plugin 'bbpress' network activated.
+         *     Plugin 'buddypress' network activated.
+         *     Success: Activated 2 of 2 plugins.
          */
         public function activate($args, $assoc_args = array())
         {
@@ -11633,10 +12212,28 @@ namespace {
          *   - yaml
          * ---
          *
+         * ## AVAILABLE FIELDS
+         *
+         * These fields will be displayed by default for the plugin:
+         *
+         * * name
+         * * title
+         * * author
+         * * version
+         * * description
+         * * status
+         *
+         * These fields are optionally available:
+         *
+         * * requires_wp
+         * * requires_php
+         * * requires_plugins
+         *
          * ## EXAMPLES
          *
+         *     # Get plugin details.
          *     $ wp plugin get bbpress --format=json
-         *     {"name":"bbpress","title":"bbPress","author":"The bbPress Contributors","version":"2.6-alpha","description":"bbPress is forum software with a twist from the creators of WordPress.","status":"active"}
+         *     {"name":"bbpress","title":"bbPress","author":"The bbPress Contributors","version":"2.6.9","description":"bbPress is forum software with a twist from the creators of WordPress.","status":"active"}
          */
         public function get($args, $assoc_args)
         {
@@ -11804,6 +12401,9 @@ namespace {
          * [--skip-update-check]
          * : If set, the plugin update check will be skipped.
          *
+         * [--recently-active]
+         * : If set, only recently active plugins will be shown and the status filter will be ignored.
+         *
          * ## AVAILABLE FIELDS
          *
          * These fields will be displayed by default for each plugin:
@@ -11813,6 +12413,7 @@ namespace {
          * * update
          * * version
          * * update_version
+         * * auto_update
          *
          * These fields are optionally available:
          *
@@ -11821,8 +12422,8 @@ namespace {
          * * title
          * * description
          * * file
-         * * auto_update
          * * author
+         * * tested_up_to
          * * wporg_status
          * * wporg_last_updated
          *
@@ -11830,25 +12431,25 @@ namespace {
          *
          *     # List active plugins on the site.
          *     $ wp plugin list --status=active --format=json
-         *     [{"name":"dynamic-hostname","status":"active","update":"none","version":"0.4.2","update_version": ""},{"name":"tinymce-templates","status":"active","update":"none","version":"4.4.3","update_version": ""},{"name":"wp-multibyte-patch","status":"active","update":"none","version":"2.4","update_version": ""},{"name":"wp-total-hacks","status":"active","update":"none","version":"2.0.1","update_version": ""}]
+         *     [{"name":"dynamic-hostname","status":"active","update":"none","version":"0.4.2","update_version":"","auto_update":"off"},{"name":"tinymce-templates","status":"active","update":"none","version":"4.8.1","update_version":"","auto_update":"off"},{"name":"wp-multibyte-patch","status":"active","update":"none","version":"2.9","update_version":"","auto_update":"off"},{"name":"wp-total-hacks","status":"active","update":"none","version":"4.7.2","update_version":"","auto_update":"off"}]
          *
          *     # List plugins on each site in a network.
          *     $ wp site list --field=url | xargs -I % wp plugin list --url=%
-         *     +---------+----------------+--------+---------+----------------+
-         *     | name    | status         | update | version | update_version |
-         *     +---------+----------------+--------+---------+----------------+
-         *     | akismet | active-network | none   | 3.1.11  |                |
-         *     | hello   | inactive       | none   | 1.6     | 1.7.2          |
-         *     +---------+----------------+--------+---------+----------------+
-         *     +---------+----------------+--------+---------+----------------+
-         *     | name    | status         | update | version | update_version |
-         *     +---------+----------------+--------+---------+----------------+
-         *     | akismet | active-network | none   | 3.1.11  |                |
-         *     | hello   | inactive       | none   | 1.6     | 1.7.2          |
-         *     +---------+----------------+--------+---------+----------------+
+         *     +---------+----------------+-----------+---------+-----------------+------------+
+         *     | name    | status         | update    | version | update_version | auto_update |
+         *     +---------+----------------+-----------+---------+----------------+-------------+
+         *     | akismet | active-network | none      | 5.3.1   |                | on          |
+         *     | hello   | inactive       | available | 1.6     | 1.7.2          | off         |
+         *     +---------+----------------+-----------+---------+----------------+-------------+
+         *     +---------+----------------+-----------+---------+----------------+-------------+
+         *     | name    | status         | update    | version | update_version | auto_update |
+         *     +---------+----------------+-----------+---------+----------------+-------------+
+         *     | akismet | active-network | none      | 5.3.1   |                | on          |
+         *     | hello   | inactive       | available | 1.6     | 1.7.2          | off         |
+         *     +---------+----------------+-----------+---------+----------------+-------------+
          *
          *     # Check whether plugins are still active on WordPress.org
-         *     $ wp plugin list --format=csv --fields=name,wporg_status,wporg_last_updated
+         *     $ wp plugin list --fields=name,wporg_status,wporg_last_updated
          *     +--------------------+--------------+--------------------+
          *     | name               | wporg_status | wporg_last_updated |
          *     +--------------------+--------------+--------------------+
@@ -11857,6 +12458,10 @@ namespace {
          *     | wordpress-importer | active       | 2023-04-28         |
          *     | local              |              |                    |
          *     +--------------------+--------------+--------------------+
+         *
+         *     # List recently active plugins on the site.
+         *     $ wp plugin list --recently-active --field=name --format=json
+         *     ["akismet","bbpress","buddypress"]
          *
          * @subcommand list
          */
@@ -11933,7 +12538,7 @@ namespace WP_CLI {
         /**
          * Get the status for a given theme.
          *
-         * @param string $theme Theme to get the status for.
+         * @param WP_Theme $theme Theme to get the status for.
          *
          * @return string Status of the theme.
          */
@@ -11943,7 +12548,7 @@ namespace WP_CLI {
         /**
          * Check whether a given theme is the active theme.
          *
-         * @param string $theme Theme to check.
+         * @param WP_Theme $theme Theme to check.
          *
          * @return bool Whether the provided theme is the active theme.
          */
@@ -11953,7 +12558,7 @@ namespace WP_CLI {
         /**
          * Check whether a given theme is the active theme parent.
          *
-         * @param string $theme Theme to check.
+         * @param WP_Theme $theme Theme to check.
          *
          * @return bool Whether the provided theme is the active theme.
          */
@@ -12132,6 +12737,7 @@ namespace {
      *     Theme installed successfully.
      *     Activating 'twentysixteen'...
      *     Success: Switched to 'Twenty Sixteen' theme.
+     *     Success: Installed 1 of 1 themes.
      *
      *     # Get details of an installed theme
      *     $ wp theme get twentysixteen --fields=name,title,version
@@ -12408,6 +13014,7 @@ namespace {
          *     Theme installed successfully.
          *     Activating 'twentysixteen'...
          *     Success: Switched to 'Twenty Sixteen' theme.
+         *     Success: Installed 1 of 1 themes.
          *
          *     # Install from a local zip file
          *     $ wp theme install ../my-theme.zip
@@ -12665,6 +13272,7 @@ namespace {
          * * update
          * * version
          * * update_version
+         * * auto_update
          *
          * These fields are optionally available:
          *
@@ -12672,15 +13280,14 @@ namespace {
          * * update_id
          * * title
          * * description
-         * * auto_update
          *
          * ## EXAMPLES
          *
-         *     # List themes
+         *     # List inactive themes.
          *     $ wp theme list --status=inactive --format=csv
-         *     name,status,update,version,update_version
-         *     twentyfourteen,inactive,none,1.7,
-         *     twentysixteen,inactive,available,1.1,
+         *     name,status,update,version,update_version,auto_update
+         *     twentyfourteen,inactive,none,3.8,,off
+         *     twentysixteen,inactive,available,3.0,3.1,off
          *
          * @subcommand list
          */
@@ -12701,7 +13308,7 @@ namespace {
      *
      *     # Set the 'background_color' theme mod to '000000'.
      *     $ wp theme mod set background_color 000000
-     *     Success: Theme mod background_color set to 000000
+     *     Success: Theme mod background_color set to 000000.
      *
      *     # Get single theme mod in JSON format.
      *     $ wp theme mod get background_color --format=json
@@ -12850,7 +13457,7 @@ namespace {
          *
          *     # Set theme mod
          *     $ wp theme mod set background_color 000000
-         *     Success: Theme mod background_color set to 000000
+         *     Success: Theme mod background_color set to 000000.
          */
         public function set($args = array(), $assoc_args = array())
         {
@@ -13108,23 +13715,31 @@ namespace {
      *
      *     # Install the Dutch core language pack.
      *     $ wp language core install nl_NL
-     *     Success: Language installed.
+     *     Downloading translation from https://downloads.wordpress.org/translation/core/6.4.3/nl_NL.zip...
+     *     Unpacking the update...
+     *     Installing the latest version...
+     *     Removing the old version of the translation...
+     *     Translation updated successfully.
+     *     Language 'nl_NL' installed.
+     *     Success: Installed 1 of 1 languages.
      *
      *     # Activate the Dutch core language pack.
-     *     $ wp language core activate nl_NL
+     *     $ wp site switch-language nl_NL
      *     Success: Language activated.
      *
      *     # Uninstall the Dutch core language pack.
      *     $ wp language core uninstall nl_NL
      *     Success: Language uninstalled.
      *
-     *     # List installed core language packages.
+     *     # List installed core language packs.
      *     $ wp language core list --status=installed
      *     +----------+--------------+-------------+-----------+-----------+---------------------+
      *     | language | english_name | native_name | status    | update    | updated             |
      *     +----------+--------------+-------------+-----------+-----------+---------------------+
-     *     | nl_NL    | Dutch        | Nederlands  | installed | available | 2016-05-13 08:12:50 |
+     *     | nl_NL    | Dutch        | Nederlands  | installed | available | 2024-01-31 10:24:06 |
      *     +----------+--------------+-------------+-----------+-----------+---------------------+
+     *
+     * @package wp-cli
      */
     class Core_Language_Command extends \WP_CLI\CommandWithTranslation
     {
@@ -13152,6 +13767,7 @@ namespace {
          *   - table
          *   - csv
          *   - json
+         *   - count
          * ---
          *
          * ## AVAILABLE FIELDS
@@ -13206,7 +13822,7 @@ namespace {
         /**
          * Installs a given language.
          *
-         * Downloads the language pack from WordPress.org.
+         * Downloads the language pack from WordPress.org. Find your language code at: https://translate.wordpress.org/
          *
          * ## OPTIONS
          *
@@ -13218,13 +13834,14 @@ namespace {
          *
          * ## EXAMPLES
          *
-         *     # Install the Japanese language.
-         *     $ wp language core install ja
-         *     Downloading translation from https://downloads.wordpress.org/translation/core/4.9.8/ja.zip...
+         *     # Install the Brazilian Portuguese language.
+         *     $ wp language core install pt_BR
+         *     Downloading translation from https://downloads.wordpress.org/translation/core/6.5/pt_BR.zip...
          *     Unpacking the update...
          *     Installing the latest version...
+         *     Removing the old version of the translation...
          *     Translation updated successfully.
-         *     Language 'ja' installed.
+         *     Language 'pt_BR' installed.
          *     Success: Installed 1 of 1 languages.
          *
          * @subcommand install
@@ -13242,6 +13859,7 @@ namespace {
          *
          * ## EXAMPLES
          *
+         *     # Uninstall the Japanese core language pack.
          *     $ wp language core uninstall ja
          *     Success: Language uninstalled.
          *
@@ -13261,9 +13879,10 @@ namespace {
          *
          * ## EXAMPLES
          *
+         *     # Update installed core languages packs.
          *     $ wp language core update
-         *     Updating 'Japanese' translation for WordPress 4.9.2...
-         *     Downloading translation from https://downloads.wordpress.org/translation/core/4.9.2/ja.zip...
+         *     Updating 'Japanese' translation for WordPress 6.4.3...
+         *     Downloading translation from https://downloads.wordpress.org/translation/core/6.4.3/ja.zip...
          *     Translation updated successfully.
          *     Success: Updated 1/1 translation.
          *
@@ -13284,6 +13903,7 @@ namespace {
          *
          * ## EXAMPLES
          *
+         *     # Activate the given language.
          *     $ wp language core activate ja
          *     Success: Language activated.
          *
@@ -13304,19 +13924,39 @@ namespace {
      *
      *     # Install the Dutch core language pack.
      *     $ wp language core install nl_NL
-     *     Success: Language installed.
+     *     Downloading translation from https://downloads.wordpress.org/translation/core/6.4.3/nl_NL.zip...
+     *     Unpacking the update...
+     *     Installing the latest version...
+     *     Removing the old version of the translation...
+     *     Translation updated successfully.
+     *     Language 'nl_NL' installed.
+     *     Success: Installed 1 of 1 languages.
      *
      *     # Activate the Dutch core language pack.
-     *     $ wp language core activate nl_NL
+     *     $ wp site switch-language nl_NL
      *     Success: Language activated.
      *
-     *     # Install the Dutch language pack for Twenty Seventeen.
-     *     $ wp language theme install twentyseventeen nl_NL
-     *     Success: Language installed.
+     *     # Install the Dutch theme language pack for Twenty Ten.
+     *     $ wp language theme install twentyten nl_NL
+     *     Downloading translation from https://downloads.wordpress.org/translation/theme/twentyten/4.0/nl_NL.zip...
+     *     Unpacking the update...
+     *     Installing the latest version...
+     *     Removing the old version of the translation...
+     *     Translation updated successfully.
+     *     Language 'nl_NL' installed.
+     *     Success: Installed 1 of 1 languages.
      *
-     *     # Install the Dutch language pack for Akismet.
-     *     $ wp language plugin install akismet nl_NL
-     *     Success: Language installed.
+     *     # Install the Dutch plugin language pack for Hello Dolly.
+     *     $ wp language plugin install hello-dolly nl_NL
+     *     Downloading translation from https://downloads.wordpress.org/translation/plugin/hello-dolly/1.7.2/nl_NL.zip...
+     *     Unpacking the update...
+     *     Installing the latest version...
+     *     Removing the old version of the translation...
+     *     Translation updated successfully.
+     *     Language 'nl_NL' installed.
+     *     Success: Installed 1 of 1 languages.
+     *
+     * @package wp-cli
      */
     class Language_Namespace extends \WP_CLI\Dispatcher\CommandNamespace
     {
@@ -13326,21 +13966,35 @@ namespace {
      *
      * ## EXAMPLES
      *
-     *     # Install the Dutch plugin language pack.
+     *     # Install the Dutch plugin language pack for Hello Dolly.
      *     $ wp language plugin install hello-dolly nl_NL
-     *     Success: Language installed.
+     *     Downloading translation from https://downloads.wordpress.org/translation/plugin/hello-dolly/1.7.2/nl_NL.zip...
+     *     Unpacking the update...
+     *     Installing the latest version...
+     *     Removing the old version of the translation...
+     *     Translation updated successfully.
+     *     Language 'nl_NL' installed.
+     *     Success: Installed 1 of 1 languages.
      *
-     *     # Uninstall the Dutch plugin language pack.
+     *     # Uninstall the Dutch plugin language pack for Hello Dolly.
      *     $ wp language plugin uninstall hello-dolly nl_NL
-     *     Success: Language uninstalled.
+     *     Language 'nl_NL' for 'hello-dolly' uninstalled.
+     *     +-------------+--------+-------------+
+     *     | name        | locale | status      |
+     *     +-------------+--------+-------------+
+     *     | hello-dolly | nl_NL  | uninstalled |
+     *     +-------------+--------+-------------+
+     *     Success: Uninstalled 1 of 1 languages.
      *
-     *     # List installed plugin language packages.
-     *     $ wp language plugin list --status=installed
-     *     +----------+--------------+-------------+-----------+-----------+---------------------+
-     *     | language | english_name | native_name | status    | update    | updated             |
-     *     +----------+--------------+-------------+-----------+-----------+---------------------+
-     *     | nl_NL    | Dutch        | Nederlands  | installed | available | 2016-05-13 08:12:50 |
-     *     +----------+--------------+-------------+-----------+-----------+---------------------+
+     *     # List installed plugin language packs for Hello Dolly.
+     *     $ wp language plugin list hello-dolly --status=installed
+     *     +-------------+----------+--------------+-------------+-----------+--------+---------------------+
+     *     | plugin      | language | english_name | native_name | status    | update | updated             |
+     *     +-------------+----------+--------------+-------------+-----------+--------+---------------------+
+     *     | hello-dolly | nl_NL    | Dutch        | Nederlands  | installed | none   | 2023-11-13 12:34:15 |
+     *     +-------------+----------+--------------+-------------+-----------+--------+---------------------+
+     *
+     * @package wp-cli
      */
     class Plugin_Language_Command extends \WP_CLI\CommandWithTranslation
     {
@@ -13374,6 +14028,7 @@ namespace {
          *   - table
          *   - csv
          *   - json
+         *   - count
          * ---
          *
          * ## AVAILABLE FIELDS
@@ -13390,8 +14045,8 @@ namespace {
          *
          * ## EXAMPLES
          *
-         *     # List language,english_name,status fields of available languages.
-         *     $ wp language plugin list --fields=language,english_name,status
+         *     # List available language packs for the plugin.
+         *     $ wp language plugin list hello-dolly --fields=language,english_name,status
          *     +----------------+-------------------------+-------------+
          *     | language       | english_name            | status      |
          *     +----------------+-------------------------+-------------+
@@ -13463,6 +14118,7 @@ namespace {
          *     Downloading translation from https://downloads.wordpress.org/translation/plugin/akismet/4.0.3/ja.zip...
          *     Unpacking the update...
          *     Installing the latest version...
+         *     Removing the old version of the translation...
          *     Translation updated successfully.
          *     Language 'ja' installed.
          *     Success: Installed 1 of 1 languages.
@@ -13517,8 +14173,15 @@ namespace {
          *
          * ## EXAMPLES
          *
+         *     # Uninstall the Japanese plugin language pack for Hello Dolly.
          *     $ wp language plugin uninstall hello-dolly ja
-         *     Success: Language uninstalled.
+         *     Language 'ja' for 'hello-dolly' uninstalled.
+         *     +-------------+--------+-------------+
+         *     | name        | locale | status      |
+         *     +-------------+--------+-------------+
+         *     | hello-dolly | ja     | uninstalled |
+         *     +-------------+--------+-------------+
+         *     Success: Uninstalled 1 of 1 languages.
          *
          * @subcommand uninstall
          */
@@ -13541,6 +14204,7 @@ namespace {
          *
          * ## EXAMPLES
          *
+         *     # Update all installed language packs for all plugins.
          *     $ wp language plugin update --all
          *     Updating 'Japanese' translation for Akismet 3.1.11...
          *     Downloading translation from https://downloads.wordpress.org/translation/plugin/akismet/3.1.11/ja.zip...
@@ -13591,21 +14255,35 @@ namespace {
      *
      * ## EXAMPLES
      *
-     *     # Install the Dutch theme language pack.
+     *     # Install the Dutch theme language pack for Twenty Ten.
      *     $ wp language theme install twentyten nl_NL
-     *     Success: Language installed.
+     *     Downloading translation from https://downloads.wordpress.org/translation/theme/twentyten/4.0/nl_NL.zip...
+     *     Unpacking the update...
+     *     Installing the latest version...
+     *     Removing the old version of the translation...
+     *     Translation updated successfully.
+     *     Language 'nl_NL' installed.
+     *     Success: Installed 1 of 1 languages.
      *
-     *     # Uninstall the Dutch theme language pack.
+     *     # Uninstall the Dutch theme language pack for Twenty Ten.
      *     $ wp language theme uninstall twentyten nl_NL
-     *     Success: Language uninstalled.
+     *     Language 'nl_NL' for 'twentyten' uninstalled.
+     *     +-----------+--------+-------------+
+     *     | name      | locale | status      |
+     *     +-----------+--------+-------------+
+     *     | twentyten | nl_NL  | uninstalled |
+     *     +-----------+--------+-------------+
+     *     Success: Uninstalled 1 of 1 languages.
      *
-     *     # List installed theme language packages.
-     *     $ wp language theme list --status=installed
-     *     +----------+--------------+-------------+-----------+-----------+---------------------+
-     *     | language | english_name | native_name | status    | update    | updated             |
-     *     +----------+--------------+-------------+-----------+-----------+---------------------+
-     *     | nl_NL    | Dutch        | Nederlands  | installed | available | 2016-05-13 08:12:50 |
-     *     +----------+--------------+-------------+-----------+-----------+---------------------+
+     *     # List installed theme language packs for Twenty Ten.
+     *     $ wp language theme list twentyten --status=installed
+     *     +-----------+----------+--------------+-------------+-----------+--------+---------------------+
+     *     | theme     | language | english_name | native_name | status    | update | updated             |
+     *     +-----------+----------+--------------+-------------+-----------+--------+---------------------+
+     *     | twentyten | nl_NL    | Dutch        | Nederlands  | installed | none   | 2023-12-29 21:21:39 |
+     *     +-----------+----------+--------------+-------------+-----------+--------+---------------------+
+     *
+     * @package wp-cli
      */
     class Theme_Language_Command extends \WP_CLI\CommandWithTranslation
     {
@@ -13639,6 +14317,7 @@ namespace {
          *   - table
          *   - csv
          *   - json
+         *   - count
          * ---
          *
          * ## AVAILABLE FIELDS
@@ -13655,8 +14334,8 @@ namespace {
          *
          * ## EXAMPLES
          *
-         *     # List language,english_name,status fields of available languages.
-         *     $ wp language theme list --fields=language,english_name,status
+         *     # List available language packs for the theme.
+         *     $ wp language theme list twentyten --fields=language,english_name,status
          *     +----------------+-------------------------+-------------+
          *     | language       | english_name            | status      |
          *     +----------------+-------------------------+-------------+
@@ -13782,8 +14461,15 @@ namespace {
          *
          * ## EXAMPLES
          *
+         *     # Uninstall the Japanese theme language pack for Twenty Ten.
          *     $ wp language theme uninstall twentyten ja
-         *     Success: Language uninstalled.
+         *     Language 'ja' for 'twentyten' uninstalled.
+         *     +-----------+--------+-------------+
+         *     | name      | locale | status      |
+         *     +-----------+--------+-------------+
+         *     | twentyten | ja     | uninstalled |
+         *     +-----------+--------+-------------+
+         *     Success: Uninstalled 1 of 1 languages.
          *
          * @subcommand uninstall
          */
@@ -13806,6 +14492,7 @@ namespace {
          *
          * ## EXAMPLES
          *
+         *     # Update all installed language packs for all themes.
          *     $ wp language theme update --all
          *     Updating 'Japanese' translation for Twenty Fifteen 1.5...
          *     Downloading translation from https://downloads.wordpress.org/translation/theme/twentyfifteen/1.5/ja.zip...
@@ -13902,6 +14589,8 @@ namespace WP_CLI\MaintenanceMode {
         /**
          * Activates maintenance mode.
          *
+         * ## OPTIONS
+         *
          * [--force]
          * : Force maintenance mode activation operation.
          *
@@ -13985,7 +14674,8 @@ namespace {
      *
      *     # Import a local image and set it to be the featured image for a post.
      *     $ wp media import ~/Downloads/image.png --post_id=123 --title="A downloaded picture" --featured_image
-     *     Success: Imported file '/home/person/Downloads/image.png' as attachment ID 1753 and attached to post 123 as featured image.
+     *     Imported file '/home/person/Downloads/image.png' as attachment ID 1753 and attached to post 123 as featured image.
+     *     Success: Imported 1 of 1 images.
      *
      *     # List all registered image sizes
      *     $ wp media image-size
@@ -13999,6 +14689,11 @@ namespace {
      *     | medium                    | 300   | 300    | soft  |
      *     | thumbnail                 | 150   | 150    | hard  |
      *     +---------------------------+-------+--------+-------+
+     *
+     *     # Fix orientation for specific images.
+     *     $ wp media fix-orientation 63
+     *     1/1 Fixing orientation for "Portrait_6" (ID 63).
+     *     Success: Fixed 1 of 1 images.
      *
      * @package wp-cli
      */
@@ -14026,6 +14721,9 @@ namespace {
          *
          * [--only-missing]
          * : Only generate thumbnails for images missing image sizes.
+         *
+         * [--delete-unknown]
+         * : Only delete thumbnails for old unregistered image sizes.
          *
          * [--yes]
          * : Answer yes to the confirmation message. Confirmation only shows when no IDs passed as arguments.
@@ -14210,7 +14908,7 @@ namespace {
         private function make_copy($path)
         {
         }
-        private function process_regeneration($id, $skip_delete, $only_missing, $image_size, $progress, &$successes, &$errors, &$skips)
+        private function process_regeneration($id, $skip_delete, $only_missing, $delete_unknown, $image_size, $progress, &$successes, &$errors, &$skips)
         {
         }
         private function remove_old_images($metadata, $fullsizepath, $image_size)
@@ -14223,8 +14921,19 @@ namespace {
         private function image_sizes_differ($image_sizes, $meta_sizes)
         {
         }
-        // Like WP's get_intermediate_image_sizes(), but removes sizes that won't be generated for a particular attachment due to its being on or below their thresholds,
-        // and returns associative array with size name => width/height entries, resolved to crop values if applicable.
+        /**
+         * Returns image sizes for a given attachment.
+         *
+         * Like WP's get_intermediate_image_sizes(), but removes sizes that won't be generated for a particular attachment due to it being on or below their thresholds,
+         * and returns associative array with size name => width/height entries, resolved to crop values if applicable.
+         *
+         * @param string $fullsizepath Filepath of the attachment
+         * @param bool   $is_pdf       Whether it is a PDF.
+         * @param array  $metadata     Attachment metadata.
+         * @param int    $att_id       Attachment ID.
+         *
+         * @return array|WP_Error Image sizes on success, WP_Error instance otherwise.
+         */
         private function get_intermediate_image_sizes_for_attachment($fullsizepath, $is_pdf, $metadata, $att_id)
         {
         }
@@ -14256,25 +14965,24 @@ namespace {
         {
         }
         /**
-         * Get the metadata for the passed intermediate image size.
-         *
-         * @param string $size The image size to get the metadata for.
-         *
-         * @return array The image size metadata.
-         */
-        private function get_intermediate_size_metadata($size)
-        {
-        }
-        /**
          * Get all the registered image sizes along with their dimensions.
-         *
-         * @global array $_wp_additional_image_sizes The additional image sizes to parse.
-         *
-         * @link https://wordpress.stackexchange.com/a/251602 Original solution.
          *
          * @return array $image_sizes The image sizes
          */
         private function get_registered_image_sizes()
+        {
+        }
+        /**
+         * Returns a normalized list of all currently registered image sub-sizes.
+         *
+         * If exists, uses output of wp_get_registered_image_subsizes() function (introduced in WP 5.3).
+         * Definition of this method is modified version of core function wp_get_registered_image_subsizes().
+         *
+         * @global array $_wp_additional_image_sizes
+         *
+         * @return array[] Associative array of arrays of image sub-size information, keyed by image size name.
+         */
+        private function wp_get_registered_image_subsizes()
         {
         }
         /**
@@ -14387,6 +15095,19 @@ namespace {
         private function get_image_name($basename, $slug)
         {
         }
+        /**
+         * Removes files for unknown/unregistered image sizes.
+         *
+         * Similar to {@see self::remove_old_images} but also updates metadata afterwards.
+         *
+         * @param int    $id           Attachment ID.
+         * @param string $fullsizepath Filepath of the attachment.
+         *
+         * @return void
+         */
+        private function delete_unknown_image_sizes($id, $fullsizepath)
+        {
+        }
     }
     /**
      * Lists, installs, and removes WP-CLI packages.
@@ -14395,19 +15116,19 @@ namespace {
      * contain WP-CLI commands, but they can also just extend WP-CLI in some way.
      *
      * Learn how to create your own command from the
-     * [Commands Cookbook](https://make.wordpress.org/cli/handbook/commands-cookbook/)
+     * [Commands Cookbook](https://make.wordpress.org/cli/handbook/guides/commands-cookbook/)
      *
      * ## EXAMPLES
      *
-     *     # List installed packages
+     *     # List installed packages.
      *     $ wp package list
-     *     +-----------------------+------------------------------------------+---------+----------+
-     *     | name                  | description                              | authors | version  |
-     *     +-----------------------+------------------------------------------+---------+----------+
-     *     | wp-cli/server-command | Start a development server for WordPress |         | dev-main |
-     *     +-----------------------+------------------------------------------+---------+----------+
+     *     +-----------------------+------------------+----------+-----------+----------------+
+     *     | name                  | authors          | version  | update    | update_version |
+     *     +-----------------------+------------------+----------+-----------+----------------+
+     *     | wp-cli/server-command | Daniel Bachhuber | dev-main | available | 2.x-dev        |
+     *     +-----------------------+------------------+----------+-----------+----------------+
      *
-     *     # Install the latest development version of the package
+     *     # Install the latest development version of the package.
      *     $ wp package install wp-cli/server-command
      *     Installing package wp-cli/server-command (dev-main)
      *     Updating /home/person/.wp-cli/packages/composer.json to require the package...
@@ -14425,11 +15146,11 @@ namespace {
      *     ---
      *     Success: Package installed.
      *
-     *     # Uninstall package
+     *     # Uninstall package.
      *     $ wp package uninstall wp-cli/server-command
-     *     Removing require statement from /home/person/.wp-cli/packages/composer.json
-     *     Deleting package directory /home/person/.wp-cli/packages/vendor/wp-cli/server-command
-     *     Regenerating Composer autoload.
+     *     Removing require statement for package 'wp-cli/server-command' from /home/person/.wp-cli/packages/composer.json
+     *     Removing repository details from /home/person/.wp-cli/packages/composer.json
+     *     Removing package directories and regenerating autoloader...
      *     Success: Uninstalled package.
      *
      * @package WP-CLI
@@ -14602,12 +15323,13 @@ namespace {
          *
          * ## EXAMPLES
          *
+         *     # List installed packages.
          *     $ wp package list
-         *     +-----------------------+------------------------------------------+---------+----------+
-         *     | name                  | description                              | authors | version  |
-         *     +-----------------------+------------------------------------------+---------+----------+
-         *     | wp-cli/server-command | Start a development server for WordPress |         | dev-main |
-         *     +-----------------------+------------------------------------------+---------+----------+
+         *     +-----------------------+------------------+----------+-----------+----------------+
+         *     | name                  | authors          | version  | update    | update_version |
+         *     +-----------------------+------------------+----------+-----------+----------------+
+         *     | wp-cli/server-command | Daniel Bachhuber | dev-main | available | 2.x-dev        |
+         *     +-----------------------+------------------+----------+-----------+----------------+
          *
          * @subcommand list
          */
@@ -14626,11 +15348,15 @@ namespace {
          *
          * ## EXAMPLES
          *
-         *     # Get package path
+         *     # Get package path.
          *     $ wp package path
          *     /home/person/.wp-cli/packages/
          *
-         *     # Change directory to package path
+         *     # Get path to an installed package.
+         *     $ wp package path wp-cli/server-command
+         *     /home/person/.wp-cli/packages/vendor/wp-cli/server-command
+         *
+         *     # Change directory to package path.
          *     $ cd $(wp package path) && pwd
          *     /home/vagrant/.wp-cli/packages
          */
@@ -14672,10 +15398,11 @@ namespace {
          *
          * ## EXAMPLES
          *
+         *     # Uninstall package.
          *     $ wp package uninstall wp-cli/server-command
-         *     Removing require statement from /home/person/.wp-cli/packages/composer.json
-         *     Deleting package directory /home/person/.wp-cli/packages/vendor/wp-cli/server-command
-         *     Regenerating Composer autoload.
+         *     Removing require statement for package 'wp-cli/server-command' from /home/person/.wp-cli/packages/composer.json
+         *     Removing repository details from /home/person/.wp-cli/packages/composer.json
+         *     Removing package directories and regenerating autoloader...
          *     Success: Uninstalled package.
          */
         public function uninstall($args, $assoc_args)
@@ -14847,7 +15574,7 @@ namespace {
         /**
          * Checks that `$package_name` matches the name in composer.json at GitLab.com, and return corrected value if not.
          *
-         * @param string $package_name Package name to check.
+         * @param string $project_name Package name to check.
          * @param string $version      Optional. Package version. Defaults to empty string.
          * @param bool   $insecure     Optional. Whether to insecurely retry downloads that failed TLS handshake. Defaults
          *                             to false.
@@ -15605,18 +16332,18 @@ namespace {
      *
      * ## EXAMPLES
      *
-     *     # Generate a new plugin with unit tests
+     *     # Generate a new plugin with unit tests.
      *     $ wp scaffold plugin sample-plugin
      *     Success: Created plugin files.
      *     Success: Created test files.
      *
-     *     # Generate theme based on _s
+     *     # Generate theme based on _s.
      *     $ wp scaffold _s sample-theme --theme_name="Sample Theme" --author="John Doe"
      *     Success: Created theme 'Sample Theme'.
      *
-     *     # Generate code for post type registration in given theme
+     *     # Generate code for post type registration in given theme.
      *     $ wp scaffold post-type movie --label=Movie --theme=simple-life
-     *     Success: Created /var/www/example.com/public_html/wp-content/themes/simple-life/post-types/movie.php
+     *     Success: Created '/var/www/example.com/public_html/wp-content/themes/simple-life/post-types/movie.php'.
      *
      * @package wp-cli
      */
@@ -15715,9 +16442,9 @@ namespace {
          *
          * **Warning: `wp scaffold block` is deprecated.**
          *
-         * The official script to generate a block is the [@wordpress/create-block](https://developer.wordpress.org/block-editor/designers-developers/developers/packages/packages-create-block/) package.
+         * The official script to generate a block is the [@wordpress/create-block](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-create-block/) package.
          *
-         * See the [Create a Block tutorial](https://developer.wordpress.org/block-editor/getting-started/create-block/) for a complete walk-through.
+         * See the [Create a Block tutorial](https://developer.wordpress.org/block-editor/getting-started/tutorial/) for a complete walk-through.
          *
          * ## OPTIONS
          *
@@ -15904,6 +16631,7 @@ namespace {
          * options:
          *   - circle
          *   - gitlab
+         *   - github
          * ---
          *
          * [--activate]
@@ -15936,7 +16664,7 @@ namespace {
          * * `tests/test-sample.php` is a sample file containing the actual tests.
          * * `.phpcs.xml.dist` is a collection of PHP_CodeSniffer rules.
          *
-         * Learn more from the [plugin unit tests documentation](https://make.wordpress.org/cli/handbook/plugin-unit-tests/).
+         * Learn more from the [plugin unit tests documentation](https://make.wordpress.org/cli/handbook/misc/plugin-unit-tests/).
          *
          * ## ENVIRONMENT
          *
@@ -15959,6 +16687,7 @@ namespace {
          *   - circle
          *   - gitlab
          *   - bitbucket
+         *   - github
          * ---
          *
          * [--force]
@@ -15987,7 +16716,7 @@ namespace {
          * * `tests/test-sample.php` is a sample file containing the actual tests.
          * * `.phpcs.xml.dist` is a collection of PHP_CodeSniffer rules.
          *
-         * Learn more from the [plugin unit tests documentation](https://make.wordpress.org/cli/handbook/plugin-unit-tests/).
+         * Learn more from the [plugin unit tests documentation](https://make.wordpress.org/cli/handbook/misc/plugin-unit-tests/).
          *
          * ## ENVIRONMENT
          *
@@ -16010,6 +16739,7 @@ namespace {
          *   - circle
          *   - gitlab
          *   - bitbucket
+         *   - github
          * ---
          *
          * [--force]
@@ -16604,18 +17334,18 @@ namespace {
      *
      * ## EXAMPLES
      *
-     *     # List user with super-admin capabilities
+     *     # List user with super-admin capabilities.
      *     $ wp super-admin list
      *     supervisor
      *     administrator
      *
      *     # Grant super-admin privileges to the user.
      *     $ wp super-admin add superadmin2
-     *     Success: Granted super-admin capabilities.
+     *     Success: Granted super-admin capabilities to 1 user.
      *
-     *     # Revoke super-admin privileges to the user.
+     *     # Revoke super-admin privileges from the user.
      *     $ wp super-admin remove superadmin2
-     *     Success: Revoked super-admin capabilities.
+     *     Success: Revoked super-admin capabilities from 1 user.
      *
      * @package wp-cli
      */
@@ -16641,12 +17371,13 @@ namespace {
          *   - csv
          *   - json
          *   - count
+         *   - ids
          *   - yaml
          * ---
          *
          * ## EXAMPLES
          *
-         *     # List user with super-admin capabilities
+         *     # List user with super-admin capabilities.
          *     $ wp super-admin list
          *     supervisor
          *     administrator
@@ -16666,8 +17397,9 @@ namespace {
          *
          * ## EXAMPLES
          *
+         *     # Grant super-admin privileges to the user.
          *     $ wp super-admin add superadmin2
-         *     Success: Granted super-admin capabilities.
+         *     Success: Granted super-admin capabilities to 1 user.
          */
         public function add($args, $_)
         {
@@ -16682,8 +17414,9 @@ namespace {
          *
          * ## EXAMPLES
          *
+         *     # Revoke super-admin privileges from the user.
          *     $ wp super-admin remove superadmin2
-         *     Success: Revoked super-admin capabilities.
+         *     Success: Revoked super-admin capabilities from 1 user.
          */
         public function remove($args, $_)
         {
