@@ -25,12 +25,12 @@ Alternatively you may download `wp-cli-stubs.php` directly.
 
 Include all stubs in PHPStan configuration file.
 
-```yaml
+```neon
 parameters:
     scanFiles:
         - %rootDir%/../../php-stubs/wordpress-stubs/wordpress-stubs.php
         - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php
         - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-commands-stubs.php
         - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-i18n-stubs.php
-        - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-tools.php
+        - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-tools-stubs.php
 ```
