@@ -417,7 +417,7 @@ abstract class Notify
      * @param boolean  $finish
      * @see cli\Notify::tick()
      */
-    public abstract function display($finish = false);
+    abstract public function display($finish = false);
     /**
      * Reset the notifier state so the same instance can be used in multiple loops.
      */
@@ -810,7 +810,7 @@ class Table
      * @param array  $rows     The rows of data for this table. Optional.
      * @param array  $footers  Footers used in this table. Optional.
      */
-    public function __construct(array $headers = null, array $rows = null, array $footers = null)
+    public function __construct(array $headers = array(), array $rows = array(), array $footers = array())
     {
     }
     public function resetTable()
@@ -1258,7 +1258,7 @@ class Dots extends \cli\Notify
  */
 class Spinner extends \cli\Notify
 {
-    protected $_chars = '-\\|/';
+    protected $_chars = '-\|/';
     protected $_format = '{:msg} {:char}  ({:elapsed}, {:speed}/s)';
     protected $_iteration = 0;
     /**
@@ -1353,7 +1353,7 @@ abstract class Renderer
      * @param array  $row  The table row.
      * @return string  The formatted table row.
      */
-    public abstract function row(array $row);
+    abstract public function row(array $row);
 }
 /**
  * The ASCII renderer renders tables with ASCII borders.
@@ -1456,7 +1456,7 @@ abstract class Renderer
      * @param array $tree
      * @return string|null
      */
-    public abstract function render(array $tree);
+    abstract public function render(array $tree);
 }
 /**
  * The ASCII renderer renders trees with ASCII lines.

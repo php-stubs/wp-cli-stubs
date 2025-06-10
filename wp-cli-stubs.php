@@ -180,7 +180,7 @@ namespace WP_CLI\Bootstrap {
          * @return string[]|false Array of strings with autoloader paths, or false
          *                        to skip.
          */
-        protected abstract function get_autoloader_paths();
+        abstract protected function get_autoloader_paths();
     }
     /**
      * Class BootstrapState.
@@ -228,6 +228,26 @@ namespace WP_CLI\Bootstrap {
          * @return void
          */
         public function setValue($key, $value)
+        {
+        }
+    }
+    /**
+     * Class CheckRoot.
+     *
+     * Check if the user is running as root and aborts with a warning if they are.
+     *
+     * @package WP_CLI\Bootstrap
+     */
+    class CheckRoot implements \WP_CLI\Bootstrap\BootstrapStep
+    {
+        /**
+         * Process this single bootstrapping step.
+         *
+         * @param BootstrapState $state Contextual state to pass into the step.
+         *
+         * @return BootstrapState Modified state to pass to the next step.
+         */
+        public function process(\WP_CLI\Bootstrap\BootstrapState $state)
         {
         }
     }
@@ -787,7 +807,7 @@ namespace WP_CLI {
          *
          * @var string
          */
-        const ALIAS_REGEX = '^@[A-Za-z0-9-_\\.\\-]+$';
+        const ALIAS_REGEX = '^@[A-Za-z0-9-_\.\-]+$';
         /**
          * Arguments that can be used in an alias.
          *
@@ -835,8 +855,8 @@ namespace WP_CLI {
         /**
          * Splits a list of arguments into positional, associative and config.
          *
-         * @param array(string) $arguments
-         * @return array(array)
+         * @param array<string> $arguments
+         * @return array<array<string>>
          */
         public function parse_args($arguments)
         {
@@ -844,8 +864,8 @@ namespace WP_CLI {
         /**
          * Splits positional args from associative args.
          *
-         * @param array $arguments
-         * @return array(array)
+         * @param array<string> $arguments
+         * @return array{0: array<string>, 1: array<array{0: string, 1: string|bool}>, 2: array<array{0: string, 1: string|bool}>, 3: array<array{0: string, 1: string|bool}>}
          */
         public static function extract_assoc($arguments)
         {
@@ -1175,8 +1195,8 @@ namespace WP_CLI\Dispatcher {
         /**
          * Create a new CompositeCommand (or Subcommand if class has __invoke())
          *
-         * @param string $name Represents how the command should be invoked
-         * @param string $callable A subclass of WP_CLI_Command, a function, or a closure
+         * @param string                                $name     Represents how the command should be invoked
+         * @param string|callable-string|callable|array $callable A subclass of WP_CLI_Command, a function, or a closure
          * @param mixed $parent The new command's parent Composite (or Root) command
          */
         public static function create($name, $callable, $parent)
@@ -1431,7 +1451,7 @@ namespace WP_CLI\Dispatcher {
         /**
          * Composite commands can only be known by one name.
          *
-         * @return false
+         * @return string|false
          */
         public function get_alias()
         {
@@ -1824,7 +1844,7 @@ namespace WP_CLI {
         /**
          * Return formatted error message from ProcessRun of tar command.
          *
-         * @param Processrun $process_run
+         * @param ProcessRun $process_run
          * @return string|int The error message of the process, if available;
          *                    otherwise the return code.
          */
@@ -1875,10 +1895,10 @@ namespace WP_CLI\Fetchers {
          */
         protected $msg;
         /**
-         * @param string $arg The raw CLI argument.
+         * @param string|int $arg The raw CLI argument.
          * @return mixed|false The item if found; false otherwise.
          */
-        public abstract function get($arg);
+        abstract public function get($arg);
         /**
          * Like get(), but calls WP_CLI::error() instead of returning false.
          *
@@ -1956,7 +1976,7 @@ namespace WP_CLI\Fetchers {
          * Get a signup.
          *
          * @param int|string $signup
-         * @return stdClass|false
+         * @return object|false
          */
         public function get($signup)
         {
@@ -1965,7 +1985,7 @@ namespace WP_CLI\Fetchers {
          * Get a signup by one of its identifying attributes.
          *
          * @param string $arg The raw CLI argument.
-         * @return stdClass|false The item if found; false otherwise.
+         * @return object|false The item if found; false otherwise.
          */
         protected function get_signup($arg)
         {
@@ -1993,6 +2013,8 @@ namespace WP_CLI\Fetchers {
         }
         /**
          * Get site (blog) data for a given id.
+         *
+         * @global wpdb $wpdb WordPress database abstraction object.
          *
          * @param string $arg The raw CLI argument.
          * @return array|false The item if found; false otherwise.
@@ -2345,13 +2367,13 @@ namespace WP_CLI {
          *
          * @var array
          */
-        private static $plural = ['rules' => ['/(s)tatus$/i' => '\\1\\2tatuses', '/(quiz)$/i' => '\\1zes', '/^(ox)$/i' => '\\1\\2en', '/([m|l])ouse$/i' => '\\1ice', '/(matr|vert|ind)(ix|ex)$/i' => '\\1ices', '/(x|ch|ss|sh)$/i' => '\\1es', '/([^aeiouy]|qu)y$/i' => '\\1ies', '/(hive)$/i' => '\\1s', '/(?:([^f])fe|([lr])f)$/i' => '\\1\\2ves', '/sis$/i' => 'ses', '/([ti])um$/i' => '\\1a', '/(p)erson$/i' => '\\1eople', '/(m)an$/i' => '\\1en', '/(c)hild$/i' => '\\1hildren', '/(f)oot$/i' => '\\1eet', '/(buffal|her|potat|tomat|volcan)o$/i' => '\\1\\2oes', '/(alumn|bacill|cact|foc|fung|nucle|radi|stimul|syllab|termin|vir)us$/i' => '\\1i', '/us$/i' => 'uses', '/(alias)$/i' => '\\1es', '/(analys|ax|cris|test|thes)is$/i' => '\\1es', '/s$/' => 's', '/^$/' => '', '/$/' => 's'], 'uninflected' => ['.*[nrlm]ese', '.*deer', '.*fish', '.*measles', '.*ois', '.*pox', '.*sheep', 'people', 'cookie'], 'irregular' => ['atlas' => 'atlases', 'axe' => 'axes', 'beef' => 'beefs', 'brother' => 'brothers', 'cafe' => 'cafes', 'chateau' => 'chateaux', 'child' => 'children', 'cookie' => 'cookies', 'corpus' => 'corpuses', 'cow' => 'cows', 'criterion' => 'criteria', 'curriculum' => 'curricula', 'demo' => 'demos', 'domino' => 'dominoes', 'echo' => 'echoes', 'foot' => 'feet', 'fungus' => 'fungi', 'ganglion' => 'ganglions', 'genie' => 'genies', 'genus' => 'genera', 'graffito' => 'graffiti', 'hippopotamus' => 'hippopotami', 'hoof' => 'hoofs', 'human' => 'humans', 'iris' => 'irises', 'leaf' => 'leaves', 'loaf' => 'loaves', 'man' => 'men', 'medium' => 'media', 'memorandum' => 'memoranda', 'money' => 'monies', 'mongoose' => 'mongooses', 'motto' => 'mottoes', 'move' => 'moves', 'mythos' => 'mythoi', 'niche' => 'niches', 'nucleus' => 'nuclei', 'numen' => 'numina', 'occiput' => 'occiputs', 'octopus' => 'octopuses', 'opus' => 'opuses', 'ox' => 'oxen', 'penis' => 'penises', 'person' => 'people', 'plateau' => 'plateaux', 'runner-up' => 'runners-up', 'sex' => 'sexes', 'soliloquy' => 'soliloquies', 'son-in-law' => 'sons-in-law', 'syllabus' => 'syllabi', 'testis' => 'testes', 'thief' => 'thieves', 'tooth' => 'teeth', 'tornado' => 'tornadoes', 'trilby' => 'trilbys', 'turf' => 'turfs', 'volcano' => 'volcanoes']];
+        private static $plural = ['rules' => ['/(s)tatus$/i' => '\1\2tatuses', '/(quiz)$/i' => '\1zes', '/^(ox)$/i' => '\1\2en', '/([m|l])ouse$/i' => '\1ice', '/(matr|vert|ind)(ix|ex)$/i' => '\1ices', '/(x|ch|ss|sh)$/i' => '\1es', '/([^aeiouy]|qu)y$/i' => '\1ies', '/(hive)$/i' => '\1s', '/(?:([^f])fe|([lr])f)$/i' => '\1\2ves', '/sis$/i' => 'ses', '/([ti])um$/i' => '\1a', '/(p)erson$/i' => '\1eople', '/(m)an$/i' => '\1en', '/(c)hild$/i' => '\1hildren', '/(f)oot$/i' => '\1eet', '/(buffal|her|potat|tomat|volcan)o$/i' => '\1\2oes', '/(alumn|bacill|cact|foc|fung|nucle|radi|stimul|syllab|termin|vir)us$/i' => '\1i', '/us$/i' => 'uses', '/(alias)$/i' => '\1es', '/(analys|ax|cris|test|thes)is$/i' => '\1es', '/s$/' => 's', '/^$/' => '', '/$/' => 's'], 'uninflected' => ['.*[nrlm]ese', '.*deer', '.*fish', '.*measles', '.*ois', '.*pox', '.*sheep', 'people', 'cookie'], 'irregular' => ['atlas' => 'atlases', 'axe' => 'axes', 'beef' => 'beefs', 'brother' => 'brothers', 'cafe' => 'cafes', 'chateau' => 'chateaux', 'child' => 'children', 'cookie' => 'cookies', 'corpus' => 'corpuses', 'cow' => 'cows', 'criterion' => 'criteria', 'curriculum' => 'curricula', 'demo' => 'demos', 'domino' => 'dominoes', 'echo' => 'echoes', 'foot' => 'feet', 'fungus' => 'fungi', 'ganglion' => 'ganglions', 'genie' => 'genies', 'genus' => 'genera', 'graffito' => 'graffiti', 'hippopotamus' => 'hippopotami', 'hoof' => 'hoofs', 'human' => 'humans', 'iris' => 'irises', 'leaf' => 'leaves', 'loaf' => 'loaves', 'man' => 'men', 'medium' => 'media', 'memorandum' => 'memoranda', 'money' => 'monies', 'mongoose' => 'mongooses', 'motto' => 'mottoes', 'move' => 'moves', 'mythos' => 'mythoi', 'niche' => 'niches', 'nucleus' => 'nuclei', 'numen' => 'numina', 'occiput' => 'occiputs', 'octopus' => 'octopuses', 'opus' => 'opuses', 'ox' => 'oxen', 'penis' => 'penises', 'person' => 'people', 'plateau' => 'plateaux', 'runner-up' => 'runners-up', 'sex' => 'sexes', 'soliloquy' => 'soliloquies', 'son-in-law' => 'sons-in-law', 'syllabus' => 'syllabi', 'testis' => 'testes', 'thief' => 'thieves', 'tooth' => 'teeth', 'tornado' => 'tornadoes', 'trilby' => 'trilbys', 'turf' => 'turfs', 'volcano' => 'volcanoes']];
         /**
          * Singular inflector rules.
          *
          * @var array
          */
-        private static $singular = ['rules' => ['/(s)tatuses$/i' => '\\1\\2tatus', '/^(.*)(menu)s$/i' => '\\1\\2', '/(quiz)zes$/i' => '\\1', '/(matr)ices$/i' => '\\1ix', '/(vert|ind)ices$/i' => '\\1ex', '/^(ox)en/i' => '\\1', '/(alias)(es)*$/i' => '\\1', '/(buffal|her|potat|tomat|volcan)oes$/i' => '\\1o', '/(alumn|bacill|cact|foc|fung|nucle|radi|stimul|syllab|termin|viri?)i$/i' => '\\1us', '/([ftw]ax)es/i' => '\\1', '/(analys|ax|cris|test|thes)es$/i' => '\\1is', '/(shoe|slave)s$/i' => '\\1', '/(o)es$/i' => '\\1', '/ouses$/' => 'ouse', '/([^a])uses$/' => '\\1us', '/([m|l])ice$/i' => '\\1ouse', '/(x|ch|ss|sh)es$/i' => '\\1', '/(m)ovies$/i' => '\\1\\2ovie', '/(s)eries$/i' => '\\1\\2eries', '/([^aeiouy]|qu)ies$/i' => '\\1y', '/([lr])ves$/i' => '\\1f', '/(tive)s$/i' => '\\1', '/(hive)s$/i' => '\\1', '/(drive)s$/i' => '\\1', '/([^fo])ves$/i' => '\\1fe', '/(^analy)ses$/i' => '\\1sis', '/(analy|diagno|^ba|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$/i' => '\\1\\2sis', '/([ti])a$/i' => '\\1um', '/(p)eople$/i' => '\\1\\2erson', '/(m)en$/i' => '\\1an', '/(c)hildren$/i' => '\\1\\2hild', '/(f)eet$/i' => '\\1oot', '/(n)ews$/i' => '\\1\\2ews', '/eaus$/' => 'eau', '/^(.*us)$/' => '\\1', '/s$/i' => ''], 'uninflected' => ['.*[nrlm]ese', '.*deer', '.*fish', '.*measles', '.*ois', '.*pox', '.*sheep', '.*ss'], 'irregular' => ['criteria' => 'criterion', 'curves' => 'curve', 'emphases' => 'emphasis', 'foes' => 'foe', 'hoaxes' => 'hoax', 'media' => 'medium', 'neuroses' => 'neurosis', 'waves' => 'wave', 'oases' => 'oasis']];
+        private static $singular = ['rules' => ['/(s)tatuses$/i' => '\1\2tatus', '/^(.*)(menu)s$/i' => '\1\2', '/(quiz)zes$/i' => '\1', '/(matr)ices$/i' => '\1ix', '/(vert|ind)ices$/i' => '\1ex', '/^(ox)en/i' => '\1', '/(alias)(es)*$/i' => '\1', '/(buffal|her|potat|tomat|volcan)oes$/i' => '\1o', '/(alumn|bacill|cact|foc|fung|nucle|radi|stimul|syllab|termin|viri?)i$/i' => '\1us', '/([ftw]ax)es/i' => '\1', '/(analys|ax|cris|test|thes)es$/i' => '\1is', '/(shoe|slave)s$/i' => '\1', '/(o)es$/i' => '\1', '/ouses$/' => 'ouse', '/([^a])uses$/' => '\1us', '/([m|l])ice$/i' => '\1ouse', '/(x|ch|ss|sh)es$/i' => '\1', '/(m)ovies$/i' => '\1\2ovie', '/(s)eries$/i' => '\1\2eries', '/([^aeiouy]|qu)ies$/i' => '\1y', '/([lr])ves$/i' => '\1f', '/(tive)s$/i' => '\1', '/(hive)s$/i' => '\1', '/(drive)s$/i' => '\1', '/([^fo])ves$/i' => '\1fe', '/(^analy)ses$/i' => '\1sis', '/(analy|diagno|^ba|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$/i' => '\1\2sis', '/([ti])a$/i' => '\1um', '/(p)eople$/i' => '\1\2erson', '/(m)en$/i' => '\1an', '/(c)hildren$/i' => '\1\2hild', '/(f)eet$/i' => '\1oot', '/(n)ews$/i' => '\1\2ews', '/eaus$/' => 'eau', '/^(.*us)$/' => '\1', '/s$/i' => ''], 'uninflected' => ['.*[nrlm]ese', '.*deer', '.*fish', '.*measles', '.*ois', '.*pox', '.*sheep', '.*ss'], 'irregular' => ['criteria' => 'criterion', 'curves' => 'curve', 'emphases' => 'emphasis', 'foes' => 'foe', 'hoaxes' => 'hoax', 'media' => 'medium', 'neuroses' => 'neurosis', 'waves' => 'wave', 'oases' => 'oasis']];
         /**
          * Words that should not be inflected.
          *
@@ -2499,21 +2521,27 @@ namespace WP_CLI\Iterators {
         public function __construct($filename, $delimiter = ',')
         {
         }
+        #[\ReturnTypeWillChange]
         public function rewind()
         {
         }
+        #[\ReturnTypeWillChange]
         public function current()
         {
         }
+        #[\ReturnTypeWillChange]
         public function key()
         {
         }
+        #[\ReturnTypeWillChange]
         public function next()
         {
         }
+        #[\ReturnTypeWillChange]
         public function count()
         {
         }
+        #[\ReturnTypeWillChange]
         public function valid()
         {
         }
@@ -2655,9 +2683,9 @@ namespace WP_CLI\Loggers {
     abstract class Base
     {
         protected $in_color = false;
-        public abstract function info($message);
-        public abstract function success($message);
-        public abstract function warning($message);
+        abstract public function info($message);
+        abstract public function success($message);
+        abstract public function warning($message);
         /**
          * Retrieve the runner instance from the base CLI object. This facilitates
          * unit testing, where the WP_CLI instance isn't available
@@ -2904,9 +2932,9 @@ namespace WP_CLI {
          */
         public static $run_times = [];
         /**
-         * @param string $command Command to execute.
-         * @param string $cwd Directory to execute the command in.
-         * @param array $env Environment variables to set when running the command.
+         * @param string      $command Command to execute.
+         * @param string|null $cwd     Directory to execute the command in.
+         * @param array|null  $env     Environment variables to set when running the command.
          *
          * @return Process
          */
@@ -3054,13 +3082,13 @@ namespace WP_CLI {
          *
          * @var string
          */
-        const CLASS_NAME_V1 = '\\Requests';
+        const CLASS_NAME_V1 = '\Requests';
         /**
          * Class name of the Requests main class for v2.
          *
          * @var string
          */
-        const CLASS_NAME_V2 = '\\WpOrg\\Requests\\Requests';
+        const CLASS_NAME_V2 = '\WpOrg\Requests\Requests';
         /**
          * Version of the Requests library being used.
          *
@@ -3132,7 +3160,6 @@ namespace WP_CLI {
          * Get the current class name.
          *
          * @return string The current class name.
-         * @throws RuntimeException if the class name is not set.
          */
         public static function get_class_name()
         {
@@ -3330,6 +3357,14 @@ namespace WP_CLI {
         private static function guess_url($assoc_args)
         {
         }
+        /**
+         * Checks if the arguments passed to the WP-CLI binary start with the specified prefix.
+         *
+         * @param array $prefix An array of strings specifying the expected start of the arguments passed to the WP-CLI binary.
+         *                      For example, `['user', 'list']` checks if the arguments passed to the WP-CLI binary start with `user list`.
+         *
+         * @return bool `true` if the arguments passed to the WP-CLI binary start with the specified prefix, `false` otherwise.
+         */
         private function cmd_starts_with($prefix)
         {
         }
@@ -3449,9 +3484,6 @@ namespace WP_CLI {
         public function init_config()
         {
         }
-        private function check_root()
-        {
-        }
         private function run_alias_group($aliases)
         {
         }
@@ -3519,14 +3551,14 @@ namespace WP_CLI {
          * Get a suggestion on similar (sub)commands when the user entered an
          * unknown (sub)command.
          *
-         * @param string           $entry        User entry that didn't match an
-         *                                       existing command.
-         * @param CompositeCommand $root_command Root command to start search for
-         *                                       suggestions at.
+         * @param string                $entry        User entry that didn't match an
+         *                                            existing command.
+         * @param CompositeCommand|null $root_command Root command to start search for
+         *                                            suggestions at.
          *
          * @return string Suggestion that fits the user entry, or an empty string.
          */
-        private function get_subcommand_suggestion($entry, \WP_CLI\Dispatcher\CompositeCommand $root_command = null)
+        private function get_subcommand_suggestion($entry, $root_command = null)
         {
         }
         /**
@@ -3772,7 +3804,7 @@ namespace WP_CLI\Traverser {
          *
          * @throws NonExistentKeyException
          *
-         * @return static
+         * @return self
          */
         public function traverse_to(array $key_path)
         {
@@ -4063,7 +4095,7 @@ namespace WP_CLI {
         /**
          * Gets a set of salts in the format required by `wp-config.php`.
          *
-         * @return bool|string False on failure. A string of PHP define() statements on success.
+         * @return string A string of PHP define() statements.
          * @throws RuntimeException If the remote request fails.
          */
         public function get_salts()
@@ -4087,7 +4119,7 @@ namespace WP_CLI {
          * @param string $url     URL to execute the GET request on.
          * @param array  $headers Optional. Associative array of headers.
          * @param array  $options Optional. Associative array of options.
-         * @return string|false False on failure. Response body string on success.
+         * @return string Response body.
          * @throws RuntimeException If the remote request fails.
          */
         private function get_request($url, $headers = [], $options = [])
@@ -4269,7 +4301,7 @@ namespace {
          *
          * @param string $when Identifier for the hook.
          * @param mixed $callback Callback to execute when hook is called.
-         * @return null
+         * @return void
          */
         public static function add_hook($when, $callback)
         {
@@ -4420,7 +4452,7 @@ namespace {
          * @category Output
          *
          * @param string $message Message to display to the end user.
-         * @return null
+         * @return void
          */
         public static function line($message = '')
         {
@@ -4446,7 +4478,7 @@ namespace {
         /**
          * Display success message prefixed with "Success: ".
          *
-         * Success message is written to STDOUT.
+         * Success message is written to STDOUT, or discarded when `--quiet` flag is supplied.
          *
          * Typically recommended to inform user of successful script conclusion.
          *
@@ -4464,7 +4496,7 @@ namespace {
          * @category Output
          *
          * @param string $message Message to write to STDOUT.
-         * @return null
+         * @return void
          */
         public static function success($message)
         {
@@ -4497,7 +4529,7 @@ namespace {
          * @param string|WP_Error|Exception|Throwable $message Message to write to STDERR.
          * @param string|bool $group Organize debug message to a specific group.
          * Use `false` to not group the message.
-         * @return null
+         * @return void
          */
         public static function debug($message, $group = \false)
         {
@@ -4505,7 +4537,7 @@ namespace {
         /**
          * Display warning message prefixed with "Warning: ".
          *
-         * Warning message is written to STDERR.
+         * Warning message is written to STDERR, or discarded when `--quiet` flag is supplied.
          *
          * Use instead of `WP_CLI::debug()` when script execution should be permitted
          * to continue.
@@ -4524,7 +4556,7 @@ namespace {
          * @category Output
          *
          * @param string|WP_Error|Exception|Throwable $message Message to write to STDERR.
-         * @return null
+         * @return void
          */
         public static function warning($message)
         {
@@ -4767,7 +4799,15 @@ namespace {
          * @category Execution
          *
          * @param string $command WP-CLI command to run, including arguments.
-         * @param array  $options Configuration options for command execution.
+         * @param array  $options {
+         *     Configuration options for command execution.
+         *
+         *     @type bool        $launch     Launches a new process (true) or reuses the existing process (false). Default: true.
+         *     @type bool        $exit_error Halts the script on error. Default: true.
+         *     @type bool|string $return     Returns output as an object when set to 'all' (string), return just the 'stdout', 'stderr', or 'return_code' (string) of command, or print directly to stdout/stderr (false). Default: false.
+         *     @type bool|string $parse      Parse returned output as 'json' (string); otherwise, output is unchanged (false). Default: false.
+         * @param array $command_args Contains additional command line arguments for the command. Each element represents a single argument. Default: empty array.
+         * }
          * @return mixed
          */
         public static function runcommand($command, $options = [])
@@ -5292,7 +5332,7 @@ namespace {
          * : Prints the value of a single field for each update.
          *
          * [--fields=<fields>]
-         * : Limit the output to specific object fields. Defaults to version,update_type,package_url.
+         * : Limit the output to specific object fields. Defaults to version,update_type,package_url,status,requires_php.
          *
          * [--format=<format>]
          * : Render output in a particular format.
@@ -5367,7 +5407,7 @@ namespace {
          *
          *     # Update CLI.
          *     $ wp cli update
-         *     You have version 0.24.0. Would you like to update to 0.24.1? [y/n] y
+         *     You are currently using WP-CLI version 0.24.0. Would you like to update to 0.24.1? [y/n] y
          *     Downloading from https://github.com/wp-cli/wp-cli/releases/download/v0.24.1/wp-cli-0.24.1.phar...
          *     New version works. Proceeding to replace.
          *     Success: Updated WP-CLI to 0.24.1.
@@ -5376,9 +5416,33 @@ namespace {
         {
         }
         /**
+         * @param string $file       Release file path.
+         * @param string $sha512_url URL to sha512 hash.
+         * @param string $md5_url    URL to md5 hash.
+         *
+         * @return void
+         * @throws \WP_CLI\ExitException
+         */
+        private function validate_hashes($file, $sha512_url, $md5_url)
+        {
+        }
+        /**
          * Returns update information.
          */
         private function get_updates($assoc_args)
+        {
+        }
+        /**
+         * Returns the the first element of the passed array for which the
+         * callback returns true.
+         *
+         * Polyfill for the `array_find()` function introduced in PHP 8.3.
+         *
+         * @param array    $arr      Array to search.
+         * @param callable $callback The callback function for each element in the array.
+         * @return mixed First array element for which the callback returns true, null otherwise.
+         */
+        private function array_find($arr, $callback)
         {
         }
         /**
@@ -5605,53 +5669,108 @@ namespace WP_CLI\Dispatcher {
 }
 // Utilities that depend on WordPress code.
 namespace WP_CLI\Utils {
+    /**
+     * @return void
+     */
     function wp_not_installed()
     {
     }
     // phpcs:disable WordPress.PHP.IniSet -- Intentional & correct usage.
+    /**
+     * @return void
+     */
     function wp_debug_mode()
     {
     }
     // phpcs:enable
+    /**
+     * @return void
+     */
     function replace_wp_die_handler()
     {
     }
+    /**
+     * @return never
+     */
     function wp_die_handler($message)
     {
     }
     /**
      * Clean HTML error message so suitable for text display.
+     *
+     * @param string $message
+     * @return string
      */
     function wp_clean_error_message($message)
     {
     }
+    /**
+     * @param string $url
+     * @return string
+     */
     function wp_redirect_handler($url)
     {
     }
+    /**
+     * @param string $since Version number.
+     * @param string $path File to include.
+     * @return void
+     */
     function maybe_require($since, $path)
     {
     }
-    function get_upgrader($class, $insecure = false)
+    /**
+     *
+     * @param class-string $class_name
+     * @param bool         $insecure
+     *
+     * @return \WP_Upgrader Upgrader instance.
+     * @throws \ReflectionException
+     */
+    function get_upgrader($class_name, $insecure = false)
     {
     }
     /**
      * Converts a plugin basename back into a friendly slug.
+     *
+     * @param string $basename
+     * @return string
      */
     function get_plugin_name($basename)
     {
     }
+    /**
+     * Determine whether a plugin is skipped.
+     *
+     * @param string $file
+     * @return bool
+     */
     function is_plugin_skipped($file)
     {
     }
+    /**
+     * Get theme name from path.
+     *
+     * @param string $path
+     * @return string
+     */
     function get_theme_name($path)
     {
     }
+    /**
+     * Determine whether a theme is skipped.
+     *
+     * @param string $path
+     * @return bool
+     */
     function is_theme_skipped($path)
     {
     }
     /**
      * Register the sidebar for unused widgets.
      * Core does this in /wp-admin/widgets.php, which isn't helpful.
+     *
+     * @return void
      */
     function wp_register_unused_sidebar()
     {
@@ -5678,6 +5797,8 @@ namespace WP_CLI\Utils {
      * @access public
      * @category System
      * @deprecated 1.5.0
+     *
+     * @return void
      */
     function wp_clear_object_cache()
     {
@@ -5687,9 +5808,9 @@ namespace WP_CLI\Utils {
      *
      * Interprets common command-line options into a resolved set of table names.
      *
-     * @param array $args Provided table names, or tables with wildcards.
-     * @param array $assoc_args Optional flags for groups of tables (e.g. --network)
-     * @return array
+     * @param array<string>         $args Provided table names, or tables with wildcards.
+     * @param array<string, string> $assoc_args Optional flags for groups of tables (e.g. --network)
+     * @return array<string>
      */
     function wp_get_table_names($args, $assoc_args = [])
     {
@@ -5716,6 +5837,7 @@ namespace WP_CLI\Utils {
      * running from within a Phar archive.
      *
      * @param string|null $path Optional. Path to check. Defaults to null, which checks WP_CLI_ROOT.
+     * @return bool Whether path is within a Phar archive.
      */
     function inside_phar($path = null)
     {
@@ -5732,16 +5854,40 @@ namespace WP_CLI\Utils {
     function extract_from_phar($path)
     {
     }
+    /**
+     * Load dependencies.
+     *
+     * @return void|never
+     */
     function load_dependencies()
     {
     }
+    /**
+     * Return vendor paths.
+     *
+     * @return array<string> List of paths.
+     */
     function get_vendor_paths()
     {
     }
-    // Using require() directly inside a class grants access to private methods to the loaded code.
+    /**
+     * Load a file.
+     *
+     * Using require() directly inside a class grants access
+     * to private methods to the loaded code, hence this wrapper helper.
+     *
+     * @param string $path
+     * @return void
+     */
     function load_file($path)
     {
     }
+    /**
+     * Load a command.
+     *
+     * @param string $name
+     * @return void
+     */
     function load_command($name)
     {
     }
@@ -5761,7 +5907,7 @@ namespace WP_CLI\Utils {
      *     }
      *
      * @param array|object $it Either a plain array or another iterator.
-     * @param callback     $fn The function to apply to an element.
+     * @param callable     $fn The function to apply to an element.
      * @return object An iterator that applies the given callback(s).
      */
     function iterator_map($it, $fn)
@@ -5770,21 +5916,26 @@ namespace WP_CLI\Utils {
     /**
      * Search for file by walking up the directory tree until the first file is found or until $stop_check($dir) returns true.
      *
-     * @param string|array $files      The files (or file) to search for.
-     * @param string|null  $dir        The directory to start searching from; defaults to CWD.
-     * @param callable     $stop_check Function which is passed the current dir each time a directory level is traversed.
+     * @param string|array<string> $files      The files (or file) to search for.
+     * @param string|null          $dir        The directory to start searching from; defaults to CWD.
+     * @param callable             $stop_check Function which is passed the current dir each time a directory level is traversed.
      * @return null|string Null if the file was not found.
      */
     function find_file_upward($files, $dir = null, $stop_check = null)
     {
     }
+    /**
+     * Determine whether a path is absolute.
+     * @param string $path
+     * @return bool
+     */
     function is_path_absolute($path)
     {
     }
     /**
      * Composes positional arguments into a command string.
      *
-     * @param array $args Positional arguments to compose.
+     * @param array<string> $args Positional arguments to compose.
      * @return string
      */
     function args_to_str($args)
@@ -5793,7 +5944,7 @@ namespace WP_CLI\Utils {
     /**
      * Composes associative arguments into a command string.
      *
-     * @param array $assoc_args Associative arguments to compose.
+     * @param array<string, string> $assoc_args Associative arguments to compose.
      * @return string
      */
     function assoc_args_to_str($assoc_args)
@@ -5802,6 +5953,8 @@ namespace WP_CLI\Utils {
     /**
      * Given a template string and an arbitrary number of arguments,
      * returns the final command, with the parameters escaped.
+     *
+     * @param array<string> $cmd
      */
     function esc_cmd($cmd)
     {
@@ -5814,6 +5967,13 @@ namespace WP_CLI\Utils {
     function locate_wp_config()
     {
     }
+    /**
+     * Compare a WordPress version.
+     *
+     * @param string $since
+     * @param string $operator
+     * @return bool
+     */
     function wp_version_compare($since, $operator)
     {
     }
@@ -5858,8 +6018,8 @@ namespace WP_CLI\Utils {
      * @category Output
      *
      * @param string       $format Format to use: 'table', 'json', 'csv', 'yaml', 'ids', 'count'.
-     * @param array        $items  An array of items to output.
-     * @param array|string $fields Named fields for each item of data. Can be array or comma-separated list.
+     * @param array<mixed> $items  An array of items to output.
+     * @param array<string>|string $fields Named fields for each item of data. Can be array or comma-separated list.
      */
     function format_items($format, $items, $fields)
     {
@@ -5869,9 +6029,9 @@ namespace WP_CLI\Utils {
      *
      * @access public
      *
-     * @param resource $fd      File descriptor.
-     * @param array    $rows    Array of rows to output.
-     * @param array    $headers List of CSV columns (optional).
+     * @param resource      $fd      File descriptor.
+     * @param array<string> $rows    Array of rows to output.
+     * @param array<string> $headers List of CSV columns (optional).
      */
     function write_csv($fd, $rows, $headers = [])
     {
@@ -5879,9 +6039,9 @@ namespace WP_CLI\Utils {
     /**
      * Pick fields from an associative array or object.
      *
-     * @param  array|object $item    Associative array or object to pick fields from.
-     * @param  array        $fields  List of fields to pick.
-     * @return array
+     * @param array<string, mixed>|object $item   Associative array or object to pick fields from.
+     * @param array<string>               $fields List of fields to pick.
+     * @return array<string, mixed>
      */
     function pick_fields($item, $fields)
     {
@@ -5903,7 +6063,7 @@ namespace WP_CLI\Utils {
     /**
      * @param string $raw_host MySQL host string, as defined in wp-config.php.
      *
-     * @return array
+     * @return array<string, string|int>
      */
     function mysql_host_to_cli_args($raw_host)
     {
@@ -5913,14 +6073,14 @@ namespace WP_CLI\Utils {
      *
      * @since v2.5.0 Deprecated $descriptors argument.
      *
-     * @param string $cmd           Command to run.
-     * @param array  $assoc_args    Associative array of arguments to use.
-     * @param mixed  $_             Deprecated. Former $descriptors argument.
-     * @param bool   $send_to_shell Optional. Whether to send STDOUT and STDERR
-     *                              immediately to the shell. Defaults to true.
-     * @param bool   $interactive   Optional. Whether MySQL is meant to be
-     *                              executed as an interactive process. Defaults
-     *                              to false.
+     * @param string                $cmd           Command to run.
+     * @param array<string, mixed>  $assoc_args    Associative array of arguments to use.
+     * @param mixed                 $_             Deprecated. Former $descriptors argument.
+     * @param bool                  $send_to_shell Optional. Whether to send STDOUT and STDERR
+     *                                             immediately to the shell. Defaults to true.
+     * @param bool                  $interactive   Optional. Whether MySQL is meant to be
+     *                                             executed as an interactive process. Defaults
+     *                                             to false.
      *
      * @return array {
      *     Associative array containing STDOUT and STDERR output.
@@ -5937,6 +6097,9 @@ namespace WP_CLI\Utils {
      * Render PHP or other types of files using Mustache templates.
      *
      * IMPORTANT: Automatic HTML escaping is disabled!
+     *
+     * @param string               $template_name
+     * @param array<string, mixed> $data
      */
     function mustache_render($template_name, $data = [])
     {
@@ -6100,9 +6263,9 @@ namespace WP_CLI\Utils {
      * @access public
      * @category Input
      *
-     * @param array  $assoc_args Arguments array.
-     * @param string $flag       Flag to get the value.
-     * @param mixed  $default    Default value for the flag. Default: NULL.
+     * @param array<string,string|bool>  $assoc_args Arguments array.
+     * @param string                     $flag       Flag to get the value.
+     * @param mixed                      $default    Default value for the flag. Default: NULL.
      * @return mixed
      */
     function get_flag_value($assoc_args, $flag, $default = null)
@@ -6180,6 +6343,8 @@ namespace WP_CLI\Utils {
      *
      * @access public
      *
+     * @param string $url
+     * @param int $component
      * @return mixed
      */
     function parse_ssh_url($url, $component = -1)
@@ -6197,6 +6362,7 @@ namespace WP_CLI\Utils {
      * @param integer      $successes Number of successful operations.
      * @param integer      $failures  Number of failures.
      * @param null|integer $skips     Optional. Number of skipped operations. Default null (don't show skips).
+     * @return void
      */
     function report_batch_operation_results($noun, $verb, $total, $successes, $failures, $skips = null)
     {
@@ -6208,7 +6374,7 @@ namespace WP_CLI\Utils {
      * @category Input
      *
      * @param string $arguments
-     * @return array
+     * @return array<string>
      */
     function parse_str_to_argv($arguments)
     {
@@ -6258,9 +6424,9 @@ namespace WP_CLI\Utils {
      *
      * Has no effect on paths which do not use glob patterns.
      *
-     * @param string|array $paths Single path as a string, or an array of paths.
-     * @param int          $flags Optional. Flags to pass to glob. Defaults to GLOB_BRACE.
-     * @return array Expanded paths.
+     * @param string|array<string>  $paths Single path as a string, or an array of paths.
+     * @param int|'default'         $flags Optional. Flags to pass to glob. Defaults to GLOB_BRACE.
+     * @return array<string> Expanded paths.
      */
     function expand_globs($paths, $flags = 'default')
     {
@@ -6277,7 +6443,7 @@ namespace WP_CLI\Utils {
      *
      * @param string $pattern     Filename pattern.
      * @param void   $dummy_flags Not used.
-     * @return array Array of paths.
+     * @return array<string> Array of paths.
      */
     function glob_brace($pattern, $dummy_flags = null)
     {
@@ -6292,9 +6458,9 @@ namespace WP_CLI\Utils {
      * If the "distance" to the closest term is higher than the threshold, an empty
      * string is returned.
      *
-     * @param string $target    Target term to get a suggestion for.
-     * @param array  $options   Array with possible options.
-     * @param int    $threshold Threshold above which to return an empty string.
+     * @param string        $target    Target term to get a suggestion for.
+     * @param array<string> $options   Array with possible options.
+     * @param int           $threshold Threshold above which to return an empty string.
      * @return string
      */
     function get_suggestion($target, array $options, $threshold = 2)
@@ -6362,12 +6528,12 @@ namespace WP_CLI\Utils {
      *
      * @access public
      *
-     * @param string $cmd            Command to execute.
-     * @param array  $descriptorspec Indexed array of descriptor numbers and their values.
-     * @param array  &$pipes         Indexed array of file pointers that correspond to PHP's end of any pipes that are created.
-     * @param string $cwd            Initial working directory for the command.
-     * @param array  $env            Array of environment variables.
-     * @param array  $other_options  Array of additional options (Windows only).
+     * @param string                $cmd            Command to execute.
+     * @param array<int, string>    $descriptorspec Indexed array of descriptor numbers and their values.
+     * @param array<int, string>    &$pipes         Indexed array of file pointers that correspond to PHP's end of any pipes that are created.
+     * @param string                $cwd            Initial working directory for the command.
+     * @param array<string, string> $env            Array of environment variables.
+     * @param array<string>         $other_options  Array of additional options (Windows only).
      * @return resource Command stripped of any environment variable settings.
      */
     function proc_open_compat($cmd, $descriptorspec, &$pipes, $cwd = null, $env = null, $other_options = null)
@@ -6379,8 +6545,8 @@ namespace WP_CLI\Utils {
      *
      * @access private
      *
-     * @param string $cmd Command to execute.
-     * @param array &$env Array of existing environment variables. Will be modified if any settings in command.
+     * @param string                $cmd  Command to execute.
+     * @param array<string, string> &$env Array of existing environment variables. Will be modified if any settings in command.
      * @return string Command stripped of any environment variable settings.
      */
     function _proc_open_compat_win_env($cmd, &$env)
@@ -6407,8 +6573,8 @@ namespace WP_CLI\Utils {
      * Escapes (backticks) MySQL identifiers (aka schema object names) - i.e. column names, table names, and database/index/alias/view etc names.
      * See https://dev.mysql.com/doc/refman/5.5/en/identifiers.html
      *
-     * @param  string|array $idents A single identifier or an array of identifiers.
-     * @return string|array An escaped string if given a string, or an array of escaped strings if given an array of strings.
+     * @param  string|array<string> $idents A single identifier or an array of identifiers.
+     * @return string|array<string> An escaped string if given a string, or an array of escaped strings if given an array of strings.
      */
     function esc_sql_ident($idents)
     {
@@ -6427,10 +6593,10 @@ namespace WP_CLI\Utils {
     /**
      * Parse known shell arrays included in the $assoc_args array.
      *
-     * @param array $assoc_args      Associative array of arguments.
-     * @param array $array_arguments Array of argument keys that should receive an
-     *                               array through the shell.
-     * @return array
+     * @param array<string, string> $assoc_args      Associative array of arguments.
+     * @param array<string>         $array_arguments Array of argument keys that should receive an
+     *                                               array through the shell.
+     * @return array<string, string>
      */
     function parse_shell_arrays($assoc_args, $array_arguments)
     {
@@ -6450,7 +6616,7 @@ namespace WP_CLI\Utils {
      * This accommodates changes to `is_callable()` in PHP 8 that mean an array of a
      * classname and instance method is no longer callable.
      *
-     * @param array $pair The class and method pair to check.
+     * @param array<string> $pair The class and method pair to check.
      * @return bool
      */
     function is_valid_class_and_method_pair($pair)
@@ -6469,20 +6635,54 @@ namespace WP_CLI\Utils {
     {
     }
     /**
-     * Get the path to the mysql binary.
+     * Return the detected database type.
      *
-     * @return string Path to the mysql binary, or an empty string if not found.
+     * Can be either 'sqlite' (if in a WordPress installation with the SQLite drop-in),
+     * 'mysql', or 'mariadb'.
+     *
+     * @return string Database type.
+     */
+    function get_db_type()
+    {
+    }
+    /**
+     * Get the path to the MySQL or MariaDB binary.
+     *
+     * If the MySQL binary is provided by MariaDB (as determined by the version string),
+     * prefers the actual MariaDB binary.
+     *
+     * @since 2.12.0 Now also checks for MariaDB.
+     *
+     * @return string Path to the MySQL/MariaDB binary, or an empty string if not found.
      */
     function get_mysql_binary_path()
     {
     }
     /**
-     * Get the version of the MySQL database.
+     * Get the version of the MySQL or MariaDB database.
      *
-     * @return string Version of the MySQL database, or an empty string if not
-     *                found.
+     * @since 2.12.0 Now also checks for MariaDB.
+     *
+     * @return string Version of the MySQL/MariaDB database,
+     *                or an empty string if not found.
      */
     function get_mysql_version()
+    {
+    }
+    /**
+     * Returns the correct `dump` command based on the detected database type.
+     *
+     * @return string The appropriate dump command.
+     */
+    function get_sql_dump_command()
+    {
+    }
+    /**
+     * Returns the correct `check` command based on the detected database type.
+     *
+     * @return string The appropriate check command.
+     */
+    function get_sql_check_command()
     {
     }
     /**
@@ -6518,6 +6718,18 @@ namespace WP_CLI\Utils {
      * @return string|null
      */
     function get_hook_description($hook)
+    {
+    }
+    /**
+     * Escape a value for CSV output.
+     *
+     * Values that start with the following characters are escaping with a single
+     * quote: =, +, -, @, TAB (0x09) and CR (0x0D).
+     *
+     * @param string $value Value to escape.
+     * @return string Escaped value.
+     */
+    function escape_csv_value($value)
     {
     }
 }

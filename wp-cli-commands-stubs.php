@@ -407,6 +407,83 @@ namespace {
         public function flush_group($args, $assoc_args)
         {
         }
+        /**
+         * Get a nested value from the cache.
+         *
+         * ## OPTIONS
+         *
+         * <key>
+         * : Cache key.
+         *
+         * <key-path>...
+         * : The name(s) of the keys within the value to locate the value to pluck.
+         *
+         * [--group=<group>]
+         * : Method for grouping data within the cache which allows the same key to be used across groups.
+         * ---
+         * default: default
+         * ---
+         *
+         * [--format=<format>]
+         * : The output format of the value.
+         * ---
+         * default: plaintext
+         * options:
+         *   - plaintext
+         *   - json
+         *   - yaml
+         * ---
+         */
+        public function pluck($args, $assoc_args)
+        {
+        }
+        /**
+         * Update a nested value from the cache.
+         *
+         * ## OPTIONS
+         *
+         * <action>
+         * : Patch action to perform.
+         * ---
+         * options:
+         *   - insert
+         *   - update
+         *   - delete
+         * ---
+         *
+         * <key>
+         * : Cache key.
+         *
+         * <key-path>...
+         * : The name(s) of the keys within the value to locate the value to patch.
+         *
+         * [<value>]
+         * : The new value. If omitted, the value is read from STDIN.
+         *
+         * [--group=<group>]
+         * : Method for grouping data within the cache which allows the same key to be used across groups.
+         * ---
+         * default: default
+         * ---
+         *
+         * [--expiration=<expiration>]
+         *  : Define how long to keep the value, in seconds. `0` means as long as possible.
+         *  ---
+         *  default: 0
+         *  ---
+         *
+         * [--format=<format>]
+         * : The serialization format for the value.
+         * ---
+         * default: plaintext
+         * options:
+         *   - plaintext
+         *   - json
+         * ---
+         */
+        public function patch($args, $assoc_args)
+        {
+        }
     }
     /**
      * Adds, gets, and deletes entries in the WordPress Transient Cache.
@@ -645,6 +722,78 @@ namespace {
         {
         }
         /**
+         * Get a nested value from a transient.
+         *
+         * ## OPTIONS
+         *
+         * <key>
+         * : Key for the transient.
+         *
+         * <key-path>...
+         * : The name(s) of the keys within the value to locate the value to pluck.
+         *
+         * [--format=<format>]
+         * : The output format of the value.
+         * ---
+         * default: plaintext
+         * options:
+         *   - plaintext
+         *   - json
+         *   - yaml
+         * ---
+         *
+         * [--network]
+         * : Get the value of a network|site transient. On single site, this is
+         * a specially-named cache key. On multisite, this is a global cache
+         * (instead of local to the site).
+         */
+        public function pluck($args, $assoc_args)
+        {
+        }
+        /**
+         * Update a nested value from a transient.
+         *
+         * ## OPTIONS
+         *
+         * <action>
+         * : Patch action to perform.
+         * ---
+         * options:
+         *   - insert
+         *   - update
+         *   - delete
+         * ---
+         *
+         * <key>
+         * : Key for the transient.
+         *
+         * <key-path>...
+         * : The name(s) of the keys within the value to locate the value to patch.
+         *
+         * [<value>]
+         * : The new value. If omitted, the value is read from STDIN.
+         *
+         * [--format=<format>]
+         * : The serialization format for the value.
+         * ---
+         * default: plaintext
+         * options:
+         *   - plaintext
+         *   - json
+         * ---
+         *
+         * [--expiration=<expiration>]
+         * : Time until expiration, in seconds.
+         *
+         * [--network]
+         * : Get the value of a network|site transient. On single site, this is
+         * a specially-named cache key. On multisite, this is a global cache
+         * (instead of local to the site).
+         */
+        public function patch($args, $assoc_args)
+        {
+        }
+        /**
          * Retrieves the expiration time.
          *
          * @param string $name              Transient name.
@@ -741,6 +890,12 @@ namespace {
          */
         private $include_root = \false;
         /**
+         * Files to exclude from the verification.
+         *
+         * @var array
+         */
+        private $exclude_files = [];
+        /**
          * Verifies WordPress files against WordPress.org's checksums.
          *
          * Downloads md5 checksums for the current version from WordPress.org, and
@@ -767,6 +922,9 @@ namespace {
          * [--insecure]
          * : Retry downloads without certificate validation if TLS handshake fails. Note: This makes the request vulnerable to a MITM attack.
          *
+         * [--exclude=<files>]
+         * : Exclude specific files from the checksum verification. Provide a comma-separated list of file paths.
+         *
          * ## EXAMPLES
          *
          *     # Verify checksums
@@ -787,6 +945,10 @@ namespace {
          *     Warning: File doesn't verify against checksum: readme.html
          *     Warning: File doesn't verify against checksum: wp-config-sample.php
          *     Error: WordPress installation doesn't verify against checksums.
+         *
+         *     # Verify checksums and exclude files
+         *     $ wp core verify-checksums --exclude="readme.html"
+         *     Success: WordPress installation verifies against checksums.
          *
          * @when before_wp_load
          */
@@ -839,12 +1001,6 @@ namespace {
      */
     class Checksum_Plugin_Command extends \Checksum_Base_Command
     {
-        /**
-         * URL template that points to the API endpoint to use.
-         *
-         * @var string
-         */
-        private $url_template = 'https://downloads.wordpress.org/plugin-checksums/{slug}/{version}.json';
         /**
          * Cached plugin data for all installed plugins.
          *
@@ -2223,6 +2379,9 @@ namespace {
         }
         /**
          * Returns update information.
+         *
+         * @param array $assoc_args Associative array of arguments.
+         * @return array List of available updates , or an empty array if no updates are available.
          */
         private function get_updates($assoc_args)
         {
@@ -2261,6 +2420,7 @@ namespace WP_CLI\Core {
          * CoreUpgrader constructor.
          *
          * @param \WP_Upgrader_Skin|null $skin
+         * @param bool                   $insecure
          */
         public function __construct($skin = null, $insecure = false)
         {
@@ -3143,6 +3303,9 @@ namespace {
          * [--porcelain]
          * : Output filename for the exported database.
          *
+         * [--add-drop-table]
+         * : Include a `DROP TABLE IF EXISTS` statement before each `CREATE TABLE` statement.
+         *
          * [--defaults]
          * : Loads the environment's MySQL option files. Default behavior is to skip loading them to avoid failures due to misconfiguration.
          *
@@ -3518,6 +3681,15 @@ namespace {
          *
          * [--format=<format>]
          * : Render output in a particular format.
+         * ---
+         * options:
+         *   - table
+         *   - csv
+         *   - json
+         *   - yaml
+         *   - ids
+         *   - count
+         * ---
          *
          * The percent color codes available are:
          *
@@ -3552,6 +3724,16 @@ namespace {
          * |  %F  | Blink (unlikely to work)
          *
          * They can be concatenated. For instance, the default match color of black on a mustard (dark yellow) background `%3%k` can be made black on a bright yellow background with `%Y%0%8`.
+         *
+         * ## AVAILABLE FIELDS
+         *
+         * These fields will be displayed by default for each result:
+         *
+         * * table
+         * * column
+         * * match
+         * * primary_key_name
+         * * primary_key_value
          *
          * ## EXAMPLES
          *
@@ -3790,6 +3972,14 @@ namespace {
          * @return string[] Array of SQL modes.
          */
         protected function get_current_sql_modes($assoc_args)
+        {
+        }
+        /**
+         * Returns the correct `mysql` command based on the detected database type.
+         *
+         * @return string The appropriate check command.
+         */
+        private function get_mysql_command()
         {
         }
     }
@@ -4876,6 +5066,9 @@ namespace WP_CLI {
          *
          * <key>
          * : The name of the meta field to get.
+         *
+         * [--single]
+         * : Whether to return a single value.
          *
          * [--format=<format>]
          * : Get value in a particular format.
@@ -7485,6 +7678,8 @@ namespace {
         /**
          * Lists signups.
          *
+         * ## OPTIONS
+         *
          * [--<field>=<value>]
          * : Filter the list by a specific field.
          *
@@ -10061,6 +10256,9 @@ namespace {
          * <cap>
          * : The capability to be removed.
          *
+         * [--force]
+         * : Forcefully remove a capability.
+         *
          * ## EXAMPLES
          *
          *     $ wp user remove-cap 11 publish_newsletters
@@ -10071,6 +10269,9 @@ namespace {
          *
          *     $ wp user remove-cap 11 nonexistent_cap
          *     Error: No such 'nonexistent_cap' cap for supervisor (11).
+         *
+         *     $ wp user remove-cap 11 publish_newsletters --force
+         *     Success: Removed 'publish_newsletters' cap for supervisor (11).
          *
          * @subcommand remove-cap
          */
@@ -11021,7 +11222,7 @@ namespace {
         public function export()
         {
         }
-        protected abstract function write($xml);
+        abstract protected function write($xml);
     }
     class WP_Export_Exception extends \RuntimeException
     {
@@ -11291,6 +11492,7 @@ namespace {
         public function __construct($iterator, $callback)
         {
         }
+        #[\ReturnTypeWillChange]
         public function current()
         {
         }
@@ -11520,24 +11722,24 @@ namespace WP_CLI {
          *
          * @var string
          */
-        private $github_latest_release_url = '/^https:\\/\\/github\\.com\\/(.*)\\/releases\\/latest\\/?$/';
+        private $github_latest_release_url = '/^https:\/\/github\.com\/(.*)\/releases\/latest\/?$/';
         // Invalid version message.
         const INVALID_VERSION_MESSAGE = 'version higher than expected';
         public function __construct()
         {
         }
-        protected abstract function get_upgrader_class($force);
-        protected abstract function get_item_list();
+        abstract protected function get_upgrader_class($force);
+        abstract protected function get_item_list();
         /**
          * @param array List of update candidates
          * @param array List of item names
          * @return array List of update candidates
          */
-        protected abstract function filter_item_list($items, $args);
-        protected abstract function get_all_items();
-        protected abstract function get_status($file);
-        protected abstract function status_single($args);
-        protected abstract function install_from_repo($slug, $assoc_args);
+        abstract protected function filter_item_list($items, $args);
+        abstract protected function get_all_items();
+        abstract protected function get_status($file);
+        abstract protected function status_single($args);
+        abstract protected function install_from_repo($slug, $assoc_args);
         public function status($args)
         {
         }
@@ -11638,6 +11840,14 @@ namespace WP_CLI {
          * @return string
          */
         private function parse_url_host_component($url, $component)
+        {
+        }
+        /**
+         * Add versioned GitHub URLs to cache allowlist.
+         *
+         * @param string $url The URL to check.
+         */
+        protected static function maybe_cache($url, $item_type)
         {
         }
         /**
@@ -12118,6 +12328,10 @@ namespace {
          * : If set, the command will overwrite any installed version of the plugin, without prompting
          * for confirmation.
          *
+         * [--ignore-requirements]
+         * :If set, the command will install the plugin while ignoring any WordPress or PHP version requirements
+         * specified by the plugin authors.
+         *
          * [--activate]
          * : If set, the plugin will be activated immediately after install.
          *
@@ -12424,6 +12638,8 @@ namespace {
          * * file
          * * author
          * * tested_up_to
+         * * requires
+         * * requires_php
          * * wporg_status
          * * wporg_last_updated
          *
@@ -12493,6 +12709,12 @@ namespace {
         private function get_details($file)
         {
         }
+        /**
+         * Performs deletion of plugin files
+         *
+         * @param $plugin - Plugin fetcher object (name, file)
+         * @return bool - If plugin was deleted
+         */
         private function delete_plugin($plugin)
         {
         }
@@ -12996,6 +13218,10 @@ namespace {
          * [--force]
          * : If set, the command will overwrite any installed version of the theme, without prompting
          * for confirmation.
+         *
+         * [--ignore-requirements]
+         * : If set, the command will install the theme while ignoring any WordPress or PHP version requirements
+         * specified by the theme authors.
          *
          * [--activate]
          * : If set, the theme will be activated immediately after install.
@@ -15672,13 +15898,13 @@ namespace WP_CLI {
     class JsonManipulator
     {
         private static $DEFINES = '(?(DEFINE)
-       (?<number>   -? (?= [1-9]|0(?!\\d) ) \\d+ (\\.\\d+)? ([eE] [+-]? \\d+)? )
+       (?<number>   -? (?= [1-9]|0(?!\d) ) \d+ (\.\d+)? ([eE] [+-]? \d+)? )
        (?<boolean>   true | false | null )
-       (?<string>    " ([^"\\\\]* | \\\\ ["\\\\bfnrt\\/] | \\\\ u [0-9a-f]{4} )* " )
-       (?<array>     \\[  (?:  (?&json) \\s* (?: , (?&json) \\s* )*  )?  \\s* \\] )
-       (?<pair>      \\s* (?&string) \\s* : (?&json) \\s* )
-       (?<object>    \\{  (?:  (?&pair)  (?: , (?&pair)  )*  )?  \\s* \\} )
-       (?<json>   \\s* (?: (?&number) | (?&boolean) | (?&string) | (?&array) | (?&object) ) )
+       (?<string>    " ([^"\\\\]* | \\\\ ["\\\\bfnrt\/] | \\\\ u [0-9a-f]{4} )* " )
+       (?<array>     \[  (?:  (?&json) \s* (?: , (?&json) \s* )*  )?  \s* \] )
+       (?<pair>      \s* (?&string) \s* : (?&json) \s* )
+       (?<object>    \{  (?:  (?&pair)  (?: , (?&pair)  )*  )?  \s* \} )
+       (?<json>   \s* (?: (?&number) | (?&boolean) | (?&string) | (?&array) | (?&object) ) )
     )';
         private $contents;
         private $newline;
@@ -15775,19 +16001,19 @@ namespace WP_CLI\Package\Compat\Min_Composer_2_3 {
         /**
          * {@inheritDoc}
          */
-        public function isVerbose() : bool
+        public function isVerbose(): bool
         {
         }
         /**
          * {@inheritDoc}
          */
-        public function write($messages, bool $newline = true, int $verbosity = self::NORMAL) : void
+        public function write($messages, bool $newline = true, int $verbosity = self::NORMAL): void
         {
         }
         /**
          * {@inheritDoc}
          */
-        public function writeError($messages, bool $newline = true, int $verbosity = self::NORMAL) : void
+        public function writeError($messages, bool $newline = true, int $verbosity = self::NORMAL): void
         {
         }
         private static function output_clean_message($messages)
@@ -16273,7 +16499,7 @@ namespace {
          *     Success: Role with key 'approver' deleted.
          *
          *     # Delete productadmin role.
-         *     wp role delete productadmin
+         *     $ wp role delete productadmin
          *     Success: Role with key 'productadmin' deleted.
          */
         public function delete($args)
@@ -16631,6 +16857,7 @@ namespace {
          * options:
          *   - circle
          *   - gitlab
+         *   - bitbucket
          *   - github
          * ---
          *

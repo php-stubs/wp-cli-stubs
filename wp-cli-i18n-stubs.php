@@ -345,7 +345,7 @@ class Jed extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\E
 class JsCode extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\ExtractorInterface, \Gettext\Extractors\ExtractorMultiInterface
 {
     public static $options = ['constants' => [], 'functions' => ['gettext' => 'gettext', '__' => 'gettext', 'ngettext' => 'ngettext', 'n__' => 'ngettext', 'pgettext' => 'pgettext', 'p__' => 'pgettext', 'dgettext' => 'dgettext', 'd__' => 'dgettext', 'dngettext' => 'dngettext', 'dn__' => 'dngettext', 'dpgettext' => 'dpgettext', 'dp__' => 'dpgettext', 'npgettext' => 'npgettext', 'np__' => 'npgettext', 'dnpgettext' => 'dnpgettext', 'dnp__' => 'dnpgettext', 'noop' => 'noop', 'noop__' => 'noop']];
-    protected static $functionsScannerClass = 'Gettext\\Utils\\JsFunctionsScanner';
+    protected static $functionsScannerClass = 'Gettext\Utils\JsFunctionsScanner';
     /**
      * @inheritdoc
      * @throws Exception
@@ -484,7 +484,7 @@ class Mo extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\Ex
     const MAGIC1 = -1794895138;
     const MAGIC2 = -569244523;
     const MAGIC3 = 2500072158;
-    protected static $stringReaderClass = 'Gettext\\Utils\\StringReader';
+    protected static $stringReaderClass = 'Gettext\Utils\StringReader';
     /**
      * {@inheritdoc}
      */
@@ -540,7 +540,7 @@ class PhpCode extends \Gettext\Extractors\Extractor implements \Gettext\Extracto
         'constants' => [],
         'functions' => ['gettext' => 'gettext', '__' => 'gettext', 'ngettext' => 'ngettext', 'n__' => 'ngettext', 'pgettext' => 'pgettext', 'p__' => 'pgettext', 'dgettext' => 'dgettext', 'd__' => 'dgettext', 'dngettext' => 'dngettext', 'dn__' => 'dngettext', 'dpgettext' => 'dpgettext', 'dp__' => 'dpgettext', 'npgettext' => 'npgettext', 'np__' => 'npgettext', 'dnpgettext' => 'dnpgettext', 'dnp__' => 'dnpgettext', 'noop' => 'noop', 'noop__' => 'noop'],
     ];
-    protected static $functionsScannerClass = 'Gettext\\Utils\\PhpFunctionsScanner';
+    protected static $functionsScannerClass = 'Gettext\Utils\PhpFunctionsScanner';
     /**
      * {@inheritdoc}
      * @throws Exception
@@ -644,7 +644,7 @@ class Twig extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\
 class VueJs extends \Gettext\Extractors\Extractor implements \Gettext\Extractors\ExtractorInterface, \Gettext\Extractors\ExtractorMultiInterface
 {
     public static $options = ['constants' => [], 'functions' => ['gettext' => 'gettext', '__' => 'gettext', 'ngettext' => 'ngettext', 'n__' => 'ngettext', 'pgettext' => 'pgettext', 'p__' => 'pgettext', 'dgettext' => 'dgettext', 'd__' => 'dgettext', 'dngettext' => 'dngettext', 'dn__' => 'dngettext', 'dpgettext' => 'dpgettext', 'dp__' => 'dpgettext', 'npgettext' => 'npgettext', 'np__' => 'npgettext', 'dnpgettext' => 'dnpgettext', 'dnp__' => 'dnpgettext', 'noop' => 'noop', 'noop__' => 'noop']];
-    protected static $functionsScannerClass = 'Gettext\\Utils\\JsFunctionsScanner';
+    protected static $functionsScannerClass = 'Gettext\Utils\JsFunctionsScanner';
     /**
      * @inheritDoc
      * @throws Exception
@@ -1700,7 +1700,7 @@ class Translations extends \ArrayObject
     /**
      * @see ArrayObject::__construct()
      */
-    public function __construct($input = [], $flags = 0, $iterator_class = 'ArrayIterator', $translationClass = 'Gettext\\Translation')
+    public function __construct($input = [], $flags = 0, $iterator_class = 'ArrayIterator', $translationClass = 'Gettext\Translation')
     {
     }
     /**
@@ -2070,7 +2070,7 @@ abstract class FunctionsScanner
      *
      * @return array
      */
-    public abstract function getFunctions(array $constants = []);
+    abstract public function getFunctions(array $constants = []);
     /**
      * Search for specific functions and create translations.
      *
@@ -2484,9 +2484,10 @@ trait IterableCodeExtractor
      * @param array        $options      {
      *     Optional. An array of options passed down to static::fromString()
      *
-     *     @type bool  $wpExtractTemplates Extract 'Template Name' headers in theme files. Default 'false'.
-     *     @type bool  $wpExtractPatterns  Extract 'Title' and 'Description' headers in pattern files. Default 'false'.
-     *     @type array $restrictFileNames  Skip all files which are not included in this array.
+     *     @type bool  $wpExtractTemplates  Extract 'Template Name' headers in theme files. Default 'false'.
+     *     @type bool  $wpExtractPatterns   Extract 'Title' and 'Description' headers in pattern files. Default 'false'.
+     *     @type array $restrictFileNames   Skip all files which are not included in this array.
+     *     @type array $restrictDirectories Skip all directories which are not included in this array.
      * }
      * @return null
      */
@@ -2603,7 +2604,7 @@ final class BladeCodeExtractor extends \WP_CLI\I18n\BladeGettextExtractor
         '__ngettext' => 'single_plural_number_domain',
         '__ngettext_noop' => 'single_plural_domain',
     ]];
-    protected static $functionsScannerClass = 'WP_CLI\\I18n\\PhpFunctionsScanner';
+    protected static $functionsScannerClass = 'WP_CLI\I18n\PhpFunctionsScanner';
     /**
      * {@inheritdoc}
      */
@@ -2781,7 +2782,7 @@ final class JsCodeExtractor extends \Gettext\Extractors\JsCode
 {
     use \WP_CLI\I18n\IterableCodeExtractor;
     public static $options = ['extractComments' => ['translators', 'Translators'], 'constants' => [], 'functions' => ['__' => 'text_domain', '_x' => 'text_context_domain', '_n' => 'single_plural_number_domain', '_nx' => 'single_plural_number_context_domain']];
-    protected static $functionsScannerClass = 'WP_CLI\\I18n\\JsFunctionsScanner';
+    protected static $functionsScannerClass = 'WP_CLI\I18n\JsFunctionsScanner';
     /**
      * @inheritdoc
      */
@@ -2879,6 +2880,12 @@ class MakeJsonCommand extends \WP_CLI_Command
      * [<destination>]
      * : Path to the destination directory for the resulting JSON files. Defaults to the source directory.
      *
+     * [--domain=<domain>]
+     * : Text domain to use for the JSON file name. Overrides the default one extracted from the PO file.
+     *
+     * [--extensions=<extensions>]
+     * : Additional custom JS extensions, comma separated list. By default searches for .min.js and .js extensions.
+     *
      * [--purge]
      * : Whether to purge the strings that were extracted from the original source file. Defaults to true, use `--no-purge` to skip the removal.
      *
@@ -2931,10 +2938,12 @@ class MakeJsonCommand extends \WP_CLI_Command
      *
      * @param string     $source_file Path to the source file.
      * @param string     $destination Path to the destination directory.
-     * @param array|null $map               Source to build file mapping.
+     * @param array|null $map         Source to build file mapping.
+     * @param string     $domain      Override text domain to use.
+     * @param array      $extensions  Additional extensions.
      * @return array     List of created JSON files.
      */
-    protected function make_json($source_file, $destination, $map)
+    protected function make_json($source_file, $destination, $map, $domain, $extensions)
     {
     }
     /**
@@ -3132,18 +3141,18 @@ class MakePotCommand extends \WP_CLI_Command
 		(?<!%)                     # Don\'t match a literal % (%%).
 		(
 			%                          # Start of placeholder.
-			(?:[0-9]+\\$)?              # Optional ordering of the placeholders.
+			(?:[0-9]+\$)?              # Optional ordering of the placeholders.
 			[+-]?                      # Optional sign specifier.
 			(?:
 				(?:0|\'.)?                 # Optional padding specifier - excluding the space.
 				-?                         # Optional alignment specifier.
 				[0-9]*                     # Optional width specifier.
-				(?:\\.(?:[ 0]|\'.)?[0-9]+)? # Optional precision specifier with optional padding character.
+				(?:\.(?:[ 0]|\'.)?[0-9]+)? # Optional precision specifier with optional padding character.
 				|                      # Only recognize the space as padding in combination with a width specifier.
 				(?:[ ])?                   # Optional space padding specifier.
 				-?                         # Optional alignment specifier.
 				[0-9]+                     # Width specifier.
-				(?:\\.(?:[ 0]|\'.)?[0-9]+)? # Optional precision specifier with optional padding character.
+				(?:\.(?:[ 0]|\'.)?[0-9]+)? # Optional precision specifier with optional padding character.
 			)
 			[bcdeEfFgGosuxX]           # Type specifier.
 		)
@@ -3159,12 +3168,12 @@ class MakePotCommand extends \WP_CLI_Command
 			(?:0|\'.)?                 # Optional padding specifier - excluding the space.
 			-?                         # Optional alignment specifier.
 			[0-9]*                     # Optional width specifier.
-			(?:\\.(?:[ 0]|\'.)?[0-9]+)? # Optional precision specifier with optional padding character.
+			(?:\.(?:[ 0]|\'.)?[0-9]+)? # Optional precision specifier with optional padding character.
 			|                      # Only recognize the space as padding in combination with a width specifier.
 			(?:[ ])?                   # Optional space padding specifier.
 			-?                         # Optional alignment specifier.
 			[0-9]+                     # Width specifier.
-			(?:\\.(?:[ 0]|\'.)?[0-9]+)? # Optional precision specifier with optional padding character.
+			(?:\.(?:[ 0]|\'.)?[0-9]+)? # Optional precision specifier with optional padding character.
 		)
 		[bcdeEfFgGosuxX]           # Type specifier.
 	)/x';
@@ -3482,7 +3491,7 @@ final class PhpCodeExtractor extends \Gettext\Extractors\PhpCode
         '__ngettext' => 'single_plural_number_domain',
         '__ngettext_noop' => 'single_plural_domain',
     ]];
-    protected static $functionsScannerClass = 'WP_CLI\\I18n\\PhpFunctionsScanner';
+    protected static $functionsScannerClass = 'WP_CLI\I18n\PhpFunctionsScanner';
     /**
      * {@inheritdoc}
      */
@@ -3542,15 +3551,6 @@ class PotGenerator extends \Gettext\Generators\Po
      * @param string $value  The line to add.
      */
     protected static function addLines(array &$lines, $name, $value)
-    {
-    }
-}
-final class ThemeJsonExtractor extends \WP_CLI\I18n\JsonSchemaExtractor
-{
-    /**
-     * @inheritdoc
-     */
-    public static function fromString($text, \Gettext\Translations $translations, array $options = [])
     {
     }
 }
