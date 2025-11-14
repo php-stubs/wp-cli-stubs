@@ -4583,6 +4583,8 @@ namespace {
          * @param string|WP_Error|Exception|Throwable $message Message to write to STDERR.
          * @param boolean|integer            $exit    True defaults to exit(1).
          * @return null
+         * 
+         * @phpstan-return ($exit is true|positive-int ? never : void)
          */
         public static function error($message, $exit = \true)
         {
