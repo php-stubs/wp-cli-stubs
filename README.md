@@ -21,6 +21,8 @@ composer require --dev php-stubs/wp-cli-stubs
 
 Alternatively you may download `wp-cli-stubs.php` directly.
 
+A few of these stubs extend WordPress core classes. Install [`php-stubs/wordpress-stubs`](https://github.com/php-stubs/wordpress-stubs) alongside this package if your analysis needs those resolved.
+
 ### Usage in PHPStan
 
 Include all stubs in PHPStan configuration file.
