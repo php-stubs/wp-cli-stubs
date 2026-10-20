@@ -1784,7 +1784,7 @@ namespace {
          *
          * @param string $name
          * @param string $type
-         * @param string $type
+         * @param array<array{name: string, value: mixed, type: string}> $values
          * @param string $wp_config_file_name Config file name
          * @return string The value of the requested constant or variable as defined in the wp-config.php file; if the
          *                requested constant or variable is not defined then the function will print an error and exit.
@@ -5302,7 +5302,7 @@ namespace WP_CLI {
         /**
          * Check that the object ID exists
          *
-         * @param int
+         * @param string|int $object_id
          */
         protected function check_object_id($object_id)
         {
@@ -5407,7 +5407,7 @@ namespace {
         /**
          * Check that the comment ID exists
          *
-         * @param int
+         * @param string|int $object_id
          */
         protected function check_object_id($object_id)
         {
@@ -7131,7 +7131,7 @@ namespace {
         /**
          * Check that the post ID exists
          *
-         * @param int
+         * @param string|int $object_id
          */
         protected function check_object_id($object_id)
         {
@@ -8416,7 +8416,7 @@ namespace {
         /**
          * Check that the site ID exists
          *
-         * @param int
+         * @param string|int $object_id
          */
         protected function check_object_id($object_id)
         {
@@ -9341,7 +9341,7 @@ namespace {
         /**
          * Check that the term ID exists
          *
-         * @param int
+         * @param string|int $object_id
          */
         protected function check_object_id($object_id)
         {
@@ -10807,7 +10807,7 @@ namespace {
          * Replaces user_login value with user ID
          * user meta is a special case that also supports user_login
          *
-         * @param array
+         * @param array $args
          * @return array
          */
         private function replace_login_with_user_id($args)
@@ -12703,7 +12703,7 @@ namespace {
         /**
          * Gets the details of a plugin.
          *
-         * @param object
+         * @param string $file Plugin file name.
          * @return array
          */
         private function get_details($file)
@@ -15673,8 +15673,8 @@ namespace {
          * Displays a set of packages
          *
          * @param string $context
-         * @param array
-         * @param array
+         * @param array $packages
+         * @param array $assoc_args
          */
         private function show_packages($context, $packages, $assoc_args)
         {
@@ -18008,7 +18008,7 @@ namespace {
          * Updates the options for a given widget
          *
          * @param string $name
-         * @param mixed
+         * @param mixed $value
          */
         private function update_widget_options($name, $value)
         {
